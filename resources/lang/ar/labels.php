@@ -1,5 +1,5 @@
 <?php
-
+//arabic
 return [
     'login' => 'تسجيل الدخول',
     'dashboard' => 'لوحة القيادة',
@@ -28,6 +28,23 @@ return [
     'Password' => 'كلمة المرور',
     'Email' => 'بريد إلكتروني',
 
+     //Tadatable
+    'Search' => 'بحث',
+    'Show' => 'عرض',
+    'Entries' => 'عناصر',
+    'No matching records found' => 'لم يتم العثور على سجلات مطابقة',
+    'Showing' => 'عرض',
+    'To' => 'ل',
+    'Of' => 'ل',
+    'Processing' => 'يعالج',
+    'Previous' => 'السابق',
+    'Next' => 'التالي',
+    'First' => 'الأول',
+    'Last' => 'الأخير',
+    'Filtered' => 'تمت تصفيته',
+
+
+
     'Are you sure?' => 'هل أنت متأكد؟',
     'You are change status..!' => 'أنت تقوم بتغيير الحالة..!',
     'Confirmed..' => 'تم التأكيد..',
@@ -42,6 +59,29 @@ return [
     'Country Name Urdu' => 'اسم البلد باللغة الأردية',
     'Country Phone Code' => 'رمز هاتف البلد',
     '' => '',
+
+    //States
+    'Country Name' => 'اسم البلد',
+    'Select Country' => 'اختر البلد',
+    'States' => 'الولايات',
+    'Add State' => 'إضافة ولاية',
+    'Edit State' => 'تحرير الولاية',
+    'State Short Name' => 'الاسم المختصر للولاية',
+    'State Name English' => 'اسم الولاية باللغة الإنجليزية',
+    'State Name Arabic' => 'اسم الولاية باللغة العربية',
+    'State Name Urdu' => 'اسم الولاية باللغة الأردية',
+
+    // Cities
+    'Cities' => 'مدن',
+    'State Name' => 'اسم الولاية',
+    'Select State' => 'اختر الولاية',
+    'States' => 'الولايات',
+    'Add City' => 'إضافة مدينة',
+    'Edit City' => 'تحرير المدينة',
+    'City Short Name' => 'الاسم المختصر للمدينة',
+    'City Name English' => 'اسم المدينة بالإنجليزية',
+    'City Name Arabic' => 'اسم المدينة بالعربية',
+    'City Name Urdu' => 'اسم المدينة بالأردية',
 
 
      // Barber module

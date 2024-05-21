@@ -1,8 +1,11 @@
 <div class="modal-dialog" role="document">
-    <?php $countrys = getcountries(); ?>
+    <?php $countrys = getcountries();
+     $locale = Illuminate\Support\Facades\App::getLocale();
+    $name = "name_".$locale;
+    ?>
     <div class="modal-content">
         <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel1">Add City</h5>
+            <h5 class="modal-title" id="exampleModalLabel1"> {{ __('labels.Add City') }}</h5>
             <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close" onclick="return close_or_clear();"></button>
         </div>
         <div class="modal-body" id="myModal">
@@ -11,11 +14,11 @@
                 <div class="row g-2">
 
                     <div class="mb-3 col-md-6">
-                        <label class="form-label" for="validationServer01">Country Name</label>
+                        <label class="form-label" for="validationServer01">{{ __('labels.Country Name') }}</label>
                             <select class="form-select country_id" name="country_id" id="validationDefault04">
-                            <option selected="" value="">Select Country</option>
+                            <option selected="" value="">{{ __('labels.Select Country') }}</option>
                                 @foreach ($countrys as $country)
-                                    <option value="{{ $country->id }}">{{ $country->name_en }}</option>
+                                    <option value="{{ $country->id }}">{{ $country->$name }}</option>
                                 @endforeach
                             </select>
                             <div id="country_id_error" style="display: none;" class="text-danger"></div>
@@ -23,39 +26,39 @@
 
                     <div class="mb-3 col-md-6 d-none" id="states">
                             <div class="form-group" >
-                                <label class="form-label" for="validationServer01">State Name</label>
+                                <label class="form-label" for="validationServer01">{{ __('labels.State Name') }}</label>
                                 <select class="form-control stateData" name="state_id" id="stateData" id="validationDefault04">
-                                    <option value="1">Select Country</option>
+                                    <option value="">{{ __('labels.Select State') }}</option>
                                 </select>
                                 <div id="state_id_error" style="display: none;" class="text-danger"></div>
                             </div>
                     </div>
 
                     <div class="mb-3 col-md-6">
-                        <label class="form-label" for="city_name_en">City Name En <span class="text-danger">*</span> </label>
+                        <label class="form-label" for="city_name_en">{{ __('labels.City Name English') }} <span class="text-danger">*</span> </label>
                         <input class="form-control" id="city_name_en" name="city_name_en" type="text"
-                            placeholder="City Name En" aria-label="City Name En">
+                            placeholder="{{ __('labels.City Name English') }}" aria-label="{{ __('labels.City Name English') }}">
                         <div id="city_name_en_error" style="display: none;" class="text-danger"></div>
                     </div>
 
                     <div class="mb-3 col-md-6">
-                        <label class="form-label" for="city_name_ar">City Name ar <span class="text-danger">*</span> </label>
+                        <label class="form-label" for="city_name_ar">{{ __('labels.City Name Arabic') }} <span class="text-danger">*</span> </label>
                         <input class="form-control" id="city_name_ar" name="city_name_ar" type="text"
-                            placeholder="City Name ar" aria-label="City Name ar">
+                            placeholder="{{ __('labels.City Name Arabic') }}" aria-label="{{ __('labels.City Name Arabic') }}">
                         <div id="city_name_ar_error" style="display: none;" class="text-danger"></div>
                     </div>
 
                     <div class="mb-3 col-md-6">
-                        <label class="form-label" for="city_name_ur">City Name Ur <span class="text-danger">*</span> </label>
+                        <label class="form-label" for="city_name_ur">{{ __('labels.City Name Urdu') }} <span class="text-danger">*</span> </label>
                         <input class="form-control" id="city_name_ur" name="city_name_ur" type="text"
-                            placeholder="City Name ur" aria-label="City Name ur">
+                            placeholder="{{ __('labels.City Name Urdu') }}" aria-label="{{ __('labels.City Name Urdu') }}">
                         <div id="city_name_ur_error" style="display: none;" class="text-danger"></div>
                     </div>
 
                 </div>
-                <button class="btn btn-primary btn-sm btn-custom" type="submit" id="citySubmit"><i class="fa fa-spinner fa-spin d-none icon"></i> Submit</button>
+                <button class="btn btn-primary btn-sm btn-custom" type="submit" id="citySubmit"><i class="fa fa-spinner fa-spin d-none icon"></i> {{ __('labels.Submit') }}</button>
                 <button class="btn btn-secondary btn-sm" type="button" data-bs-dismiss="modal"
-                    id="is_close">Close</button>
+                    id="is_close">{{ __('labels.Close') }}</button>
             </form>
         </div>
     </div>

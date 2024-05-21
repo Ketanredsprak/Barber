@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\State;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\App;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StateRequest;
 
@@ -23,38 +24,59 @@ class StateController extends Controller
             $data = State::with("country_data")->where('is_delete',0)->get();
             return Datatables::of($data)->addIndexColumn()
                 ->addColumn('action', function ($row) {
-                    $alert_delete = "return confirm('Are you sure want to delete !')";
-                    $btn = "<ul class='action'>";
-                    if ($row->status == 1) {
-                        $btn = $btn . '<li class="delete"> <a   href="javascript:void(0)" href="' . route('state.status', $row->id) . '" title="Deactivate" class="status-change" data-url="' . route('state.status', $row->id) . '"><i class="fa fa-close"></i></a>  &nbsp; </li> ';
-                    } else {
-                        $btn = $btn . ' <li class="edit"> <a   href="javascript:void(0)" href="' . route('state.status', $row->id) . '"   class="status-change" title="Activate" data-url="' . route('state.status', $row->id) . '"><i class="icon-check"></i></a></li> ';
-                    }
+                    $btn = "";
+                    $btn = $btn . '<div class="m-b-30">
+                    <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                      <div class="btn-group" role="group">
+                        <button class="btn btn-light dropdown-toggle text-primary" id="btnGroupDrop1" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-ellipsis-h"></i></button>
+                        <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">';
 
-                    if ($row->status == 0) {
-                            $btn = $btn .  '<li class="edit"> <a class="edit-data"  href="javascript:void(0)" title="Edit" data-url="'.route('state.edit', $row->id).'"><i class="icon-pencil-alt"></i></a></li>';
-                            $btn = $btn . ' <li class="delete"><a href="" data-url="' . route('state.destroy', $row->id) . '" class="destroy-data" title="Delete"> <i class="icon-trash"></i></a></li> </ul>';
-                    }
+                        if ($row->status == 1) {
+                                $btn = $btn . '<a    href="' . route('state.status', $row->id) . '" title="' . __('labels.Inactive') . '" class="dropdown-item status-change" data-url="' . route('state.status', $row->id) . '">' . __('labels.Inactive') . '</a>';
+                        }
 
-                    $btn = $btn . '<ul>';
-                   return $btn;
+                        else if ($row->status == 0) {
+                                $btn = $btn . '<a   href="javascript:void(0)" href="' . route('state.status', $row->id) . '"   class="dropdown-item status-change" title="' . __('labels.Active') . '" data-url="' . route('state.status', $row->id) . '">' . __('labels.Active') . '</a>';
+                        }
+                        else
+                        {
+                                $btn = $btn . '<a   href="javascript:void(0)" href="' . route('state.status', $row->id) . '"   class="dropdown-item status-change" title="' . __('labels.Active') . '" data-url="' . route('state.status', $row->id) . '">' . __('labels.Active') . '</a>';
+                        }
+
+                       $btn = $btn . '<a class="edit-data dropdown-item"  href="javascript:void(0)" title="' . __('labels.Edit') . '" data-url="'.route('state.edit', $row->id).'">' . __('labels.Edit') . '</a>';
+                       $btn = $btn . '<a href="" data-url="' . route('state.destroy', $row->id) . '" class="dropdown-item destroy-data" title="' . __('labels.Delete') . '">' . __('labels.Delete') . '</a>';
+
+                       $btn = $btn . '</div>
+                      </div>
+                    </div>
+                  </div>';
+                  return $btn;
                 })
 
                 ->addColumn('status', function ($row) {
                     if ($row->status == 1) {
-                        return '<span class="badge bg-success">Active</span>';
+                        return '<span class="badge bg-success">' . __('labels.Active') . '</span>';
                     } else {
-                        return '<span class="badge bg-danger">In-Active</span>';
+                        return '<span class="badge bg-danger">' . __('labels.Inactive') . '</span>';
                     }
                 })
 
                 ->addColumn('country_name', function ($row) {
-                     return @$row->country_data['name_en'];
+                    $locale = App::getLocale();
+                    $name = "name_".$locale;
+                     return @$row->country_data[$name];
+                })
+
+
+                ->addColumn('name', function ($row) {
+                    $locale = App::getLocale();
+                    $name = "name_".$locale;
+                     return @$row->$name;
                 })
 
 
 
-                ->rawColumns(['action','status','country_name'])
+                ->rawColumns(['action','status','country_name','name'])
                 ->make(true);
         }
         return view('Admin.States.index');
@@ -86,7 +108,7 @@ class StateController extends Controller
             $data->status = 1;
             $data->save();
             if (!empty($data)) {
-                return response()->json(['status' => '1', 'success' => 'Data Added successfully.']);
+                return response()->json(['status' => '1', 'success' => __('message.State Added Successfully.')]);
             }
         } catch (Exception $ex) {
             return response()->json(
@@ -129,17 +151,14 @@ class StateController extends Controller
     {
         //
         try {
-
             $data =  State::find($id);
-
-            $data->shortname = $request->state_short_name;
+            $data->country_id = $request->country_id;
             $data->name_en = $request->state_name_en;
             $data->name_ar = $request->state_name_ar;
             $data->name_ur = $request->state_name_ur;
-            $data->phonecode = $request->state_phone_code;
             $data->save();
             if (!empty($data)) {
-            return response()->json(['status' => '1', 'success' => 'State edit Successfully']);
+            return response()->json(['status' => '1', 'success' => __('message.State Update Successfully.')]);
             }
         } catch (Exception $ex) {
             return response()->json(
@@ -160,7 +179,7 @@ class StateController extends Controller
             $data->is_delete  = 1;
             $data->update();
             DB::commit(); // Commit Transaction
-            return response()->json(['status' => '1', 'success' => 'state deleted successfully']);
+            return response()->json(['status' => '1', 'success' => __('message.State Deleted Successfully.')]);
         } catch (\Exception $e) {
             DB::rollBack(); //Rollback Transaction
             return redirect()->back()->withErrors(['error' => $e->getMessage()]);
@@ -177,14 +196,14 @@ class StateController extends Controller
             $data = State::find($id);
             if ($data->status == 1) {
                 $data->status = 0;
-                $message = "Deactived";
+                $message = __('message.State Deactived Successfully.');
             } else {
                 $data->status = 1;
-                $message = "Actived";
+                $message = __('message.State Actived Successfully.');
             }
             $data->update();
             DB::commit(); // Commit Transaction
-            return response()->json(['status' => '1', 'success' => 'state ' . $message . ' Successfully']);
+            return response()->json(['status' => '1', 'success' => $message]);
         } catch (\Exception $e) {
             DB::rollBack(); //Rollback Transaction
             return redirect()->back()->withErrors(['error' => $e->getMessage()]);

@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Countries;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\App;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\CountryRequest;
 
@@ -31,23 +32,42 @@ class CountryController extends Controller
 
         if ($request->ajax()) {
             $data = Countries::where('is_delete',0)->get();
+            $locale = App::getLocale();
             return Datatables::of($data)->addIndexColumn()
                 ->addColumn('action', function ($row) {
-                    $btn = "<ul class='action'>";
-                    if ($row->status == 1) {
-                        $btn = $btn . '<li class="delete"> <a   href="javascript:void(0)" href="' . route('country.status', $row->id) . '" title="Deactivate" class="status-change" data-url="' . route('country.status', $row->id) . '"><i class="fa fa-close"></i></a>  &nbsp; </li> ';
-                    } else {
-                        $btn = $btn . ' <li class="edit"> <a   href="javascript:void(0)" href="' . route('country.status', $row->id) . '"   class="status-change" title="Activate" data-url="' . route('country.status', $row->id) . '"><i class="icon-check"></i></a></li> ';
-                    }
+                    $btn = "";
+                    $btn = $btn . '<div class="m-b-30">
+                    <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                      <div class="btn-group" role="group">
+                        <button class="btn btn-light dropdown-toggle text-primary" id="btnGroupDrop1" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-ellipsis-h"></i></button>
+                        <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">';
 
-                    if ($row->status == 0) {
-                            $btn = $btn .  '<li class="edit"> <a class="edit-data"  href="javascript:void(0)" title="Edit" data-url="'.route('country.edit', $row->id).'"><i class="icon-pencil-alt"></i></a></li>';
-                            $btn = $btn . ' <li class="delete"><a href="" data-url="' . route('country.destroy', $row->id) . '" class="destroy-data" title="Delete"> <i class="icon-trash"></i></a></li> </ul>';
-                    }
+                        if ($row->status == 1) {
+                                $btn = $btn . '<a    href="' . route('country.status', $row->id) . '" title="' . __('labels.Inactive') . '" class="dropdown-item status-change" data-url="' . route('country.status', $row->id) . '">' . __('labels.Inactive') . '</a>';
+                        }
 
-                    $btn = $btn . '<ul>';
+                        else if ($row->status == 0) {
+                                $btn = $btn . '<a   href="javascript:void(0)" href="' . route('country.status', $row->id) . '"   class="dropdown-item status-change" title="' . __('labels.Active') . '" data-url="' . route('country.status', $row->id) . '">' . __('labels.Active') . '</a>';
+                        }
+                        else
+                        {
+                                $btn = $btn . '<a   href="javascript:void(0)" href="' . route('country.status', $row->id) . '"   class="dropdown-item status-change" title="' . __('labels.Active') . '" data-url="' . route('country.status', $row->id) . '">' . __('labels.Active') . '</a>';
+                        }
+
+                       $btn = $btn . '<a class="edit-data dropdown-item"  href="javascript:void(0)" title="' . __('labels.Edit') . '" data-url="'.route('country.edit', $row->id).'">' . __('labels.Edit') . '</a>';
+                       $btn = $btn . '<a href="" data-url="' . route('barber.destroy', $row->id) . '" class="dropdown-item destroy-data" title="' . __('labels.Delete') . '">' . __('labels.Delete') . '</a>';
+
+                       $btn = $btn . '</div>
+                      </div>
+                    </div>
+                  </div>';
+
+
+
                    return $btn;
                 })
+
+
 
                 ->addColumn('status', function ($row) {
                     if ($row->status == 1) {
@@ -56,6 +76,17 @@ class CountryController extends Controller
                         return '<span class="badge bg-danger">' . __('labels.Inactive') . '</span>';
                     }
                 })
+
+
+                ->addColumn('name', function ($row) {
+                   $locale = App::getLocale();
+                   $name = "name_".$locale;
+                   return  $row->$name;
+                })
+
+
+
+
 
 
                 ->rawColumns(['action','status'])

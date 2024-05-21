@@ -28,6 +28,21 @@ return [
     'Password' => 'Password',
     'Email' => 'Email',
 
+    //Datatable
+    'Search' => 'Search',
+    'Show' => 'Show',
+    'Entries' => 'Entries',
+    'No matching records found' => 'No matching records found',
+    'Showing' => 'Showing',
+    'To' => 'To',
+    'Of' => 'Of',
+    'Processing' => 'Processing',
+    'First' => 'First',
+    'Last' => 'Last',
+    'Next' => 'Next',
+    'Previous' => 'Previous',
+    'Filtered' => 'Filtered',
+
     'Are you sure?' => 'Are you sure ?',
     'You are change status..!' => 'You  are change status..!',
     'Confirmed..' => 'Confirmed..',
@@ -42,6 +57,44 @@ return [
     'Country Name Arabic' => 'Country Name Arabic',
     'Country Name Urdu' => 'Country Name Urdu',
     'Country Phone Code' => 'Country Phone Code',
+
+    //States
+    'Country Name' => 'Country Name',
+    'Select Country' => 'Select Country',
+    'States' => 'States',
+    'Add State' => 'Add State',
+    'Edit State' => 'Edit State',
+    'State Short Name' => 'State Short Name',
+    'State Name English' => 'State Name English',
+    'State Name Arabic' => 'State Name Arabic',
+    'State Name Urdu' => 'State Name Urdu',
+    '' => '',
+    '' => '',
+    '' => '',
+    '' => '',
+    '' => '',
+    '' => '',
+    '' => '',
+
+
+    //City
+    'Cities' => 'Cities',
+    'State Name' => 'State Name',
+    'Select State' => 'Select State',
+    'States' => 'States',
+    'Add City' => 'Add City',
+    'Edit City' => 'Edit City',
+    'City Short Name' => 'City Short Name',
+    'City Name English' => 'City Name English',
+    'City Name Arabic' => 'City Name Arabic',
+    'City Name Urdu' => 'City Name Urdu',
+    '' => '',
+    '' => '',
+    '' => '',
+    '' => '',
+    '' => '',
+    '' => '',
+
 
 
      // Barber module

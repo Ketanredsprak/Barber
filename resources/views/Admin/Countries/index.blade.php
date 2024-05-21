@@ -28,8 +28,8 @@
                                 <thead>
                                     <tr>
                                         <th>{{ __('labels.ID') }}</th>
-                                        <th>{{ __('labels.Short Code') }}</th>
                                         <th>{{ __('labels.Name') }}</th>
+                                        <th>{{ __('labels.Short Code') }}</th>
                                         <th>{{ __('labels.Phone Code') }}</th>
                                         <th>{{ __('labels.Status') }}</th>
                                         <th>{{ __('labels.Action') }}</th>
@@ -72,6 +72,30 @@
             var table = $('.country-data').DataTable({
                 processing: true,
                 serverSide: true,
+                language: {
+                    "sProcessing":    "{{ __('labels.Processing') }}...",
+                    "sLengthMenu":    "{{ __('labels.Show') }} _MENU_ {{ __('labels.Entries') }}",
+                    "sZeroRecords":   "{{ __('labels.No matching records found') }}",
+                    "sEmptyTable":    "Ningún dato disponible en esta tabla",
+                    "sInfo":          "{{ __('labels.Showing') }} _START_ {{ __('labels.To') }} _END_ {{ __('labels.Of')}} _TOTAL_ {{ __('labels.Entries') }}",
+                    "sInfoEmpty":     "{{ __('labels.Showing') }} 0 {{ __('labels.To') }} 0 {{ __('labels.Of')}} 0 {{ __('labels.Entries') }}",
+                    "sInfoFiltered":  "({{ __('labels.Filtered')}} {{ __('labels.Of')}} _MAX_ {{ __('labels.Entries') }})",
+                    "sInfoPostFix":   "",
+                    "sSearch":        "{{ __('labels.Search') }}",
+                    "sUrl":           "",
+                    "sInfoThousands":  ",",
+                    "sLoadingRecords": "{{ __('labels.Processing') }}...",
+                    "oPaginate": {
+                        "sFirst":    "{{ __('labels.First') }}",
+                        "sLast":    "{{ __('labels.Last') }}",
+                        "sNext":    "{{ __('labels.Next') }}",
+                        "sPrevious": "{{ __('labels.Previous') }}"
+                    },
+                    "oAria": {
+                        "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
+                        "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                    }
+                },
                 // dom: 'lfrtip',
                 country: {
                     processing: '<i></i><span class="text-primary spinner-border"></span> '
@@ -83,12 +107,12 @@
                         name: 'id'
                     },
                     {
-                        data: 'shortname',
-                        name: 'shortname'
+                        data: 'name',
+                        name: 'name'
                     },
                     {
-                        data: 'name_en',
-                        name: 'name_en'
+                        data: 'shortname',
+                        name: 'shortname'
                     },
                     {
                         data: 'phonecode',

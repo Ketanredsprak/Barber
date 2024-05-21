@@ -1,17 +1,22 @@
 @extends('Admin.layouts.app')
 @section('content')
 
+@php
+   $locale = Illuminate\Support\Facades\App::getLocale();
+    $name = "name_".$locale;
+@endphp
+
 <div class="container-fluid">
         <div class="page-title">
             <div class="row">
                 <div class="col-6">
-                    <h4>Cities</h4>
+                    <h4>{{ __('labels.Cities') }}</h4>
                 </div>
                 <div class="col-6">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><button class="btn btn-sm btn-primary" type="button" data-bs-toggle="modal"
                                 data-bs-target="#createcitymodel"><i class="fa fa-plus" aria-hidden="true"></i>
-                                Add New </button></li>
+                                {{ __('labels.Add New') }} </button></li>
                     </ol>
                 </div>
             </div>
@@ -28,8 +33,8 @@
                                 <thead>
                                     <tr>
                                         <th>{{ __('labels.ID') }}</th>
-                                        <th>State Name</th>
-                                        <th>English Name</th>
+                                        <th>{{ __('labels.State Name') }}</th>
+                                        <th>{{ __('labels.Name') }} </th>
                                         <th>{{ __('labels.Status') }}</th>
                                         <th>{{ __('labels.Action') }}</th>
                                     </tr>
@@ -71,6 +76,30 @@
             var table = $('.city-data').DataTable({
                 processing: true,
                 serverSide: true,
+                language: {
+                    "sProcessing":    "{{ __('labels.Processing') }}...",
+                    "sLengthMenu":    "{{ __('labels.Show') }} _MENU_ {{ __('labels.Entries') }}",
+                    "sZeroRecords":   "{{ __('labels.No matching records found') }}",
+                    "sEmptyTable":    "Ningún dato disponible en esta tabla",
+                    "sInfo":          "{{ __('labels.Showing') }} _START_ {{ __('labels.To') }} _END_ {{ __('labels.Of')}} _TOTAL_ {{ __('labels.Entries') }}",
+                    "sInfoEmpty":     "{{ __('labels.Showing') }} 0 {{ __('labels.To') }} 0 {{ __('labels.Of')}} 0 {{ __('labels.Entries') }}",
+                    "sInfoFiltered":  "(filtrado {{ __('labels.Of')}} _MAX_ {{ __('labels.Entries') }})",
+                    "sInfoPostFix":   "",
+                    "sSearch":        "{{ __('labels.Search') }}",
+                    "sUrl":           "",
+                    "sInfoThousands":  ",",
+                    "sLoadingRecords": "{{ __('labels.Processing') }}...",
+                    "oPaginate": {
+                        "sFirst":    "{{ __('labels.First') }}",
+                        "sLast":    "{{ __('labels.Last') }}",
+                        "sNext":    "{{ __('labels.Next') }}",
+                        "sPrevious": "{{ __('labels.Previous') }}"
+                    },
+                    "oAria": {
+                        "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
+                        "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                    }
+                },
                 // dom: 'lfrtip',
                 city: {
                     processing: '<i></i><span class="text-primary spinner-border"></span> '
@@ -86,8 +115,8 @@
                         name: 'state_name'
                     },
                     {
-                        data: 'name_en',
-                        name: 'name_en'
+                        data: 'name',
+                        name: 'name'
                     },
                     {
                         data: 'status',
@@ -159,6 +188,7 @@
 
 
             $('.country_id').on('change', function() {
+                var name = "{{ $name }}";
                 var country =this.value ;
                 var state_id = $('#state_id').val();
                   //  alert(state_id);
@@ -175,7 +205,7 @@
                     $('#states').removeClass('d-none');
                     $('#stateData').empty();
                     jQuery.each(response, function(index, item) {
-                        $('#stateData').append(' <option value='+ item['id'] + ' >'+ item['name_en'] +'</option>  ')
+                        $('#stateData').append(' <option value='+ item['id'] + ' >'+ item[name] +'</option>  ')
                     });
                 }
                 });

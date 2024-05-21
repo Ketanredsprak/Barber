@@ -10,7 +10,12 @@
 
 <?php $url = Request::route()->getName(); ?>
 
-
+{{-- <style>
+    /* Apply RTL direction to DataTable container */
+    .dataTables_wrapper {
+        direction: rtl;
+    }
+</style> --}}
 <body>
     <!-- loader ends-->
     <!-- tap on top starts-->
@@ -347,7 +352,8 @@
                     },
                 });
         }
- </script>
+
+</script>
 
 
 </body>

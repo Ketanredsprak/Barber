@@ -1,5 +1,5 @@
 <?php
-
+//Urdu
 return [
     'login' => 'لاگ ان کریں',
     'dashboard' => 'ڈیش بورڈ',
@@ -27,12 +27,27 @@ return [
     'Close' => 'بند کریں',
     'Password' => 'پاس ورڈ',
     'Email' => 'ای میل',
+
+    //Tadatable
+    'Search' => 'تلاش',
+    'Show' => 'دکھائیں',
+    'Entries' => 'ادوار',
+    'No matching records found' => 'کوئی مماثل ریکارڈ نہیں ملا',
+    'Showing' => 'دکھا رہا ہے۔',
+    'To' => 'کو',
+    'Of' => 'کی',
+    'Processing' => 'پروسیسنگ',
+    'Previous' => ' پچھلا',
+    'Next' => 'اگلا ',
+    'First' => 'پہلا',
+    'Last' => 'آخری',
+    'Filtered' => 'فلٹر شدہ',
+
     'Are you sure?' => 'کیا آپ واقعی یقینی ہیں؟',
     'You are change status..!' => 'آپ حالت تبدیل کر رہے ہیں۔',
     'Confirmed..' => 'تصدیق شدہ..',
     'You will not be able to revert this!' => 'آپ اسے واپس نہیں لے سکیں گے!',
     'Yes, delete it!' => 'ہاں، اسے حذف کریں!',
-
 
     //Countries
     'Add Country' => 'ملک شامل کریں',
@@ -46,6 +61,35 @@ return [
     '' => '',
     '' => '',
     '' => '',
+
+    //State
+    'Country Name' => 'ملک کا نام',
+    'Select Country' => 'ملک کا انتخاب کیجئے',
+    'States' => 'ریاستیں',
+    'Add State' => 'ریاست شامل کریں۔',
+    'Edit State' => 'ریاست میں ترمیم کریں۔',
+    'State Short Name' => 'ریاست کا مختصر نام',
+    'State Name English' => 'ریاست کا نام انگریزی',
+    'State Name Arabic' => 'ریاست کا نام عربی',
+    'State Name Urdu' => 'ریاست کا نام اردو',
+
+    //City
+    'Cities' => 'شہر',
+    'State Name' => 'ریاست کا نام',
+    'Select State' => 'ریاست منتخب کریں',
+    'States' => 'ریاستیں',
+    'Add City' => 'شہر شامل کریں',
+    'Edit City' => 'شہر میں ترمیم کریں',
+    'City Short Name' => 'شہر کا مخفف',
+    'City Name English' => 'شہر کا نام انگریزی',
+    'City Name Arabic' => 'شہر کا نام عربی',
+    'City Name Urdu' => 'شہر کا نام اردو',
+    '' => '',
+    '' => '',
+    '' => '',
+    '' => '',
+    '' => '',
+
 
 
      // Barber module
