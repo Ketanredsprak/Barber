@@ -27,11 +27,11 @@
                             <table class="display state-data">
                                 <thead>
                                     <tr>
-                                        <th>ID</th>
+                                        <th>{{ __('labels.ID') }}</th>
                                         <th>Country Name</th>
                                         <th>English Name</th>
-                                        <th>Status</th>
-                                        <th>Action</th>
+                                        <th>{{ __('labels.Status') }}</th>
+                                        <th>{{ __('labels.Action') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>

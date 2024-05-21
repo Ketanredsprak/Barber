@@ -46,9 +46,9 @@
                     </div>
 
                 </div>
-                <button class="btn btn-primary btn-sm btn-custom" type="submit" id="countrySubmit"><i class="fa fa-spinner fa-spin d-none icon"></i> Submit</button>
+                <button class="btn btn-primary btn-sm btn-custom" type="submit" id="countrySubmit"><i class="fa fa-spinner fa-spin d-none icon"></i> {{ __('labels.Submit') }}</button>
                 <button class="btn btn-secondary btn-sm" type="button" data-bs-dismiss="modal"
-                    id="is_close">Close</button>
+                    id="is_close">{{ __('labels.Close') }}</button>
             </form>
         </div>
     </div>

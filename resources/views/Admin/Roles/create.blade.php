@@ -29,8 +29,7 @@
                             <div class="col-12 mb-3">
                                  <div class="card-header">
                                         <h4 class="card-title mb-3">{{ $permission[0]['module_name'] }}</h4>
-
-                                        <div class="row icon-demo-content mb-3">
+                                          <div class="row icon-demo-content mb-3">
                                             @foreach ($permission as $p)
                                                 <div class="col-sm-3">
                                                     <input type="checkbox" class="checkBoxClass" name="permission[]"

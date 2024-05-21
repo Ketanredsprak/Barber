@@ -5,13 +5,13 @@
         <div class="page-title">
             <div class="row">
                 <div class="col-6">
-                    <h4>Permissions</h4>
+                    <h4>{{ __('labels.Customers') }}</h4>
                 </div>
                 <div class="col-6">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><button class="btn btn-sm btn-primary" type="button" data-bs-toggle="modal"
-                                data-bs-target="#createpermissionmodel"><i class="fa fa-plus" aria-hidden="true"></i>
-                                Add New </button></li>
+                                data-bs-target="#createcustomermodel"><i class="fa fa-plus" aria-hidden="true"></i>
+                                {{ __('labels.Add New') }}</button></li>
                     </ol>
                 </div>
             </div>
@@ -24,11 +24,14 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="display permission-data">
+                            <table class="display customer-data">
                                 <thead>
                                     <tr>
                                         <th>{{ __('labels.ID') }}</th>
-                                        <th>Name</th>
+                                        <th>{{ __('labels.Customer Detail') }}</th>
+                                        <th>{{ __('labels.Phone') }}</th>
+                                        <th>{{ __('labels.Joing Date') }}</th>
+                                        <th>{{ __('labels.Status') }}</th>
                                         <th>{{ __('labels.Action') }}</th>
                                     </tr>
                                 </thead>
@@ -48,40 +51,52 @@
 
 
 
-    <!-- create permission model --->
-    <div class="modal fade" id="createpermissionmodel" tabindex="-1" role="dialog" aria-labelledby="createpermissionmodel"
+    <!-- create customer model --->
+    <div class="modal fade" id="createcustomermodel" tabindex="-1" role="dialog" aria-labelledby="createcustomermodel"
         aria-hidden="true">
-        @include('Admin.Permissions.create')
+        @include('Admin.Customers.create')
     </div>
-    <!-- create permission model end --->
+    <!-- create customer model end --->
 
 
-    <!-- edit permission model --->
-     <div class="modal fade" id="editpermissionmodel" tabindex="-1" role="dialog" aria-labelledby="editpermissionmodel"
+    <!-- edit customer model --->
+     <div class="modal fade" id="editcustomermodel" tabindex="-1" role="dialog" aria-labelledby="editcustomermodel"
         aria-hidden="true">
     </div>
-    <!-- edit permission model end --->
+    <!-- edit customer model end --->
 @endsection
 
 @section('script')
     <script type="text/javascript">
         $(document).ready(function() {
-            var table = $('.permission-data').DataTable({
+            var table = $('.customer-data').DataTable({
                 processing: true,
                 serverSide: true,
                 // dom: 'lfrtip',
-                permission: {
+                customer: {
                     processing: '<i></i><span class="text-primary spinner-border"></span> '
                 },
-                ajax: "{{ route('permission.index') }}",
+                ajax: "{{ route('customer.index') }}",
                 columns: [
                     {
                         data: 'id',
                         name: 'id'
                     },
                     {
-                        data: 'name',
-                        name: 'name'
+                        data: 'user_details',
+                        name: 'user_details'
+                    },
+                    {
+                        data: 'phone',
+                        name: 'phone'
+                    },
+                    {
+                        data: 'joing_date',
+                        name: 'joing_date'
+                    },
+                    {
+                        data: 'status',
+                        name: 'status'
                     },
                     {
                         data: 'action',
@@ -94,7 +109,7 @@
 
 
             //delete record
-            $(".permission-data").on('click', '.destroy-data', function(e) {
+            $(".customer-data").on('click', '.destroy-data', function(e) {
                 e.preventDefault();
                 var url = $(this).data('url');
                 delete_record(url, table);
@@ -102,7 +117,7 @@
             });
 
             //status-change
-            $(".permission-data").on('click', '.status-change', function(e) {
+            $(".customer-data").on('click', '.status-change', function(e) {
                 e.preventDefault();
                 var url = $(this).data('url');
                 change_status(url, table);
@@ -110,46 +125,45 @@
 
 
 
-            //add permission submit
-              $("#permission-frm").submit(function(event) {
+            //add customer submit
+              $("#customer-frm").submit(function(event) {
                   event.preventDefault();
                   var frm = this;
                   create_record(frm, table);
               });
-            //add permission submit end
+            //add customer submit end
 
 
-            //get permission data for edit page
-              $(".permission-data").on('click', '.edit-data', function(e) {
+            //get customer data for edit page
+              $(".customer-data").on('click', '.edit-data', function(e) {
                   $.ajax({
                       method: "GET",
                       url: $(this).data('url'),
                       success: function(response) {
-                          $('#editpermissionmodel').html(response);
-                          $('#editpermissionmodel').modal('show');
+                          $('#editcustomermodel').html(response);
+                          $('#editcustomermodel').modal('show');
                       },
                       error: function(response) {
                           handleError(response);
                       },
                   });
               });
-            //get permission data for edit page end
+            //get customer data for edit page end
 
 
-            //edit permission
-             $(document).on('submit', '#permission-edit-form', function(e) {
+            //edit customer
+             $(document).on('submit', '#customer-edit-form', function(e) {
                  e.preventDefault();
                  var frm = this;
                  var url = $(this).attr('action');
                  var formData = new FormData(frm);
                  formData.append("_method", 'PUT');
-                 var model_name = "#editpermissionmodel";
+                 var model_name = "#editcustomermodel";
                  edit_record(frm, url, formData, model_name, table);
             });
 
         });
 
+        </script>
 
-
-    </script>
 @endsection

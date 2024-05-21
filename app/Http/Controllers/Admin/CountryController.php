@@ -33,7 +33,6 @@ class CountryController extends Controller
             $data = Countries::where('is_delete',0)->get();
             return Datatables::of($data)->addIndexColumn()
                 ->addColumn('action', function ($row) {
-                    $alert_delete = "return confirm('Are you sure want to delete !')";
                     $btn = "<ul class='action'>";
                     if ($row->status == 1) {
                         $btn = $btn . '<li class="delete"> <a   href="javascript:void(0)" href="' . route('country.status', $row->id) . '" title="Deactivate" class="status-change" data-url="' . route('country.status', $row->id) . '"><i class="fa fa-close"></i></a>  &nbsp; </li> ';
@@ -52,9 +51,9 @@ class CountryController extends Controller
 
                 ->addColumn('status', function ($row) {
                     if ($row->status == 1) {
-                        return '<span class="badge bg-success">Active</span>';
+                        return '<span class="badge bg-success">' . __('labels.Active') . '</span>';
                     } else {
-                        return '<span class="badge bg-danger">In-Active</span>';
+                        return '<span class="badge bg-danger">' . __('labels.Inactive') . '</span>';
                     }
                 })
 
@@ -92,7 +91,7 @@ class CountryController extends Controller
             $data->status = 1;
             $data->save();
             if (!empty($data)) {
-                return response()->json(['status' => '1', 'success' => 'Data Added successfully.']);
+                return response()->json(['status' => '1', 'success' => __('message.Country Added Successfully.')]);
             }
         } catch (Exception $ex) {
             return response()->json(
@@ -145,7 +144,7 @@ class CountryController extends Controller
             $data->phonecode = $request->country_phone_code;
             $data->save();
             if (!empty($data)) {
-            return response()->json(['status' => '1', 'success' => 'Countries edit Successfully']);
+            return response()->json(['status' => '1', 'success' => __('message.Country Update Successfully.')]);
             }
         } catch (Exception $ex) {
             return response()->json(
@@ -166,7 +165,7 @@ class CountryController extends Controller
             $data->is_delete  = 1;
             $data->update();
             DB::commit(); // Commit Transaction
-            return response()->json(['status' => '1', 'success' => 'country deleted successfully']);
+            return response()->json(['status' => '1', 'success' => __('message.Country Deleted Successfully.')]);
         } catch (\Exception $e) {
             DB::rollBack(); //Rollback Transaction
             return redirect()->back()->withErrors(['error' => $e->getMessage()]);
@@ -183,14 +182,14 @@ class CountryController extends Controller
             $data = Countries::find($id);
             if ($data->status == 1) {
                 $data->status = 0;
-                $message = "Deactived";
+                $message =  __('message.Country Deactived Successfully.');
             } else {
                 $data->status = 1;
-                $message = "Actived";
+                $message = __('message.Country Actived Successfully.');
             }
             $data->update();
             DB::commit(); // Commit Transaction
-            return response()->json(['status' => '1', 'success' => 'Country ' . $message . ' Successfully']);
+            return response()->json(['status' => '1', 'success' => $message]);
         } catch (\Exception $e) {
             DB::rollBack(); //Rollback Transaction
             return redirect()->back()->withErrors(['error' => $e->getMessage()]);

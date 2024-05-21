@@ -7,8 +7,10 @@ use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\StateController;
+use App\Http\Controllers\Admin\BarberController;
 use App\Http\Controllers\Admin\ModuleController;
 use App\Http\Controllers\Admin\CountryController;
+use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\PermissionController;
 
 /*
@@ -41,7 +43,12 @@ Route::prefix('admin')->middleware('auth')->group(function () {
         Route::resource('user', UserController::class);
         Route::get('user-status/{id}', [UserController::class, 'userStatus'])->name('user.status');
 
-        // Our resource routes
+        Route::resource('barber', BarberController::class);
+        Route::get('barber-status/{id}', [BarberController::class, 'barberStatus'])->name('barber.status');
+
+        Route::resource('customer', CustomerController::class);
+        Route::get('customer-status/{id}', [CustomerController::class, 'customerStatus'])->name('customer.status');
+
         Route::resource('country', CountryController::class);
         Route::get('country-status/{id}', [CountryController::class, 'countryStatus'])->name('country.status');
 

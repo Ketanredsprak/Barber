@@ -26,9 +26,9 @@
                             <table class="display user-data">
                                 <thead>
                                     <tr>
-                                        <th>ID</th>
+                                        <th>{{ __('labels.ID') }}</th>
                                         <th>Name</th>
-                                        <th>Action</th>
+                                        <th>{{ __('labels.Action') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>

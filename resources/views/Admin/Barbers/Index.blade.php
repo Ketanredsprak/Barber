@@ -5,13 +5,13 @@
         <div class="page-title">
             <div class="row">
                 <div class="col-6">
-                    <h4>Permissions</h4>
+                    <h4>{{ __('labels.Barbers') }}</h4>
                 </div>
                 <div class="col-6">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><button class="btn btn-sm btn-primary" type="button" data-bs-toggle="modal"
-                                data-bs-target="#createpermissionmodel"><i class="fa fa-plus" aria-hidden="true"></i>
-                                Add New </button></li>
+                                data-bs-target="#createbarbermodel"><i class="fa fa-plus" aria-hidden="true"></i>
+                                {{ __('labels.Add New') }}</button></li>
                     </ol>
                 </div>
             </div>
@@ -24,11 +24,14 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="display permission-data">
+                            <table class="display barber-data">
                                 <thead>
                                     <tr>
                                         <th>{{ __('labels.ID') }}</th>
-                                        <th>Name</th>
+                                        <th>{{ __('labels.Barber Detail') }}</th>
+                                        <th>{{ __('labels.Phone') }}</th>
+                                        <th>{{ __('labels.Joing Date') }}</th>
+                                        <th>{{ __('labels.Status') }}</th>
                                         <th>{{ __('labels.Action') }}</th>
                                     </tr>
                                 </thead>
@@ -48,40 +51,52 @@
 
 
 
-    <!-- create permission model --->
-    <div class="modal fade" id="createpermissionmodel" tabindex="-1" role="dialog" aria-labelledby="createpermissionmodel"
+    <!-- create barber model --->
+    <div class="modal fade" id="createbarbermodel" tabindex="-1" role="dialog" aria-labelledby="createbarbermodel"
         aria-hidden="true">
-        @include('Admin.Permissions.create')
+        @include('Admin.Barbers.create')
     </div>
-    <!-- create permission model end --->
+    <!-- create barber model end --->
 
 
-    <!-- edit permission model --->
-     <div class="modal fade" id="editpermissionmodel" tabindex="-1" role="dialog" aria-labelledby="editpermissionmodel"
+    <!-- edit barber model --->
+     <div class="modal fade" id="editbarbermodel" tabindex="-1" role="dialog" aria-labelledby="editbarbermodel"
         aria-hidden="true">
     </div>
-    <!-- edit permission model end --->
+    <!-- edit barber model end --->
 @endsection
 
 @section('script')
     <script type="text/javascript">
         $(document).ready(function() {
-            var table = $('.permission-data').DataTable({
+            var table = $('.barber-data').DataTable({
                 processing: true,
                 serverSide: true,
                 // dom: 'lfrtip',
-                permission: {
+                barber: {
                     processing: '<i></i><span class="text-primary spinner-border"></span> '
                 },
-                ajax: "{{ route('permission.index') }}",
+                ajax: "{{ route('barber.index') }}",
                 columns: [
                     {
                         data: 'id',
                         name: 'id'
                     },
                     {
-                        data: 'name',
-                        name: 'name'
+                        data: 'user_details',
+                        name: 'user_details'
+                    },
+                    {
+                        data: 'phone',
+                        name: 'phone'
+                    },
+                    {
+                        data: 'joing_date',
+                        name: 'joing_date'
+                    },
+                    {
+                        data: 'status',
+                        name: 'status'
                     },
                     {
                         data: 'action',
@@ -94,7 +109,7 @@
 
 
             //delete record
-            $(".permission-data").on('click', '.destroy-data', function(e) {
+            $(".barber-data").on('click', '.destroy-data', function(e) {
                 e.preventDefault();
                 var url = $(this).data('url');
                 delete_record(url, table);
@@ -102,7 +117,7 @@
             });
 
             //status-change
-            $(".permission-data").on('click', '.status-change', function(e) {
+            $(".barber-data").on('click', '.status-change', function(e) {
                 e.preventDefault();
                 var url = $(this).data('url');
                 change_status(url, table);
@@ -110,46 +125,75 @@
 
 
 
-            //add permission submit
-              $("#permission-frm").submit(function(event) {
+            //add barber submit
+              $("#barber-frm").submit(function(event) {
                   event.preventDefault();
                   var frm = this;
                   create_record(frm, table);
               });
-            //add permission submit end
+            //add barber submit end
 
 
-            //get permission data for edit page
-              $(".permission-data").on('click', '.edit-data', function(e) {
+            //get barber data for edit page
+              $(".barber-data").on('click', '.edit-data', function(e) {
                   $.ajax({
                       method: "GET",
                       url: $(this).data('url'),
                       success: function(response) {
-                          $('#editpermissionmodel').html(response);
-                          $('#editpermissionmodel').modal('show');
+                          $('#editbarbermodel').html(response);
+                          $('#editbarbermodel').modal('show');
                       },
                       error: function(response) {
                           handleError(response);
                       },
                   });
               });
-            //get permission data for edit page end
+            //get barber data for edit page end
 
 
-            //edit permission
-             $(document).on('submit', '#permission-edit-form', function(e) {
+            //edit barber
+             $(document).on('submit', '#barber-edit-form', function(e) {
                  e.preventDefault();
                  var frm = this;
                  var url = $(this).attr('action');
                  var formData = new FormData(frm);
                  formData.append("_method", 'PUT');
-                 var model_name = "#editpermissionmodel";
+                 var model_name = "#editbarbermodel";
                  edit_record(frm, url, formData, model_name, table);
             });
+
+
+            $('.country_id').on('change', function() {
+                var country =this.value ;
+                var state_id = $('#state_id').val();
+                  //  alert(state_id);
+                $.ajax({
+                    headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                type: "post",
+                url: "{{ route('state.list') }}",
+                data: {
+                    country: country
+                },
+                success: function(response) {
+                    $('#states').removeClass('d-none');
+                    $('#stateData').empty();
+                    jQuery.each(response, function(index, item) {
+                        $('#stateData').append(' <option value='+ item['id'] + ' >'+ item['name_en'] +'</option>  ')
+                    });
+                }
+                });
+            });
+
 
         });
 
 
 
-    </script>
+
+
+
+        </script>
+
 @endsection

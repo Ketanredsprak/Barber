@@ -203,13 +203,14 @@
         function change_status(url,table)
         {
                    var confirm = Swal.fire({
-                    title: "Are you sure?",
-                    text: "You  are change status..!",
+                    title: "{{ __('labels.Are you sure?') }}",
+                    text: "{{ __('labels.You are change status..!') }}",
                     icon: "warning",
                     showCancelButton: true,
                     confirmButtonColor: "#3085d6",
                     cancelButtonColor: "#d33",
-                    confirmButtonText: "Confirmed.."
+                    cancelButtonText: "{{ __('labels.Cancel') }}",
+                    confirmButtonText: "{{ __('labels.Confirmed..') }}"
                 }).then((result) => {
                     if (result.isConfirmed) {
                         $.ajax({
@@ -235,13 +236,14 @@
         function delete_record(url,table)
         {
                    var confirm = Swal.fire({
-                    title: "Are you sure?",
-                    text: "You won't be able to revert this!",
+                    title: "{{ __('labels.Are you sure?') }}",
+                    text: "{{ __('labels.You will not be able to revert this!') }}",
                     icon: "warning",
                     showCancelButton: true,
                     confirmButtonColor: "#3085d6",
                     cancelButtonColor: "#d33",
-                    confirmButtonText: "Yes, delete it!"
+                    cancelButtonText: "{{ __('labels.Cancel') }}",
+                    confirmButtonText: "{{ __('labels.Yes, delete it!') }}"
                 }).then((result) => {
                     if (result.isConfirmed) {
                         $.ajax({
@@ -295,12 +297,12 @@
                         });
 
 
-                        var errors = xhr.responseJSON;
-                        $.each(errors.errors, function(key, value) {
-                            var ele = "#" + key + "_error";
-                            $(ele).text(value);
-                            $(ele).show();
-                        });
+                        // var errors = xhr.responseJSON;
+                        // $.each(errors.errors, function(key, value) {
+                        //     var ele = "#" + key + "_error";
+                        //     $(ele).text(value);
+                        //     $(ele).show();
+                        // });
 
 
 
