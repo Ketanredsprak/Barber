@@ -5,13 +5,13 @@
         <div class="page-title">
             <div class="row">
                 <div class="col-6">
-                    <h4>Modules</h4>
+                    <h4>{{ __('labels.Modules') }}</h4>
                 </div>
                 <div class="col-6">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><button class="btn btn-sm btn-primary" type="button" data-bs-toggle="modal"
                                 data-bs-target="#createmodulemodel"><i class="fa fa-plus" aria-hidden="true"></i>
-                                Add New </button></li>
+                                {{ __('labels.Add New') }} </button></li>
                     </ol>
                 </div>
             </div>
@@ -28,7 +28,7 @@
                                 <thead>
                                     <tr>
                                         <th>{{ __('labels.ID') }}</th>
-                                        <th>Name</th>
+                                        <th>{{ __('labels.Name') }}</th>
                                         <th>{{ __('labels.Action') }}</th>
                                     </tr>
                                 </thead>

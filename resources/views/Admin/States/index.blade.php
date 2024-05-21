@@ -79,7 +79,7 @@
                     "sEmptyTable":    "Ningún dato disponible en esta tabla",
                     "sInfo":          "{{ __('labels.Showing') }} _START_ {{ __('labels.To') }} _END_ {{ __('labels.Of')}} _TOTAL_ {{ __('labels.Entries') }}",
                     "sInfoEmpty":     "{{ __('labels.Showing') }} 0 {{ __('labels.To') }} 0 {{ __('labels.Of')}} 0 {{ __('labels.Entries') }}",
-                    "sInfoFiltered":  "(filtrado {{ __('labels.Of')}} _MAX_ {{ __('labels.Entries') }})",
+                    "sInfoFiltered":  "({{ __('labels.Filtered')}} {{ __('labels.Of')}} _MAX_ {{ __('labels.Entries') }})",
                     "sInfoPostFix":   "",
                     "sSearch":        "{{ __('labels.Search') }}",
                     "sUrl":           "",

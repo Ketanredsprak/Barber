@@ -28,7 +28,29 @@ return [
     'Password' => 'پاس ورڈ',
     'Email' => 'ای میل',
 
-    //Tadatable
+
+    //Module
+    'Modules' => 'ماڈیولز',
+    'Add Module' => 'ماڈیول شامل کریں۔',
+    'Edit Module' => 'ماڈیول میں ترمیم کریں۔',
+
+
+    //Permission
+    'Permissions' => 'اجازتیں',
+    'Add Permission' => 'اجازت شامل کریں۔',
+    'Edit Permission' => 'اجازت میں ترمیم کریں۔',
+    'Module Name' => 'ماڈیول کا نام',
+    'Select Module' => 'ماڈیول منتخب کریں۔',
+
+     //Roles
+    'Roles' => 'الأدوار',
+    'Add Role' => 'أضف دور',
+    'Edit Role' => 'تحرير الدور',
+    'Module' => 'ماڈیول',
+    'Select All' => 'اختر الكل',
+
+
+    //Datatable
     'Search' => 'تلاش',
     'Show' => 'دکھائیں',
     'Entries' => 'ادوار',

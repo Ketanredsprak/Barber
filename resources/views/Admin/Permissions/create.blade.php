@@ -2,7 +2,7 @@
     <div class="modal-content">
         <?php $modules = getmodules(); ?>
         <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel1">Add Permission</h5>
+            <h5 class="modal-title" id="exampleModalLabel1">{{ __('labels.Add Permission') }}</h5>
             <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close" onclick="return close_or_clear();"></button>
         </div>
         <div class="modal-body" id="myModal">
@@ -11,9 +11,9 @@
                 <div class="row g-2">
 
                     <div class="mb-3 col-md-6">
-                        <label class="form-label" for="validationServer01">Module Name</label>
+                        <label class="form-label" for="validationServer01">{{ __('labels.Module Name') }}</label>
                             <select class="form-select" name="module_name" id="validationDefault04">
-                            <option selected="" value="">Select Module</option>
+                            <option selected="" value="">{{ __('labels.Select Module') }}</option>
                                 @foreach ($modules as $module)
                                     <option value="{{ $module->name }}">{{ $module->name }}</option>
                                 @endforeach
@@ -22,16 +22,16 @@
                     </div>
 
                     <div class="mb-3 col-md-6">
-                        <label class="form-label" for="name">Name<span class="text-danger">*</span> </label>
+                        <label class="form-label" for="name">{{ __('labels.Name') }}<span class="text-danger">*</span> </label>
                         <input class="form-control" id="name" name="name" type="text"
-                            placeholder="Name" aria-label="Name">
+                            placeholder="{{ __('labels.Name') }}" aria-label="{{ __('labels.Name') }}">
                         <div id="name_error" style="display: none;" class="text-danger"></div>
                     </div>
 
                 </div>
-                <button class="btn btn-primary btn-sm btn-custom" type="submit" id="countrySubmit"><i class="fa fa-spinner fa-spin d-none icon"></i> Submit</button>
+                <button class="btn btn-primary btn-sm btn-custom" type="submit" id="countrySubmit"><i class="fa fa-spinner fa-spin d-none icon"></i> {{ __('labels.Submit') }}</button>
                 <button class="btn btn-secondary btn-sm" type="button" data-bs-dismiss="modal"
-                    id="is_close">Close</button>
+                    id="is_close">{{ __('labels.Close') }}</button>
             </form>
         </div>
     </div>

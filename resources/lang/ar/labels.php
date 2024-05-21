@@ -28,7 +28,29 @@ return [
     'Password' => 'كلمة المرور',
     'Email' => 'بريد إلكتروني',
 
-     //Tadatable
+    //Module
+    'Modules' => 'وحدات',
+    'Add Module' => 'إضافة وحدة',
+    'Edit Module' => 'تحرير الوحدة النمطية',
+
+
+    //Permission
+    'Permissions' => 'الأذونات',
+    'Add Permission' => 'إضافة إذن',
+    'Edit Permission' => 'تحرير إذن',
+    'Module Name' => 'اسم وحدة',
+    'Select Module' => 'حدد الوحدة النمطية',
+
+
+    //Roles
+    'Roles' => 'الأدوار',
+    'Add Role' => 'أضف دور',
+    'Edit Role' => 'تحرير الدور',
+    'Module' => 'وحدة',
+    'Select All' => 'تمام منتخب کریں',
+
+
+     //Datatable
     'Search' => 'بحث',
     'Show' => 'عرض',
     'Entries' => 'عناصر',

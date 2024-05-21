@@ -26,26 +26,24 @@ class PermissionController extends Controller
             $data = Permission::get();
             return Datatables::of($data)->addIndexColumn()
                 ->addColumn('action', function ($row) {
-                    $alert_delete = "return confirm('Are you sure want to delete !')";
-                    $btn = "<ul class='action'>";
+                    $btn ="";
+                    $btn = $btn . '<div class="m-b-30">
+                    <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                      <div class="btn-group" role="group">
+                        <button class="btn btn-light dropdown-toggle text-primary" id="btnGroupDrop1" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-ellipsis-h"></i></button>
+                        <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">';
 
-                            $btn = $btn .  '<li class="edit"> <a class="edit-data"  href="javascript:void(0)" title="Edit" data-url="'.route('permission.edit', $row->id).'"><i class="icon-pencil-alt"></i></a></li>';
-                            $btn = $btn . ' <li class="delete"><a href="" data-url="' . route('permission.destroy', $row->id) . '" class="destroy-data" title="Delete"> <i class="icon-trash"></i></a></li> </ul>';
+                            $btn = $btn . '<a class="edit-data dropdown-item"  href="javascript:void(0)" title="' . __('labels.Edit') . '" data-url="'.route('permission.edit', $row->id).'">' . __('labels.Edit') . '</a>';
+                            $btn = $btn . '<a href="" data-url="' . route('permission.destroy', $row->id) . '" class="dropdown-item destroy-data" title="' . __('labels.Delete') . '">' . __('labels.Delete') . '</a>';
 
-                    $btn = $btn . '<ul>';
+                            $btn = $btn . '</div>
+                      </div>
+                    </div>
+                  </div>';
                    return $btn;
                 })
 
-                ->addColumn('status', function ($row) {
-                    if ($row->status == 1) {
-                        return '<span class="badge bg-success">Active</span>';
-                    } else {
-                        return '<span class="badge bg-danger">In-Active</span>';
-                    }
-                })
-
-
-                ->rawColumns(['action','status'])
+                ->rawColumns(['action'])
                 ->make(true);
         }
         return view('Admin.Permissions.index');
@@ -74,7 +72,7 @@ class PermissionController extends Controller
             $data->module_name = $request->module_name;
             $data->save();
             if (!empty($data)) {
-                return response()->json(['status' => '1', 'success' => 'Permission Added successfully.']);
+                return response()->json(['status' => '1', 'success' => __('message.Permission Added Successfully.')]);
             }
         } catch (Exception $ex) {
             return response()->json(
@@ -121,7 +119,7 @@ class PermissionController extends Controller
             $data->module_name = $request->module_name;
             $data->save();
             if (!empty($data)) {
-            return response()->json(['status' => '1', 'success' => 'Permission edit Successfully']);
+            return response()->json(['status' => '1', 'success' => __('message.Permission Update Successfully.')]);
             }
         } catch (Exception $ex) {
             return response()->json(
@@ -141,7 +139,7 @@ class PermissionController extends Controller
             $data =  Permission::find($id);
             $data->delete();
             DB::commit(); // Commit Transaction
-            return response()->json(['status' => '1', 'success' => 'Permission deleted successfully']);
+            return response()->json(['status' => '1', 'success' => __('message.Permission Deleted Successfully.')]);
         } catch (\Exception $e) {
             DB::rollBack(); //Rollback Transaction
             return redirect()->back()->withErrors(['error' => $e->getMessage()]);

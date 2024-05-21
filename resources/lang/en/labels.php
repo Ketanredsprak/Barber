@@ -28,6 +28,27 @@ return [
     'Password' => 'Password',
     'Email' => 'Email',
 
+    //Module
+    'Modules' => 'Modules',
+    'Add Module' => 'Add Module',
+    'Edit Module' => 'Edit Module',
+
+
+    //Permission
+    'Permissions' => 'Permissions',
+    'Add Permission' => 'Add Permission',
+    'Edit Permission' => 'Edit Permission',
+    'Module Name' => 'Module Name',
+    'Select Module' => 'Select Module',
+
+    //Role
+    'Roles' => 'Roles',
+    'Add Role' => 'Add Role',
+    'Edit Role' => 'Edit Role',
+    'Module' => 'Module',
+    'Select All' => 'Select All',
+
+
     //Datatable
     'Search' => 'Search',
     'Show' => 'Show',
