@@ -21,21 +21,31 @@ class UserController extends Controller
             $data = User::get();
             return Datatables::of($data)->addIndexColumn()
                 ->addColumn('action', function ($row) {
-                    $alert_delete = "return confirm('Are you sure want to delete !')";
-                    $btn = "<ul class='action'>";
-                    if ($row->status == 1) {
-                        $btn = $btn . '<li class="delete"> <a   href="javascript:void(0)" href="' . route('user.status', $row->id) . '" title="Deactivate" class="status-change" data-url="' . route('user.status', $row->id) . '"><i class="fa fa-close"></i></a>  &nbsp; </li> ';
-                    } else {
-                        $btn = $btn . ' <li class="edit"> <a   href="javascript:void(0)" href="' . route('user.status', $row->id) . '"   class="status-change" title="Activate" data-url="' . route('user.status', $row->id) . '"><i class="icon-check"></i></a></li> ';
-                    }
+                    $btn = "";
+                    $btn = $btn . '<div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                      <div class="btn-group" role="group">
+                        <button class="btn btn-light dropdown-toggle text-primary" id="btnGroupDrop1" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-ellipsis-h"></i></button>
+                        <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">';
 
-                    if ($row->status == 0) {
-                            $btn = $btn .  '<li class="edit"> <a class="edit-data"  href="javascript:void(0)" title="Edit" data-url="'.route('user.edit', $row->id).'"><i class="icon-pencil-alt"></i></a></li>';
-                            $btn = $btn . ' <li class="delete"><a href="" data-url="' . route('user.destroy', $row->id) . '" class="destroy-data" title="Delete"> <i class="icon-trash"></i></a></li> </ul>';
-                    }
+                        if ($row->status == 1) {
+                                $btn = $btn . '<a    href="' . route('user.status', $row->id) . '" title="' . __('labels.Inactive') . '" class="dropdown-item status-change" data-url="' . route('user.status', $row->id) . '">' . __('labels.Inactive') . '</a>';
+                        }
 
-                    $btn = $btn . '<ul>';
-                   return $btn;
+                        else if ($row->status == 0) {
+                                $btn = $btn . '<a   href="javascript:void(0)" href="' . route('user.status', $row->id) . '"   class="dropdown-item status-change" title="' . __('labels.Active') . '" data-url="' . route('user.status', $row->id) . '">' . __('labels.Active') . '</a>';
+                        }
+                        else
+                        {
+                                $btn = $btn . '<a   href="javascript:void(0)" href="' . route('user.status', $row->id) . '"   class="dropdown-item status-change" title="' . __('labels.Active') . '" data-url="' . route('user.status', $row->id) . '">' . __('labels.Active') . '</a>';
+                        }
+
+                       $btn = $btn . '<a class="edit-data dropdown-item"  href="javascript:void(0)" title="' . __('labels.Edit') . '" data-url="'.route('user.edit', $row->id).'">' . __('labels.Edit') . '</a>';
+                       $btn = $btn . '<a href="" data-url="' . route('user.destroy', $row->id) . '" class="dropdown-item destroy-data" title="' . __('labels.Delete') . '">' . __('labels.Delete') . '</a>';
+
+                       $btn = $btn . '</div>
+                      </div>
+                    </div>';
+                  return $btn;
                 })
 
 

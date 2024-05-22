@@ -25,8 +25,7 @@ class CustomerController extends Controller
                 ->addColumn('action', function ($row) {
                     $alert_delete = "return confirm('Are you sure want to delete !')";
                     $btn ="";
-                    $btn = $btn . '<div class="m-b-30">
-                    <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                    $btn = $btn . '<div class="btn-group" role="group" aria-label="Button group with nested dropdown">
                       <div class="btn-group" role="group">
                         <button class="btn btn-light dropdown-toggle text-primary" id="btnGroupDrop1" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-ellipsis-h"></i></button>
                         <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">';
@@ -48,8 +47,7 @@ class CustomerController extends Controller
 
                        $btn = $btn . '</div>
                       </div>
-                    </div>
-                  </div>';
+                    </div>';
                    return $btn;
                 })
 

@@ -23,7 +23,7 @@ class RoleController extends Controller
                 ->addColumn('action', function ($row) {
 
                     $btn ="";
-                    $btn = $btn . '<div class="m-b-30">
+                    $btn = $btn . '
                     <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
                       <div class="btn-group" role="group">
                         <button class="btn btn-light dropdown-toggle text-primary" id="btnGroupDrop1" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-ellipsis-h"></i></button>
@@ -31,11 +31,9 @@ class RoleController extends Controller
 
                             $btn = $btn . '<a class="edit-data dropdown-item"  href="javascript:void(0)" title="' . __('labels.Edit') . '" data-url="'.route('role.edit', $row->id).'">' . __('labels.Edit') . '</a>';
                             $btn = $btn . '<a href="" data-url="' . route('role.destroy', $row->id) . '" class="dropdown-item destroy-data" title="' . __('labels.Delete') . '">' . __('labels.Delete') . '</a>';
-
                             $btn = $btn . '</div>
                       </div>
-                    </div>
-                  </div>';
+                    </div>';
                    return $btn;
                 })
 
