@@ -27,7 +27,8 @@ return [
     'Close' => 'بند کریں',
     'Password' => 'پاس ورڈ',
     'Email' => 'ای میل',
-
+    'User does not have the right permissions.' => 'صارف کے پاس صحیح اجازت نہیں ہے۔',
+    'Back To Home Page' => 'ہوم پیج پر واپس',
 
     //Module
     'Modules' => 'ماڈیولز',
@@ -73,6 +74,7 @@ return [
 
     //Countries
     'Add Country' => 'ملک شامل کریں',
+    'Edit Country' => 'ملک میں ترمیم کریں۔',
     'Country Short Name' => 'ملک کا مختصر نام',
     'Country Name English' => 'انگریزی میں ملک کا نام',
     'Country Name Arabic' => 'عربی میں ملک کا نام',

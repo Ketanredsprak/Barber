@@ -27,6 +27,8 @@ return [
     'Close' => 'Close',
     'Password' => 'Password',
     'Email' => 'Email',
+    'User does not have the right permissions.' => 'User does not have the right permissions.',
+    'Back To Home Page' => 'Back To Home Page',
 
     //Module
     'Modules' => 'Modules',
@@ -73,6 +75,7 @@ return [
 
      //Countries
     'Add Country' => 'Add Country',
+    'Edit Country' => 'Edit Country',
     'Country Short Name' => 'Country Short Name',
     'Country Name English' => 'Country Name English',
     'Country Name Arabic' => 'Country Name Arabic',

@@ -23,7 +23,7 @@ class CountryController extends Controller
         $this->middleware('permission:country-create', ['only' => ['create', 'store']]);
         $this->middleware('permission:country-edit', ['only' => ['edit', 'update']]);
         $this->middleware('permission:country-delete', ['only' => ['destroy']]);
-        // $this->middleware('permission:country-status', ['only' => ['countryStatus']]);
+        $this->middleware('permission:country-status', ['only' => ['countryStatus']]);
     }
 
     public function index(Request $request)

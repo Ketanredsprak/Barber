@@ -17,6 +17,15 @@ use Illuminate\Support\Facades\Hash;
 class CustomerController extends Controller
 {
 
+    function __construct()
+    {
+        $this->middleware('permission:customer-list', ['only' => ['index']]);
+        $this->middleware('permission:customer-create', ['only' => ['create', 'store']]);
+        $this->middleware('permission:customer-edit', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:customer-delete', ['only' => ['destroy']]);
+        $this->middleware('permission:customer-status', ['only' => ['customerStatus']]);
+    }
+
     public function index(Request $request)
     {
         if ($request->ajax()) {

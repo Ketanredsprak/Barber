@@ -27,6 +27,8 @@ return [
     'Close' => 'يغلق',
     'Password' => 'كلمة المرور',
     'Email' => 'بريد إلكتروني',
+    'User does not have the right permissions.' => 'المستخدم ليس لديه الأذونات الصحيحة.',
+    'Back To Home Page' => 'العودة إلى الصفحة الرئيسية',
 
     //Module
     'Modules' => 'وحدات',
@@ -75,6 +77,7 @@ return [
 
      //Countries
     'Add Country' => 'إضافة بلد',
+    'Edit Country' => 'تحرير البلد',
     'Country Short Name' => 'الاسم المختصر للبلد',
     'Country Name English' => 'اسم البلد باللغة الإنجليزية',
     'Country Name Arabic' => 'اسم البلد باللغة العربية',

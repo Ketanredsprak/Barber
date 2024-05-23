@@ -15,6 +15,16 @@ use App\Http\Requests\Admin\CityRequest;
 
 class CityController extends Controller
 {
+
+    function __construct()
+    {
+        $this->middleware('permission:state-list', ['only' => ['index']]);
+        $this->middleware('permission:state-create', ['only' => ['create', 'store']]);
+        $this->middleware('permission:state-edit', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:state-delete', ['only' => ['destroy']]);
+        $this->middleware('permission:state-status', ['only' => ['stateStatus']]);
+    }
+
     /**
      * Display a listing of the resource.
      */

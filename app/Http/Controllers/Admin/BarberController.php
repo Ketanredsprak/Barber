@@ -17,6 +17,15 @@ use Illuminate\Support\Facades\Hash;
 class BarberController extends Controller
 {
 
+    function __construct()
+    {
+        $this->middleware('permission:barber-list', ['only' => ['index']]);
+        $this->middleware('permission:barber-create', ['only' => ['create', 'store']]);
+        $this->middleware('permission:barber-edit', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:barber-delete', ['only' => ['destroy']]);
+        $this->middleware('permission:barber-status', ['only' => ['barberStatus']]);
+    }
+
     public function index(Request $request)
     {
         if ($request->ajax()) {
@@ -45,7 +54,6 @@ class BarberController extends Controller
 
                        $btn = $btn . '<a class="edit-data dropdown-item"  href="javascript:void(0)" title="' . __('labels.Edit') . '" data-url="'.route('barber.edit', $row->id).'">' . __('labels.Edit') . '</a>';
                        $btn = $btn . '<a href="" data-url="' . route('barber.destroy', $row->id) . '" class="dropdown-item destroy-data" title="' . __('labels.Delete') . '">' . __('labels.Delete') . '</a>';
-
                        $btn = $btn . '</div>
                       </div>
                     </div>';
