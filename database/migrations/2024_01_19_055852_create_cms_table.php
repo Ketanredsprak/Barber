@@ -25,6 +25,7 @@ return new class extends Migration
             $table->integer('status')->nullable()->default(0);
             $table->integer('is_delete')->nullable()->default(0);
             $table->timestamps();
+
         });
     }
 
