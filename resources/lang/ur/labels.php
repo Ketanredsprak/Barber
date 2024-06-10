@@ -97,6 +97,26 @@ return [
     'State Name Arabic' => 'ریاست کا نام عربی',
     'State Name Urdu' => 'ریاست کا نام اردو',
 
+      //CMS Page
+      'Add Cms Page' => 'Cms صفحہ شامل کریں۔',
+      'Slug' => 'سلگ',
+      'Enter slug' => 'سلگ درج کریں۔',
+      'English Title' => 'انگریزی عنوان',
+      'Enter title' => 'عنوان درج کریں۔',
+      'English Content' => 'انگریزی مواد',
+      'Arabic Title' => 'عربی عنوان',
+      'Arabic Content' => 'عربی مواد',
+      'Urdu Title' => 'اردو عنوان',
+      'Urdu Content' => 'اردو مواد',
+      'Turkish Title' => 'ترکی کا عنوان',
+      'Turkish Content' => 'ترکی کا مواد',
+      'Update Cms Page' => 'Cms صفحہ کو اپ ڈیٹ کریں۔',
+      'Title' => 'عنوان',
+      'Last Update At' => 'آخری اپ ڈیٹ بوقت',
+      '' => '',
+      '' => '',
+      '' => '',
+
     //City
     'Cities' => 'شہر',
     'State Name' => 'ریاست کا نام',

@@ -101,6 +101,27 @@ return [
     '' => '',
 
 
+      //CMS Page
+      'Add Cms Page' => 'Add Cms Page',
+      'Slug' => 'Slug',
+      'Enter slug' => 'Enter slug',
+      'English Title' => 'English Title',
+      'Enter title' => 'Enter title',
+      'English Content' => 'English Content',
+      'Arabic Title' => 'Arabic Title',
+      'Arabic Content' => 'Arabic Content',
+      'Urdu Title' => 'Urdu Title',
+      'Urdu Content' => 'Urdu Content',
+      'Turkish Title' => 'Turkish Title',
+      'Turkish Content' => 'Turkish Content',
+      'Update Cms Page' => 'Update Cms Page',
+      'Title' => 'Title',
+      'Last Update At' => 'Last Update At',
+      '' => '',
+      '' => '',
+
+
+
     //City
     'Cities' => 'Cities',
     'State Name' => 'State Name',

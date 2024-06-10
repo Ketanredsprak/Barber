@@ -121,6 +121,30 @@ return [
      '' => '',
 
 
+     //CMS Page
+    'Add Cms Page' => 'إضافة صفحة Cms',
+    'Slug' => 'سبيكة',
+    'Enter slug' => 'أدخل سبيكة',
+    'English Title' => 'العنوان باللغة الانجليزية',
+    'Enter title' => 'أدخل العنوان',
+    'English Content' => 'المحتوى باللغة الإنجليزية',
+    'Arabic Title' => 'العنوان العربي',
+    'Arabic Content' => 'المحتوى العربي',
+    'Urdu Title' => 'العنوان الأردية',
+    'Urdu Content' => 'المحتوى الأردية',
+    'Turkish Title' => 'العنوان التركي',
+    'Turkish Content' => 'المحتوى التركي',
+    'Update Cms Page' => 'تحديث صفحة Cms',
+    'Title' => 'عنوان',
+    'Last Update At' => 'آخر تحديث في',
+    '' => '',
+    '' => '',
+    '' => '',
+    '' => '',
+    '' => '',
+    '' => '',
+
+
 
 
     // Customer module

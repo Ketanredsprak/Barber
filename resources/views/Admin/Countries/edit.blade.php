@@ -39,6 +39,13 @@
                     </div>
 
                     <div class="mb-3 col-md-6">
+                        <label class="form-label" for="country_name_tr">{{ __('labels.Country Name Turkish') }} <span class="text-danger">*</span> </label>
+                        <input class="form-control" id="country_name_tr" name="country_name_tr" type="text"
+                            placeholder="{{ __('labels.Country Name Turkish') }}" aria-label="{{ __('labels.Country Name Turkish') }}" value="{{ $data->name_ur }}">
+                        {{-- <div id="country_name_tr_error" style="display: none;" class="text-danger"></div> --}}
+                    </div>
+
+                    <div class="mb-3 col-md-6">
                         <label class="form-label" for="country_phone_code">{{ __('labels.Country Phone Code') }} <span class="text-danger">*</span> </label>
                         <input class="form-control" id="country_phone_code" name="country_phone_code" type="text"
                             placeholder="{{ __('labels.Country Phone Code') }}" aria-label="{{ __('labels.Country Phone Code') }}" value="{{ $data->phonecode }}">

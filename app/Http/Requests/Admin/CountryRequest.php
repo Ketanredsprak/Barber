@@ -13,6 +13,7 @@ class CountryRequest extends FormRequest
             'country_name_en' => ['required', 'string', 'max:255'],
             'country_name_ar' => ['required', 'string', 'max:255'],
             'country_name_ur' => ['required', 'string', 'max:255'],
+            'country_name_tr' => ['required', 'string', 'max:255'],
             'country_short_name' => ['required','string'],
             'country_phone_code' => ['required','numeric'],
         ];
@@ -29,6 +30,9 @@ class CountryRequest extends FormRequest
             'country_name_ur.required' => __('error.This field is required'),
             'country_name_ur.string' => __('error.The field must be a string'),
             'country_name_ur.max' => __('error.The field must not exceed :max characters.'),
+            'country_name_tr.required' => __('error.This field is required'),
+            'country_name_tr.string' => __('error.The field must be a string'),
+            'country_name_tr.max' => __('error.The field must not exceed :max characters.'),
             'country_short_name.required' => __('error.This field is required'),
             'country_short_name.string' => __('error.The field must be a string'),
             'country_phone_code.required' => __('error.This field is required'),

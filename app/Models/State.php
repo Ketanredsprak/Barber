@@ -15,6 +15,7 @@ class State extends Model
         "name_en",
         "name_ar",
         "name_ur",
+        "name_tr",
         "country_id",
         "status",
         "is_delete",

@@ -16,6 +16,13 @@
                         <div id="country_short_name_error" style="display: none;" class="text-danger custom-error"></div>
                     </div>
 
+                    <div class="mb-3 col-md-6">
+                        <label class="form-label" for="country_phone_code">{{ __('labels.Country Phone Code') }} <span class="text-danger">*</span> </label>
+                        <input class="form-control" id="country_phone_code" name="country_phone_code" type="text"
+                            placeholder="{{ __('labels.Country Phone Code') }}" aria-label="{{ __('labels.Country Phone Code') }}">
+                        <div id="country_phone_code_error" style="display: none;" class="text-danger custom-error"></div>
+                    </div>
+
 
                     <div class="mb-3 col-md-6">
                         <label class="form-label" for="country_name_en">{{ __('labels.Country Name English') }} <span class="text-danger">*</span> </label>
@@ -39,11 +46,13 @@
                     </div>
 
                     <div class="mb-3 col-md-6">
-                        <label class="form-label" for="country_phone_code">{{ __('labels.Country Phone Code') }} <span class="text-danger">*</span> </label>
-                        <input class="form-control" id="country_phone_code" name="country_phone_code" type="text"
-                            placeholder="{{ __('labels.Country Phone Code') }}" aria-label="{{ __('labels.Country Phone Code') }}">
-                        <div id="country_phone_code_error" style="display: none;" class="text-danger custom-error"></div>
+                        <label class="form-label" for="country_name_tr">{{ __('labels.Country Name Turkish') }}<span class="text-danger">*</span> </label>
+                        <input class="form-control" id="country_name_tr" name="country_name_tr" type="text"
+                            placeholder="{{ __('labels.Country Name Turkish') }} " aria-label="{{ __('labels.Country Name Turkish') }} ">
+                        <div id="country_name_tr_error" style="display: none;" class="text-danger custom-error"></div>
                     </div>
+
+
 
                 </div>
                 <button class="btn btn-primary btn-sm btn-custom" type="submit" id="countrySubmit"><i class="fa fa-spinner fa-spin d-none icon"></i> {{ __('labels.Submit') }}</button>

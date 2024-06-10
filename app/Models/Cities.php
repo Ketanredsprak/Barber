@@ -16,6 +16,7 @@ class Cities extends Model
         "name_en",
         "name_ar",
         "name_ur",
+        "name_tr",
         "country_id",
         "state_id",
         "status",

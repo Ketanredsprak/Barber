@@ -143,7 +143,7 @@
                     },
                     url: '{{ route('language.change') }}',
                     data: {
-                        data: data,
+                        data: lang,
                         _token: '{{ csrf_token() }}'
                     },
                     success: function(response) {

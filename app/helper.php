@@ -86,4 +86,14 @@ if (!function_exists('compressImage')) {
 
 
 
+//get raferal code
+if (!function_exists('generate_rederal_code')) {
+    function generate_rederal_code() {
+            $str_result = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
+                return $referral_code =  substr(str_shuffle($str_result), 0, 10);
+    }
+}
+
+
+
 

@@ -16,6 +16,7 @@ class Countries extends Model
         "name_en",
         "name_ar",
         "name_ur",
+        "name_tr",
         "phonecode",
         "status",
         "is_delete",

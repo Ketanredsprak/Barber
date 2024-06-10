@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Admin\CmsController;
 use App\Http\Controllers\Admin\CityController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
@@ -49,6 +50,9 @@ Route::prefix('admin')->middleware('auth')->group(function () {
         Route::resource('customer', CustomerController::class);
         Route::get('customer-status/{id}', [CustomerController::class, 'customerStatus'])->name('customer.status');
 
+        Route::resource('category', CategoryController::class);
+        Route::get('category-status/{id}', [CategoryController::class, 'categoryStatus'])->name('category.status');
+
         Route::resource('country', CountryController::class);
         Route::get('country-status/{id}', [CountryController::class, 'countryStatus'])->name('country.status');
 
@@ -67,6 +71,12 @@ Route::prefix('admin')->middleware('auth')->group(function () {
 
         Route::resource('role', RoleController::class);
         Route::get('role-status/{id}', [RoleController::class, 'roleStatus'])->name('role.status');
+
+
+        Route::resource('cms', CmsController::class);
+        Route::get('cms-status/{id}', [CmsController::class, 'cmsStatus'])->name('cms.status');
+        Route::get('get-cms-content/{id}',[PermissionController::class, 'getCmsPageContent'])->name('cms.content');
+
 
 });
 

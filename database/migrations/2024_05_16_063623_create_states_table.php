@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name_en')->nullable();
             $table->string('name_ar')->nullable();
             $table->string('name_ur')->nullable();
+            $table->string('name_tr')->nullable();
             $table->integer('country_id')->comment("1 => data delete,0 => data not delete");
             $table->integer('status')->default(0);
             $table->integer('is_delete')->default(0)->comment("1 => data delete,0 => data not delete");

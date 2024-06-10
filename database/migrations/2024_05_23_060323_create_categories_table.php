@@ -11,14 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('cities', function (Blueprint $table) {
+        Schema::create('categories', function (Blueprint $table) {
             $table->id();
             $table->string('name_en')->nullable();
             $table->string('name_ar')->nullable();
             $table->string('name_ur')->nullable();
             $table->string('name_tr')->nullable();
-            $table->integer('state_id')->default(0);
-            $table->integer('country_id')->default(0);
+            $table->string('category_image')->nullable();
             $table->integer('status')->default(0);
             $table->integer('is_delete')->default(0)->comment("1 => data delete,0 => data not delete");
             $table->timestamps();
@@ -30,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('cities');
+        Schema::dropIfExists('categories');
     }
 };

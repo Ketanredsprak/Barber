@@ -4,34 +4,34 @@ namespace App\Http\Controllers\Admin;
 
 use DataTables;
 use App\Models\User;
-use App\Models\Countries;
+use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\App;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\CountryRequest;
 
-class CountryController extends Controller
+class CategoryController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
 
-    function __construct()
-    {
-        $this->middleware('permission:country-list', ['only' => ['index']]);
-        $this->middleware('permission:country-create', ['only' => ['create', 'store']]);
-        $this->middleware('permission:country-edit', ['only' => ['edit', 'update']]);
-        $this->middleware('permission:country-delete', ['only' => ['destroy']]);
-        $this->middleware('permission:country-status', ['only' => ['countryStatus']]);
-    }
+    // function __construct()
+    // {
+    //     $this->middleware('permission:country-list', ['only' => ['index']]);
+    //     $this->middleware('permission:country-create', ['only' => ['create', 'store']]);
+    //     $this->middleware('permission:country-edit', ['only' => ['edit', 'update']]);
+    //     $this->middleware('permission:country-delete', ['only' => ['destroy']]);
+    //     $this->middleware('permission:country-status', ['only' => ['countryStatus']]);
+    // }
 
     public function index(Request $request)
     {
         //
 
         if ($request->ajax()) {
-            $data = Countries::where('is_delete',0)->get();
+            $data = Category::where('is_delete',0)->get();
             $locale = App::getLocale();
             return Datatables::of($data)->addIndexColumn()
                 ->addColumn('action', function ($row) {
@@ -115,7 +115,6 @@ class CountryController extends Controller
             $data->name_en = $request->country_name_en;
             $data->name_ar = $request->country_name_ar;
             $data->name_ur = $request->country_name_ur;
-            $data->name_tr = $request->country_name_tr;
             $data->shortname = $request->country_short_name;
             $data->phonecode = $request->country_phone_code;
             $data->status = 1;
@@ -171,7 +170,6 @@ class CountryController extends Controller
             $data->name_en = $request->country_name_en;
             $data->name_ar = $request->country_name_ar;
             $data->name_ur = $request->country_name_ur;
-            $data->name_tr = $request->country_name_tr;
             $data->phonecode = $request->country_phone_code;
             $data->save();
             if (!empty($data)) {
