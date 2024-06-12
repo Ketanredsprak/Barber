@@ -6,6 +6,8 @@ return [
     'Account Setting' => 'Account Setting',
     'Edit Profile' => 'Edit Profile',
     'Name' => 'Name',
+    'First Name' => 'First Name',
+    'Last Name' => 'Last Name',
     'Profile Image' => 'Profile Image',
     'Email Address' => 'Email Address',
     'Phone' => 'Phone',

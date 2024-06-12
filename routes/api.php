@@ -14,9 +14,21 @@ use App\Http\Controllers\API\V1\AccountController;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
-
-// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
-
+Route::post('/customer-register',[AccountController::class, 'customerRegister'])->name('customerRegister');
+Route::post('/barber-register',[AccountController::class, 'barberRegister'])->name('barberRegister');
 Route::post('/login',[AccountController::class, 'login']);
+Route::post('/forgot-password',[AccountController::class, 'forgotPassword']);
+Route::post('/verify-otp', [AccountController::class, 'verifyOTP']);
+Route::post('/reset-password', [AccountController::class, 'resetPassword']);
+
+Route::middleware('auth:api')->group(function () {
+
+    //account api
+    Route::get('profile',[AccountController::class, 'profile']);
+    Route::post('customer-edit-profile',[AccountController::class, 'customerEditProfile']);
+    Route::post('barber-edit-profile',[AccountController::class, 'barberEditProfile']);
+    Route::post('change-password',[AccountController::class, 'changePassword']);
+    Route::post('logout',[AccountController::class, 'logout']);
+
+
+});

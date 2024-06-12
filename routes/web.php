@@ -50,18 +50,18 @@ Route::prefix('admin')->middleware('auth')->group(function () {
         Route::resource('customer', CustomerController::class);
         Route::get('customer-status/{id}', [CustomerController::class, 'customerStatus'])->name('customer.status');
 
-        Route::resource('category', CategoryController::class);
-        Route::get('category-status/{id}', [CategoryController::class, 'categoryStatus'])->name('category.status');
+        // Route::resource('category', CategoryController::class);
+        // Route::get('category-status/{id}', [CategoryController::class, 'categoryStatus'])->name('category.status');
 
-        Route::resource('country', CountryController::class);
-        Route::get('country-status/{id}', [CountryController::class, 'countryStatus'])->name('country.status');
+        // Route::resource('country', CountryController::class);
+        // Route::get('country-status/{id}', [CountryController::class, 'countryStatus'])->name('country.status');
 
-        Route::resource('state', StateController::class);
-        Route::get('state-status/{id}', [StateController::class, 'stateStatus'])->name('state.status');
-        Route::post('state-list', [StateController::class, 'listState'])->name('state.list');
+        // Route::resource('state', StateController::class);
+        // Route::get('state-status/{id}', [StateController::class, 'stateStatus'])->name('state.status');
+        // Route::post('state-list', [StateController::class, 'listState'])->name('state.list');
 
-        Route::resource('city', CityController::class);
-        Route::get('city-status/{id}', [CityController::class, 'cityStatus'])->name('city.status');
+        // Route::resource('city', CityController::class);
+        // Route::get('city-status/{id}', [CityController::class, 'cityStatus'])->name('city.status');
 
         Route::resource('module', ModuleController::class);
         Route::get('module-status/{id}', [ModuleController::class, 'moduleStatus'])->name('module.status');

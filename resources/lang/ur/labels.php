@@ -6,6 +6,8 @@ return [
     'Account Setting' => 'اکاؤنٹ کی ترتیب',
     'Edit Profile' => 'پروفائل میں ترمیم کریں',
     'Name' => 'اسم',
+    'First Name' => 'پہلا نام',
+    'Last Name' => 'آخری نام',
     'Profile Image' => 'پروفائل تصویر',
     'Email Address' => 'ای میل ایڈریس',
     'Phone' => 'فون',

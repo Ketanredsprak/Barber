@@ -6,6 +6,8 @@ return [
     'Account Setting' => 'إعدادات الحساب',
     'Edit Profile' => 'تعديل الملف الشخصي',
     'Name' => 'نام',
+    'First Name' => 'الاسم الأول',
+    'Last Name' => 'اسم العائلة',
     'Profile Image' => 'صورة الملف الشخصي',
     'Email Address' => 'عنوان البريد الإلكتروني',
     'Phone' => 'الهاتف',

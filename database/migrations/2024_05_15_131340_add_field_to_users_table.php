@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             //
-            $table->string('status')->after('profile_image')->nullable();
             $table->string('is_delete')->default(0);
         });
     }
@@ -25,7 +24,6 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             //
-            $table->dropColumn('status');
             $table->dropColumn('is_delete');
         });
     }

@@ -33,15 +33,27 @@
                 @csrf
                 @method('patch')
 
-                <div class="col-6">
-                    <label class="form-label" for="name">{{ __('labels.Name') }} <span class="text-danger">*</span></label>
-                    <input class="form-control @error('name') is-invalid @enderror" id="name" type="text" placeholder="{{ __('labels.Name') }}" aria-label="Name" name="name" value="{{ Auth::user()->name }}">
-                    @error('name')
+                <div class="col-3">
+                    <label class="form-label" for="first_name">{{ __('labels.First Name') }} <span class="text-danger">*</span></label>
+                    <input class="form-control @error('first_name') is-invalid @enderror" id="first_name" type="text" placeholder="{{ __('labels.First Name') }}" aria-label="first_name" name="first_name" value="{{ Auth::user()->first_name }}">
+                    @error('first_name')
                         <span class="invalid-feedback" role="alert">
                             <strong>{{ $message }}</strong>
                         </span>
                     @enderror
                 </div>
+
+                <div class="col-3">
+                    <label class="form-label" for="last_name">{{ __('labels.Last Name') }} <span class="text-danger">*</span></label>
+                    <input class="form-control @error('last_name') is-invalid @enderror" id="last_name" type="text" placeholder="{{ __('labels.Last Name') }}" aria-label="last_name" name="last_name" value="{{ Auth::user()->last_name }}">
+                    @error('last_name')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                    @enderror
+                </div>
+
+
 
               <div class="col-5">
                 <label class="form-label" for="profile_image">{{ __('labels.Profile Image') }} - <span class="text-danger">{{ __('labels.200px * 200px') }}</span> <span class="text-danger">*</span></label>

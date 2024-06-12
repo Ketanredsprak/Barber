@@ -1,0 +1,215 @@
+App Document
+Based url for redspark server : https://redsparkte.a2hosted.com/ehjez/api/
+   (1) V1 => login
+       {
+                url : {{local}}/login
+                method : post
+                authorization : no
+                header : language(code)
+                input parm : {
+                                        email : barber@mailinator.com
+                                        password : Test@123
+                             }
+       }
+
+===========================================
+
+ (2) V1 => customer-register
+      {
+                url : {{local}}/customer-register
+                method : post
+                authorization : no
+                header : language(code)
+                input parm : {
+                                        first_name:Alex
+                                        last_name:Thomas
+                                        gender:Male
+                                        country_code:8
+                                        phone:7990644888
+                                        email:alex454xd5@mailinator.com
+                                        password:Test@123
+                                        confirm_password:Test@123
+                            }
+      }
+
+
+===========================================
+
+ (3) V1 => barber-register
+      {
+                url : {{local}}/barber-register
+                method : post
+                authorization : no
+                header : language(code)
+                input parm : {
+                                        first_name:Alex
+                                        last_name:Thomas
+                                        gender:Male
+                                        country_code:91
+                                        phone:7990645411
+                                        profile_image : file accept jpg,png,jpeg
+                                        health_license   : file accept document
+                                        store_registration  : file accept document
+                                        email:barbernewnewnew@mailinator.com
+                                        nationality:India
+                                        iqama_no:78989897456
+                                        expiration_date:2024-06-05
+                                        salon_name:The Angel One
+                                        location:Indian ,Vadodara,Bhalyi vasana 236005
+                                        country_name:india
+                                        state_name:gujarat
+                                        city_name:vadodara
+                                        about_you:The desctiption add by barber for his shop
+                                        latitude:22.307159
+                                        longitude:73.181221
+                                        password:Test@123
+                                        confirm_password:Test@123
+                            }
+      }
+
+
+===========================================
+
+ (4) V1 => forgot-password
+    {
+            url : {{local}}/forgot-password
+                method : post
+                authorization : no
+                header : language(code)
+                input parm : {
+                                        email : barber@mailinator.com
+                            }
+    }
+
+
+
+===========================================
+
+  (5)  V1 => verify-otp
+    {
+            url : {{local}}/verify-otp
+                method : post
+                authorization : no
+                header : language(code)
+                input parm : {
+                                        user_id : 40
+                                        otp : 741258 (6 digits)(otp received in email)
+                            }
+    }
+
+===========================================
+
+  (6)  V1 => reset-password
+    {
+            url : {{local}}/reset-password
+                method : post
+                authorization : no
+                header : language(code)
+                input parm : {
+                                        user_id : 40,
+                                        password : Test@123,
+                                        confirm_password : Test@123
+                            }
+    }
+
+===========================================
+
+ (7)    V1 => profile
+    {
+            url : {{local}}/profile/13
+
+                method : get
+                authorization : yes(Bearer Token)
+                header : language(code)
+    }
+
+
+=========================================
+
+
+  (8) V1 =>customer-edit-profile
+    {
+            url : {{local}}/customer-edit-profile
+                    method : post
+                    authorization : {{token}}
+                    header : language(code)
+                    input parm : {
+                                        first_name:Customer
+                                        last_name:Okay Okay 500
+                                        email:alex454d5@mailinator.com
+                                        phone:7990644878
+                                        country_code:92
+                                        gender:Female
+                                        profile_image : accept Jpg.png.jpeg
+                                        country_name : india
+                                        state_name :  gujarat
+                                        city_name  : vadodara
+
+                                  }
+
+    }
+
+
+===========================================
+
+ (9) V1 =>barber-edit-profile
+    {
+            url : {{local}}/barber-edit-profile
+                    method : post
+                    authorization : {{token}}
+                    header : language(code)
+                    input parm : {
+                                        first_name:barber  cheking
+                                        last_name:Okay Okay 500
+                                        email:barbernedwnew@mailinator.com
+                                        phone:7990644879
+                                        country_code:92
+                                        gender:Male
+                                        salon_name:The  Barber shop
+                                        expiration_date:2024-06-06
+                                        location:vadodara
+                                        country_name:india
+                                        state_name:gujarat
+                                        city_name:vadodara
+                                        nationality:india
+                                        iqama_no:132465
+                                        latitude:12.45648
+                                        longitude:45.454465
+                                        about_you:check lec
+                                        profile_image : accept Jpg.png.jpeg
+                                        health_license   : file accept document
+                                        store_registration  : file accept document
+
+                                  }
+
+    }
+
+
+
+===========================================
+
+
+(10)   V1 => change-password
+    {
+            url : {{local}}/change-password
+                method : post
+                authorization : no
+                header : language(code)
+                input parm : {
+                                        current_password : 12345678,
+                                        password : Test@123,
+                                        confirm_password : Test@123
+                            }
+    }
+
+
+===========================================
+
+(11)  V1 => logout
+    {
+            url : {{local}}/logout
+                method : post
+                authorization : no
+                header : language(code)
+
+    }
