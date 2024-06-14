@@ -40,19 +40,22 @@ class BarberController extends Controller
                         <button class="btn btn-light dropdown-toggle text-primary" id="btnGroupDrop1" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-ellipsis-h"></i></button>
                         <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">';
 
-                        if ($row->status == 1) {
-                                $btn = $btn . '<a    href="' . route('barber.status', $row->id) . '" title="' . __('labels.Suspend') . '" class="dropdown-item status-change" data-url="' . route('barber.status', $row->id) . '">' . __('labels.Suspend') . '</a>';
-                        }
 
-                        else if ($row->status == 0) {
-                                $btn = $btn . '<a   href="javascript:void(0)" href="' . route('barber.status', $row->id) . '"   class="dropdown-item status-change" title="' . __('labels.Active') . '" data-url="' . route('barber.status', $row->id) . '">' . __('labels.Suspend') . '</a>';
-                        }
-                        else
-                        {
-                                $btn = $btn . '<a   href="javascript:void(0)" href="' . route('barber.status', $row->id) . '"   class="dropdown-item status-change" title="' . __('labels.Active') . '" data-url="' . route('barber.status', $row->id) . '">' . __('labels.Active') . '</a>';
-                        }
+                          if ($row->is_approved == 1) {
+                                $btn = $btn . '<a    href="' . route('barber.approved', $row->id) . '" title="' . __('labels.Approved') . '" class="dropdown-item status-change" data-url="' . route('barber.approved', $row->id) . '">' . __('labels.Approved') . '</a>';
+                          }
 
-                       $btn = $btn . '<a class="edit-data dropdown-item"  href="javascript:void(0)" title="' . __('labels.Edit') . '" data-url="'.route('barber.edit', $row->id).'">' . __('labels.Edit') . '</a>';
+
+                          else if ($row->is_approved == 2) {
+                            $btn = $btn . '<a    href="' . route('barber.suspend', $row->id) . '" title="' . __('labels.Suspend') . '" class="dropdown-item status-change" data-url="' . route('barber.suspend', $row->id) . '">' . __('labels.Suspend') . '</a>';
+                          }
+
+                          else
+                          {
+                            $btn = $btn . '<a    href="' . route('barber.approved', $row->id) . '" title="' . __('labels.Approved') . '" class="dropdown-item status-change" data-url="' . route('barber.approved', $row->id) . '">' . __('labels.Approved') . '</a>';
+                          }
+
+
                        $btn = $btn . '<a href="" data-url="' . route('barber.destroy', $row->id) . '" class="dropdown-item destroy-data" title="' . __('labels.Delete') . '">' . __('labels.Delete') . '</a>';
                        $btn = $btn . '</div>
                       </div>
@@ -68,7 +71,7 @@ class BarberController extends Controller
                           <div class="media"><img class="b-r-8 img-40" src=' . URL::to('/public') . '/admin/assets/images/user/user.png' . '  alt="Generic placeholder image"> <div class="media-body">
                           <div class="row">
                             <div class="col-xl-12">
-                            <h6 class="mt-0">&nbsp;&nbsp; ' . $data->name . '</span></h6>
+                            <h6 class="mt-0">&nbsp;&nbsp; ' . $data->first_name . ' ' . $data->last_name .'</span></h6>
                             </div>
                           </div>
                           <p>&nbsp;&nbsp; ' . $data->email . '</p>
@@ -83,7 +86,7 @@ class BarberController extends Controller
                             <div class="media-body">
                               <div class="row">
                                 <div class="col-xl-12">
-                                <h6 class="mt-0">&nbsp;&nbsp; ' . $data->name . '</span></h6>
+                                <h6 class="mt-0">&nbsp;&nbsp; ' . $data->name .' ' . $data->last_name . '</span></h6>
                                 </div>
                               </div>
                               <p>&nbsp;&nbsp; ' . $data->email . '</p>
@@ -100,12 +103,15 @@ class BarberController extends Controller
                 })
 
                 ->addColumn('status', function ($data) {
-                    if ($data->status == 1) {
-                        return '<span class="badge bg-success">' . __('labels.Active') . '</span>';
-                    } elseif ($data->status == 2) {
+                    if ($data->is_approved == 1) {
+                        return '<span class="badge bg-dark">' . __('labels.Pending') . '</span>';
+                    } elseif ($data->is_approved == 2) {
+                        return '<span class="badge bg-success">' . __('labels.Approved') . '</span>';
+                    }
+                    elseif ($data->is_approved == 3) {
                         return '<span class="badge bg-danger">' . __('labels.Suspend') . '</span>';
                     }else{
-                        return '<span class="badge bg-danger">' . __('labels.Inactive') . '</span>';
+                        return '<span class="badge bg-dark">' . __('labels.Pending') . '</span>';
                     }
                 })
 
@@ -124,13 +130,15 @@ class BarberController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'name' => 'required',
+            'first_name' => 'required',
+            'last_name' => 'required',
             'profile_image' => 'required',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|digits_between:6,12',
             'phone' => 'required|digits_between:8,12|numeric',
         ], [
-            'name.required' => __('error.The name field is required.'),
+            'first_name.required' => __('error.The first_name field is required.'),
+            'last_name.required' => __('error.The last_name field is required.'),
             'profile_image.required' => __('error.The profile image field is required.'),
             'email.required' => __('error.The email field is required.'),
             'email.email' => __('error.Please enter a valid email address.'),
@@ -149,7 +157,8 @@ class BarberController extends Controller
             $password = $request['password'];
             $post = $request->all();
             $data = new User();
-            $data->name = $request['name'];
+            $data->first_name = $request['first_name'];
+            $data->last_name = $request['last_name'];
             $data->phone = $request['phone'];
             // $data->gender = $request['gender'];
             $data->email = $request['email'];
@@ -210,10 +219,12 @@ class BarberController extends Controller
     public function update(Request $request, $id)
     {
         $this->validate($request, [
-            'name' => 'required',
+            'first_name' => 'required',
+            'last_name' => 'required',
             'phone' => 'required|digits_between:8,12|numeric',
         ], [
-            'name.required' => __('error.The name field is required.'),
+            'first_name.required' => __('error.The first name field is required.'),
+            'last_name.required' => __('error.The last name field is required.'),
             'phone.required' => __('error.The phone number field is required.'),
             'phone.digits_between' => __('error.The phone number must be between 8 and 12 digits.'),
             'phone.numeric' => __('error.The phone number must be a number.'),
@@ -223,7 +234,8 @@ class BarberController extends Controller
         try{
             $post = $request->all();
             $data = User::find($id);
-            $data->name = $request['name'];
+            $data->first_name = $request['first_name'];
+            $data->last_name = $request['last_name'];
             $data->phone = $request['phone'];
             $data->password = Hash::make($request->password);
             if ($request->hasFile('profile_image')) {
@@ -276,11 +288,11 @@ class BarberController extends Controller
         try {
             DB::beginTransaction();
             $data = User::find($id);
-            if ($data->status == 1) {
-                $data->status = 2;
+            if ($data->is_approved == 1) {
+                $data->is_approved = 2;
                 $message =  __('message.Barber Account Suspend Successfully.');
             } else {
-                $data->status = 1;
+                $data->is_approved = 1;
                 $message = __('message.Barber Account Actived Successfully.');
             }
             $data->update();
@@ -294,5 +306,53 @@ class BarberController extends Controller
             return redirect()->back()->withErrors(['error' => $e->getMessage()]);
         }
     }
+
+
+
+
+    public function barberApprovedStatus($id)
+    {
+        try {
+            DB::beginTransaction();
+            $data = User::find($id);
+                $data->is_approved = "2";
+                $message =  __('message.Barber Account Approved Successfully.');
+                $data->update();
+                DB::commit(); // Commit Transaction
+                return response()->json(['status' => '1', 'success' => $message]);
+
+        } catch (\Exception $e) {
+            DB::rollBack(); //Rollback Transaction
+            return redirect()->back()->withErrors(['error' => $e->getMessage()]);
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return redirect()->back()->withErrors(['error' => $e->getMessage()]);
+        }
+    }
+
+
+    public function barberSuspendStatus($id)
+    {
+        try {
+            DB::beginTransaction();
+            $data = User::find($id);
+                $data->is_approved = "3";
+                $message =  __('message.Barber Account Suspend Successfully.');
+                $data->update();
+                DB::commit(); // Commit Transaction
+                return response()->json(['status' => '1', 'success' => $message]);
+
+        } catch (\Exception $e) {
+            DB::rollBack(); //Rollback Transaction
+            return redirect()->back()->withErrors(['error' => $e->getMessage()]);
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return redirect()->back()->withErrors(['error' => $e->getMessage()]);
+        }
+    }
+
+
+
+
 
 }

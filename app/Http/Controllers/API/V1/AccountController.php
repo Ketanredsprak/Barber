@@ -19,11 +19,16 @@ class AccountController extends Controller
 
     public function login(Request $request)
     {
-        // Validate the request
-        $validated = $request->validate([
-            'email_or_phone' => 'required',
-            'password' => 'required',
-        ]);
+
+        $validated['email_or_phone'] = "required";
+        $validated['password'] = "required";
+
+        $customMessages = [
+            'email_or_phone.required' =>  __('error.The email or phone field is required.'),
+            'password.required' => __('error.The password field is required.'),
+        ];
+
+        $request->validate($validated, $customMessages);
 
         try {
             // Determine if the input is an email or a phone number
@@ -35,7 +40,7 @@ class AccountController extends Controller
 
             // Attempt to authenticate the user
             if (auth()->attempt($credentials)) {
-                $token = auth()->user()->createToken('checking')->accessToken;
+                $token = auth()->user()->createToken('Auth Login')->accessToken;
                 $array = Auth::user();
                 $array['token'] = $token;
                 $user = auth()->user();
@@ -52,12 +57,12 @@ class AccountController extends Controller
                     [
                         'data' => $data,
                         'status' => 1,
-                        'message' => "Login Successfully",
+                        'message' => __('message.Login successfully'),
                     ], 200);
             } else {
                 return response()->json(
                     [
-                        'message' => 'Incorrect Email/Phone Number and Password.',
+                        'message' => __('message.Incorrect Email/Phone Number and Password.'),
                         'status' => 0,
                     ], 200);
             }
@@ -80,6 +85,29 @@ class AccountController extends Controller
         $validated['password'] = "required";
         $validated['confirm_password'] = "same:password|required";
 
+        $customMessages = [
+            'first_name.required' => __('error.The first name field is required.'),
+            'first_name.min' => __('error.The first name must be at least 4 characters.'),
+            'last_name.required' => __('error.The last name field is required.'),
+            'last_name.min' => __('error.The last name must be at least 4 characters.'),
+            'country_code.required' => __('error.The country code field is required.'),
+            'country_code.numeric' => __('error.The country code must be a number.'),
+            'phone.required' => __('error.The phone number field is required.'),
+            'phone.min' => __('error.The phone number must be at least 9 characters.'),
+            'phone.max' => __('error.The phone number may not be greater than 11 characters.'),
+            'phone.unique' => __('error.The phone number has already been taken.'),
+            'gender.required' => __('error.The gender field is required.'),
+            'email.required' => __('error.The email field is required.'),
+            'email.email' => __('error.Please enter a valid email address.'),
+            'email.unique' => __('error.The email has already been taken.'),
+            'password.required' => __('error.The password field is required.'),
+            'confirm_password.same' => __('error.The confirm password must match the password.'),
+            'confirm_password.required' => __('error.The confirm password field is required.'),
+        ];
+
+        $request->validate($validated, $customMessages);
+
+
         $request->validate($validated);
         try {
             $referral_code = generate_rederal_code();
@@ -91,7 +119,7 @@ class AccountController extends Controller
                 'phone' => $request->phone,
                 'email' => $request->email,
                 'user_type' => 4,
-                'is_approved' => 1,
+                'is_approved' => "1",
                 'register_type' => 1,
                 'register_method' => 1,
                 'password' => Hash::make($request->password),
@@ -105,7 +133,7 @@ class AccountController extends Controller
                     [
                         'data' => $data,
                         'status' => 1,
-                        'message' => "regiter_successfully",
+                        'message' => __('message.Regiter successfully'),
                     ], 200);
             }
 
@@ -143,7 +171,45 @@ class AccountController extends Controller
         $validated['password'] = "required";
         $validated['confirm_password'] = "same:password|required";
 
-        $request->validate($validated);
+        $customMessages = [
+        'first_name.required' =>  __('error.The first name field is required.'),
+        'first_name.min' => __('error.The first name must be at least 4 characters.'),
+        'last_name.required' => __('error.The last name field is required.'),
+        'last_name.min' => __('error.The last name must be at least 4 characters.'),
+        'country_code.required' => __('error.The country code field is required.'),
+        'country_code.numeric' => __('error.The country code must be a number.'),
+        'phone.required' => __('error.The phone number field is required.'),
+        'phone.min' => __('error.The phone number must be at least 9 characters.'),
+        'phone.max' => __('error.The phone number may not be greater than 11 characters.'),
+        'phone.unique' => __('error.The phone number has already been taken.'),
+        'gender.required' => __('error.The gender field is required.'),
+        'email.required' => __('error.The email field is required.'),
+        'email.email' => __('error.Please enter a valid email address.'),
+        'email.unique' => __('error.The email has already been taken.'),
+        'nationality.required' => __('error.The nationality field is required.'),
+        'iqama_no.required' => __('error.The iqama number field is required.'),
+        'iqama_no.numeric' => __('error.The iqama number must be a number.'),
+        'expiration_date.required' => __('error.The expiration date field is required.'),
+        'expiration_date.date' => __('error.The expiration date must be a valid date.'),
+        'health_license.required' => __('error.The health license field is required.'),
+        'store_registration.required' => __('error.The store registration field is required.'),
+        'salon_name.required' => __('error.The salon name field is required.'),
+        'location.required' => __('error.The location field is required.'),
+        'country_name.required' => __('error.The country name field is required.'),
+        'state_name.required' => __('error.The state name field is required.'),
+        'city_name.required' => __('error.The city name field is required.'),
+        'about_you.required' => __('error.The about you field is required.'),
+        'latitude.required' => __('error.The latitude field is required.'),
+        'longitude.required' => __('error.The longitude field is required.'),
+        'profile_image.required' => __('error.The profile image field is required.'),
+        'profile_image.file' => __('error.The profile image must be a file.'),
+        'profile_image.mimes' => __('error.The profile image must be a file of type: jpeg, png, jpg.'),
+        'password.required' => __('error.The password field is required.'),
+        'confirm_password.same' => __('error.The confirm password must match the password.'),
+        'confirm_password.required' => __('error.The confirm password field is required.'),
+        ];
+
+        $request->validate($validated,$customMessages);
         try {
             $referral_code = generate_rederal_code();
 
@@ -193,7 +259,7 @@ class AccountController extends Controller
                 'latitude' => $request->latitude,
                 'longitude' => $request->longitude,
                 'user_type' => 3,
-                'is_approved' => 1,
+                'is_approved' => "1",
                 'register_type' => 1,
                 'register_method' => 1,
                 'password' => Hash::make($request->password),
@@ -207,7 +273,7 @@ class AccountController extends Controller
                     [
                         'data' => $data,
                         'status' => 1,
-                        'message' => "regiter_successfully",
+                        'message' => __('message.Regiter successfully'),
                     ], 200);
             }
 
@@ -235,12 +301,12 @@ class AccountController extends Controller
                     [
                         'data' => $data,
                         'status' => 1,
-                        'message' => "profile_get_successfully",
+                        'message' => __('message.Profile get successfully'),
                     ], 200);
             } else {
                 return response()->json(
                     [
-                        'message' => "profile_not_found",
+                        'message' => __('message.Profile not found'),
                         'status' => 0,
                     ]
                     , 200);
@@ -266,11 +332,10 @@ class AccountController extends Controller
         $validated['confirm_password'] = "same:password|required";
 
         $customMessages = [
-            'user_id.required' => "the_user_id_field_is_required",
-            'current_password.required' => "the_current_password_field_is_required",
-            'password.required' => "the_password_field_is_required",
-            'confirm_password.same' => "the_confirm_password_must_match_the_password",
-            'confirm_password.required' => "the_confirm_password_field_is_required",
+            'current_password.required' => __('error.The current password field is required.'),
+            'password.required' => __('error.The password field is required.'),
+            'confirm_password.same' => __('error.The confirm password must match the password.'),
+            'confirm_password.required' => __('error.The confirm password field is required.'),
         ];
 
         $request->validate($validated, $customMessages);
@@ -283,7 +348,7 @@ class AccountController extends Controller
                 return response()->json(
                     [
                         'status' => 0,
-                        'message' => "current_password_is_invalid",
+                        'message' => __('error.Current password is invalid.'),
                     ], 200);
             }
 
@@ -292,7 +357,7 @@ class AccountController extends Controller
                 return response()->json(
                     [
                         'status' => 0,
-                        'message' => "new_password_cannot_be_same_as_your_current_password",
+                        'message' => __('error.New password cannot be same as your current password.'),
                     ], 200);
             }
 
@@ -301,7 +366,7 @@ class AccountController extends Controller
             return response()->json(
                 [
                     'status' => 1,
-                    'message' => "password_changed_successfully",
+                    'message' => __('message.Password changed successfully'),
                 ], 200);
 
         } catch (Exception $ex) {
@@ -322,13 +387,13 @@ class AccountController extends Controller
             return response()->json(
                 [
                     'status' => 1,
-                    'message' => "logout_successfully",
+                    'message' =>  __('message.Logout successfully'),
                 ], 200);
         } else {
             return response()->json(
                 [
                     'status' => 0,
-                    'message' => "somthing_went_wrong",
+                    'message' => __('message.Somthing went wrong'),
                 ], 200);
         }
 
@@ -344,7 +409,7 @@ class AccountController extends Controller
         $validated['last_name'] = "required|min:4";
         $validated['email'] = "required|email|unique:users,email," . $id;
         $validated['country_code'] = "required|numeric";
-        $validated['phone'] = "required|unique:users,phone," . $id;
+        $validated['phone'] = "required|min:9|max:11|unique:users,phone," . $id;
         $validated['gender'] = "required";
         $validated['country_name'] = "required";
         $validated['state_name'] = "required";
@@ -352,19 +417,26 @@ class AccountController extends Controller
         $validated['profile_image'] = "required|file|mimes:jpeg,png,jpg";
 
         $customMessages = [
-            'first_name.required' => "the_first_name_field_is_required",
-            'first_name.min' => "the_first_name_must_be_at_least_4_characters",
-            'last_name.required' => "the_last_name_field_is_required",
-            'last_name.min' => "the_last_name_must_be_at_least_4_characters",
-            'phone.required' => "the_phone_field_is_required",
-            'phone.unique' => "this_phone_is_already_take",
-            'phone.min' => "the_phone_number_must_be_at_least_8_characters",
-            'email.required' => "the_email_field_is_required",
-            'email.email' => "the_email_must_be_a_valid_email_address",
-            'email.unique' => "this_email_is_already_take",
-            'country_name.required' => "the_country_name_field_is_required",
-            'state_name.required' => "the_state_name_field_is_required",
-            'city_name.required' => "the_city_name_field_is_required",
+            'first_name.required' =>  __('error.The first name field is required.'),
+            'first_name.min' => __('error.The first name must be at least 4 characters.'),
+            'last_name.required' => __('error.The last name field is required.'),
+            'last_name.min' => __('error.The last name must be at least 4 characters.'),
+            'country_code.required' => __('error.The country code field is required.'),
+            'country_code.numeric' => __('error.The country code must be a number.'),
+            'phone.required' => __('error.The phone number field is required.'),
+            'phone.min' => __('error.The phone number must be at least 9 characters.'),
+            'phone.max' => __('error.The phone number may not be greater than 11 characters.'),
+            'phone.unique' => __('error.The phone number has already been taken.'),
+            'gender.required' => __('error.The gender field is required.'),
+            'email.required' => __('error.The email field is required.'),
+            'email.email' => __('error.Please enter a valid email address.'),
+            'email.unique' => __('error.The email has already been taken.'),
+            'country_name.required' => __('error.The country name field is required.'),
+            'state_name.required' => __('error.The state name field is required.'),
+            'city_name.required' => __('error.The city name field is required.'),
+            'profile_image.required' => __('error.The profile image field is required.'),
+            'profile_image.file' => __('error.The profile image must be a file.'),
+            'profile_image.mimes' => __('error.The profile image must be a file of type: jpeg, png, jpg.'),
         ];
 
         $request->validate($validated, $customMessages);
@@ -400,7 +472,7 @@ class AccountController extends Controller
                     [
                         'data' => $data,
                         'status' => 1,
-                        'message' => "profile_update_successfully",
+                        'message' => __('message.Profile update successfully'),
                     ], 200);
             }
         } catch (Exception $ex) {
@@ -419,7 +491,7 @@ class AccountController extends Controller
         $validated['last_name'] = "required|min:4";
         $validated['email'] = "required|email|unique:users,email," . $id;
         $validated['country_code'] = "required|numeric";
-        $validated['phone'] = "required|unique:users,phone," . $id;
+        $validated['phone'] = "required|min:9|max:11|unique:users,phone," . $id;
         $validated['gender'] = "required";
         $validated['profile_image'] = "required|file|mimes:jpeg,png,jpg";
         $validated['salon_name'] = "required";
@@ -430,36 +502,44 @@ class AccountController extends Controller
         $validated['state_name'] = "required";
         $validated['city_name'] = "required";
         $validated['nationality'] = "required";
-        $validated['iqama_no'] = "required";
+        $validated['iqama_no'] = "required:numeric";
         $validated['about_you'] = "required";
         $validated['latitude'] = "required";
         $validated['longitude'] = "required";
         $validated['store_registration'] = "required";
 
         $customMessages = [
-            'first_name.required' => "the_first_name_field_is_required",
-            'first_name.min' => "the_first_name_must_be_at_least_4_characters",
-            'last_name.required' => "the_last_name_field_is_required",
-            'last_name.min' => "the_last_name_must_be_at_least_4_characters",
-            'phone.required' => "the_phone_field_is_required",
-            'phone.unique' => "this_phone_is_already_take",
-            'phone.min' => "the_phone_number_must_be_at_least_8_characters",
-            'email.required' => "the_email_field_is_required",
-            'email.email' => "the_email_must_be_a_valid_email_address",
-            'email.unique' => "this_email_is_already_take",
-            'salon_name.required' => "the_salon_name_field_is_required",
-            'health_license.required' => "the_health_license_field_is_required",
-            'expiration_date.required' => "the_expiration_date_field_is_required",
-            'location.required' => "the_location_field_is_required",
-            'country_name.required' => "the_country_name_field_is_required",
-            'state_name.required' => "the_state_name_field_is_required",
-            'city_name.required' => "the_city_name_field_is_required",
-            'nationality.required' => "the_nationality_field_is_required",
-            'iqama_no.required' => "the_iqama_no_field_is_required",
-            'store_registration.required' => "the_store_registration_field_is_required",
-            'about_you.required' => "the_about_you_field_is_required",
-            'latitude.required' => "the_latitude_field_is_required",
-            'longitude.required' => "the_longitude_field_is_required",
+            'first_name.required' =>  __('error.The first name field is required.'),
+            'first_name.min' => __('error.The first name must be at least 4 characters.'),
+            'last_name.required' => __('error.The last name field is required.'),
+            'last_name.min' => __('error.The last name must be at least 4 characters.'),
+            'country_code.required' => __('error.The country code field is required.'),
+            'country_code.numeric' => __('error.The country code must be a number.'),
+            'phone.required' => __('error.The phone number field is required.'),
+            'phone.min' => __('error.The phone number must be at least 9 characters.'),
+            'phone.max' => __('error.The phone number may not be greater than 11 characters.'),
+            'phone.unique' => __('error.The phone number has already been taken.'),
+            'gender.required' => __('error.The gender field is required.'),
+            'email.required' => __('error.The email field is required.'),
+            'email.email' => __('error.Please enter a valid email address.'),
+            'email.unique' => __('error.The email has already been taken.'),
+            'country_name.required' => __('error.The country name field is required.'),
+            'state_name.required' => __('error.The state name field is required.'),
+            'city_name.required' => __('error.The city name field is required.'),
+            'profile_image.required' => __('error.The profile image field is required.'),
+            'profile_image.file' => __('error.The profile image must be a file.'),
+            'profile_image.mimes' => __('error.The profile image must be a file of type: jpeg, png, jpg.'),
+            'salon_name.required' => __('error.The salon name field is required.'),
+            'health_license.required' => __('error.The health license field is required.'),
+            'expiration_date.required' => __('error.The expiration date field is required'),
+            'location.required' => __('error.The location field is required.'),
+            'nationality.required' => __('error.The nationality field is required.'),
+            'iqama_no.required' => __('error.The iqama number field is required.'),
+            'iqama_no.numeric' => __('error.The iqama number must be a number.'),
+            'store_registration.required' => __('error.The store registration field is required.'),
+            'about_you.required' => __('error.The about you field is required.'),
+            'latitude.required' => __('error.The latitude field is required.'),
+            'longitude.required' => __('error.The longitude field is required.'),
         ];
 
         $request->validate($validated, $customMessages);
@@ -509,7 +589,7 @@ class AccountController extends Controller
                 $auth->store_registration = $uploaded;
             }
 
-            // for Image
+        // for Image
             $uploaded = "";
             $image = "";
             $destinationPath ="";
@@ -529,7 +609,7 @@ class AccountController extends Controller
                     [
                         'data' => $data,
                         'status' => 1,
-                        'message' => "profile_update_successfully",
+                        'message' => __('message.Profile update successfully'),
                     ], 200);
             }
         } catch (Exception $ex) {
@@ -548,8 +628,8 @@ class AccountController extends Controller
         $validated['email'] = "required|email";
 
         $customMessages = [
-            'email.required' =>  "the_email_field_is_required",
-            'email.email' =>  "the_email_must_be_a_valid_email_address",
+            'email.required' => __('error.The email field is required.'),
+            'email.email' =>  __('error.The email must be a valid email address.'),
         ];
 
        $request->validate($validated, $customMessages);
@@ -586,7 +666,7 @@ class AccountController extends Controller
                     [
                         'data' => $data,
                         'status' => 1,
-                        'message' =>  "otp_send_successfully",
+                        'message' => __('message.Otp send successfully'),
                     ], 200);
 
             } else {
@@ -594,7 +674,7 @@ class AccountController extends Controller
                 return response()->json(
                     [
                         'status' => 0,
-                        'message' => "email_or_account_not_found",
+                        'message' => __('message.Email or account not found'),
                     ], 200);
 
             }
@@ -616,10 +696,10 @@ class AccountController extends Controller
         $validated['otp'] = "required|min:6|max:6";
 
         $customMessages = [
-            'user_id.required' => "the_user_id_field_is_required",
-            'otp.required' =>  "the_otp_field_is_required",
-            'otp.min' => "the_otp_must_be_exactly_6_digits",
-            'otp.max' => "the_otp_must_be_exactly_6_digits",
+            'user_id.required' => __('error.The user id field is required.'),
+            'otp.required' =>  __('error.The otp field is required.'),
+            'otp.min' => __('error.The otp must be exactly 6 digits.'),
+            'otp.max' => __('error.The otp must be exactly 6 digits.'),
         ];
 
        $request->validate($validated, $customMessages);
@@ -634,13 +714,13 @@ class AccountController extends Controller
                     [
                         'data' => $data,
                         'status' => 1,
-                        'message' => "otp_verify_successfully",
+                        'message' => __('message.Otp verify successfully'),
                     ], 200);
             } else {
                 return response()->json(
                     [
                         'status' => 0,
-                        'message' =>  "otp_not_match",
+                        'message' =>  __('message.Otp not match'),
                     ], 200);
 
             }
@@ -664,10 +744,10 @@ class AccountController extends Controller
         $validated['confirm_password'] = "same:password|required";
 
         $customMessages = [
-            'user_id.required' => "the_user_id_field_is_required",
-            'password.required' => "the_password_field_is_required",
-            'confirm_password.same' => "the_confirm_password_must_match_the_password",
-            'confirm_password.required' =>  "the_confirm_password_field_is_required",
+            'user_id.required' => __('error.The user id field is required.'),
+            'password.required' => __('error.The password field is required.'),
+            'confirm_password.same' => __('error.The confirm password must match the password.'),
+            'confirm_password.required' => __('error.The confirm password field is required.'),
         ];
 
        $request->validate($validated, $customMessages);
@@ -681,13 +761,13 @@ class AccountController extends Controller
                 return response()->json(
                     [
                         'status' => 1,
-                        'message' => "password_reset_successfully",
+                        'message' => __('message.Password reset successfully'),
                     ], 200);
             } else {
                 return response()->json(
                     [
                         'status' => 0,
-                        'message' => "password_not_reset",
+                        'message' => __('message.Password not reset'),
                     ], 200);
 
             }
@@ -698,6 +778,121 @@ class AccountController extends Controller
             );
         }
 
+    }
+
+
+    public function socialLogin(Request $request)
+    {
+        $validated = [];
+        $validated['first_name'] = "required|min:4";
+        $validated['last_name'] = "required|min:4";
+        $validated['email'] = "required|email";
+        $validated['gender'] = "required";
+        $validated['social_login_type'] = "required";
+
+
+        $customMessages = [
+            'first_name.required' =>  __('error.The first name field is required.'),
+            'first_name.min' => __('error.The first name must be at least 4 characters.'),
+            'last_name.required' => __('error.The last name field is required.'),
+            'last_name.min' => __('error.The last name must be at least 4 characters.'),
+            'gender.required' => __('error.The gender field is required.'),
+            'email.required' => __('error.The email field is required.'),
+            'email.email' => __('error.Please enter a valid email address.'),
+            'social_login_type.required' =>  __('error.The social login type field is required.'),
+        ];
+
+        $request->validate($validated, $customMessages);
+
+        try {
+                    $referral_code = generate_rederal_code();
+
+                    $data = User::where('email',$request->email)->first();
+                    if(empty($data)){
+
+                        $user = User::create([
+                            'first_name' => $request->first_name,
+                            'last_name' => $request->last_name,
+                            'email' => $request->email,
+                            'gender' => $request->gender,
+                            'user_type' => 4,
+                            'is_approved' => "1",
+                            'register_type' => 1,
+                            'register_method' => $request->social_login_type,
+                            'password' => Hash::make("123456"),
+                            'referral_code' => $referral_code ?? '',
+                            'token' => '',
+                        ]);
+
+                        $credentials = [
+                            'email' => $request->email,
+                            'password' => "123456",
+                        ];
+
+                        // Attempt to authenticate the user
+                        if (auth()->attempt($credentials)) {
+                            $token = auth()->user()->createToken('checking')->accessToken;
+                            $array = Auth::user();
+                            $array['token'] = $token;
+                            $user = auth()->user();
+                            $user->token = $token;
+                            $user->save();
+
+                            if (Auth::user()->user_type == 4) {
+                               $data = new CustomerAccount($array);
+                               return response()->json(
+                                        [
+                                            'data' => $data,
+                                            'status' => 1,
+                                            'message' => __('message.Login successfully'),
+                                        ], 200);
+
+                            }
+                        }
+
+
+                     }
+                     else
+                     {
+                        if ($data) {
+                            $token = $data->createToken('Auth Login')->accessToken;
+                            $data['token'] = $token;
+                            $data->update();
+
+                            if ($data)
+                            {
+                                $user = new CustomerAccount($data);
+                                return response()->json(
+                                         [
+                                             'data' => $user,
+                                             'status' => 1,
+                                             'message' => __('message.Login successfully'),
+                                         ], 200);
+
+                             }
+                        }
+
+                    }
+
+
+
+
+        } catch (Exception $ex) {
+            return response()->json(
+                ['success' => 0, 'message' => $ex->getMessage()], 401
+            );
+        }
+
+
+
+    }
+
+
+
+    public function language()
+    {
+        $message = __('message.welcome');
+        return response()->json(['message' => $message]);
     }
 
 

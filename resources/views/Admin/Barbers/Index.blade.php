@@ -9,9 +9,9 @@
                 </div>
                 <div class="col-6">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><button class="btn btn-sm btn-primary" type="button" data-bs-toggle="modal"
+                        {{-- <li class="breadcrumb-item"><button class="btn btn-sm btn-primary" type="button" data-bs-toggle="modal"
                                 data-bs-target="#createbarbermodel"><i class="fa fa-plus" aria-hidden="true"></i>
-                                {{ __('labels.Add New') }}</button></li>
+                                {{ __('labels.Add New') }}</button></li> --}}
                     </ol>
                 </div>
             </div>

@@ -12,10 +12,17 @@
                 <div class="row g-2">
 
                     <div class="mb-3 col-md-6">
-                        <label class="form-label" for="name">{{ __('labels.Name') }}<span class="text-danger">*</span> </label>
-                        <input class="form-control" id="name" name="name" type="text"
-                            placeholder="{{ __('labels.Name') }}" aria-label="{{ __('labels.Name') }}" value="{{ $data->name }}">
-                        <div id="name_error" style="display: none;" class="text-danger"></div>
+                        <label class="form-label" for="first_name">{{ __('labels.First Name') }}<span class="text-danger">*</span> </label>
+                        <input class="form-control" id="first_name" name="first_name" type="text"
+                            placeholder="{{ __('labels.First Name') }}" aria-label="{{ __('labels.First Name') }}" value="{{ $data->first_name }}">
+                        <div id="first_name_error" style="display: none;" class="text-danger"></div>
+                    </div>
+
+                    <div class="mb-3 col-md-6">
+                        <label class="form-label" for="last_name">{{ __('labels.Last Name') }}<span class="text-danger">*</span> </label>
+                        <input class="form-control" id="last_name" name="last_name" type="text"
+                            placeholder="{{ __('labels.Last Name') }}" aria-label="{{ __('labels.Last Name') }}" value="{{ $data->last_name }}">
+                        <div id="last_name_error" style="display: none;" class="text-danger"></div>
                     </div>
 
                     <div class="mb-3 col-md-6">
