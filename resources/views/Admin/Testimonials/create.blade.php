@@ -12,7 +12,7 @@
 
                     <div class="mb-3 col-md-12">
                         <label class="form-label" for="testimonial_image">{{ __('labels.Image') }} <span class="text-danger">*</span> </label>
-                        <input class="form-control" id="testimonial_image" name="testimonial_image" type="file" placeholder="{{ __('labels.Image') }}">
+                        <input class="form-control" id="testimonial_image" name="testimonial_image" type="file" placeholder="{{ __('labels.Image') }}" accept=".png, .jpg, .jpeg">
                         <div id="testimonial_image_error" style="display: none;" class="text-danger custom-error">
                         </div>
                     </div>

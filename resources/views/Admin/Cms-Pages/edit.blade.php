@@ -1,4 +1,5 @@
-<div class="modal-dialog modal-lg" role="document">
+{{-- <div class="modal-dialog modal-lg" role="document"> --}}
+<div class="modal-dialog modal-fullscreen" role="document">
     <div class="modal-content">
         <div class="modal-header">
             <h5 class="modal-title" id="exampleModalLabel1">{{ __('labels.Update Cms Page') }}</h5>
@@ -12,7 +13,7 @@
 
                 <div class="row g-2">
 
-                    <div class="col-md-12">
+                    <div class="col-md-6">
                         <label class="col-form-label">
                             <span class="required">{{ __('labels.English Title') }} <span
                                     class="text-danger">*</span></span>
@@ -21,16 +22,8 @@
                             placeholder="{{ __('labels.Enter title') }} " @error('key') is-invalid @enderror
                             value="{{ $data->title_en }}">
                     </div>
-                    <div class="col-md-12">
-                        <label class="col-form-label ">
-                            <span class="required">{{ __('labels.English Content') }} <span
-                                    class="text-danger">*</span></span>
-                        </label>
-                        <textarea class="form-control  ckeditoredit" id="content" name="content_en">{{ $data->content_en }}</textarea>
-                    </div>
 
-
-                    <div class="col-md-12">
+                    <div class="col-md-6">
                         <label class="col-form-label">
                             <span class="required">{{ __('labels.Arabic Title') }} <span
                                     class="text-danger">*</span></span>
@@ -39,7 +32,18 @@
                             placeholder="{{ __('labels.Enter title') }} " @error('key') is-invalid @enderror
                             value="{{ $data->title_ar }}">
                     </div>
-                    <div class="col-md-12">
+
+                    <div class="col-md-6">
+                        <label class="col-form-label ">
+                            <span class="required">{{ __('labels.English Content') }} <span
+                                    class="text-danger">*</span></span>
+                        </label>
+                        <textarea class="form-control  ckeditoredit" id="content" name="content_en">{{ $data->content_en }}</textarea>
+                    </div>
+
+
+
+                    <div class="col-md-6">
                         <label class="col-form-label ">
                             <span class="required">{{ __('labels.Arabic Content') }} <span
                                     class="text-danger">*</span></span>
@@ -48,7 +52,7 @@
                     </div>
 
 
-                    <div class="col-md-12">
+                    <div class="col-md-6">
                         <label class="col-form-label">
                             <span class="required">{{ __('labels.Urdu Title') }} <span
                                     class="text-danger">*</span></span>
@@ -57,17 +61,9 @@
                             placeholder="{{ __('labels.Enter title') }} " @error('key') is-invalid @enderror
                             value="{{ $data->title_ur }}">
                     </div>
-                    <div class="col-md-12">
-                        <label class="col-form-label ">
-                            <span class="required">{{ __('labels.Urdu Content') }} <span
-                                    class="text-danger">*</span></span>
-                        </label>
-                        <textarea class="form-control  ckeditoredit" id="content" name="content_ur">{{ $data->content_ur }}</textarea>
-                    </div>
 
 
-
-                    <div class="col-md-12">
+                    <div class="col-md-6">
                         <label class="col-form-label">
                             <span class="required">{{ __('labels.Turkish Title') }} <span
                                     class="text-danger">*</span></span>
@@ -76,7 +72,17 @@
                             placeholder="{{ __('labels.Enter title') }} " @error('key') is-invalid @enderror
                             value="{{ $data->title_tr }}">
                     </div>
-                    <div class="col-md-12">
+
+                    <div class="col-md-6">
+                        <label class="col-form-label ">
+                            <span class="required">{{ __('labels.Urdu Content') }} <span
+                                    class="text-danger">*</span></span>
+                        </label>
+                        <textarea class="form-control  ckeditoredit" id="content" name="content_ur">{{ $data->content_ur }}</textarea>
+                    </div>
+
+
+                    <div class="col-md-6">
                         <label class="col-form-label ">
                             <span class="required">{{ __('labels.Turkish Content') }}<span
                                     class="text-danger">*</span></span>
@@ -101,6 +107,6 @@
 
 <script type="text/javascript">
     $(document).ready(function() {
-        CKEDITOR.replaceAll('ckeditoredit');
+        CKEDITOR.replaceAll('ckeditoredit_');
     });
 </script>

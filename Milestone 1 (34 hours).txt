@@ -1,0 +1,67 @@
+Milestone 1  (34 hours)
+
+Admin panel and Frontend :
+
+- Basic database design and theme integration (Admin) - 3 hours
+Status : DONE
+
+- Setup Multilanguage Labels for Admin and frontend -  30 mins
+Status :
+Notes : Frontend not started because we does not have html.
+
+- Manages Sub admin accounts, profiles, and permissions - 3 hours
+Status :
+
+- Setup Service Categories and Sub Categories (Multilanguage) - 1 hour
+Status :
+
+- Setup subscription packages for barber and customer  (Multilanguage) (Admin) - 2.5 hours
+Status :
+Notes : Need to discuss subscription package functionality
+
+- Setup CMS Pages (Multilanguage) - 4 hours
+        - Home Page Sections (banner,testimonial)
+        - Terms and Condition
+        - Privacy Policy
+        - About us
+Status :
+
+- Frontend Theme integration - 1.5 hours
+Status :
+Notes : Frontend not started because we does not have html.
+
+- Language switch - 30 mins
+Status :
+Notes : Frontend not started because we does not have html.
+
+- Home page integration (Apart from Highest ratings and nearby barber section) - 2 hours
+Status :
+Notes : Frontend not started because we does not have html.
+
+- About us and contact us pages and listing in admin for contact us  - 2 hours
+Status :
+Notes : Frontend not started because we does not have html.
+
+- Registration of Barber and Customer with default Free package (frontend and Mobile API)  - 3 hours
+Status :
+
+- Login for Barber and Customer (without social login)(frontend and Mobile API) - 1 hour
+Status :
+Notes : Frontend not started because we does not have html.
+
+- Forgot password (frontend and Mobile API) - 1 mins
+Status :
+Notes : Frontend not started because we does not have html.
+
+- Profile (customer and barber) with mobile API - 4 hours
+        - update basic info
+        - change password
+        - select language preference
+Status :
+Notes : Frontend not started because we does not have html.
+
+- Barber Management in Admin (Listing, update, approve, active/de-active, delete , detail page ) - 3 hours
+Status :
+
+- Customer Management (Listing, update, active/de-active, delete , detail page ) - 3 hours
+Status :

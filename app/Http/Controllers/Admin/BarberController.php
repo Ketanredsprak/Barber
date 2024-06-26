@@ -119,7 +119,7 @@ class BarberController extends Controller
                 ->rawColumns(['action','user_details','joing_date','status'])
                 ->make(true);
         }
-        return view('Admin.Barbers.index');
+        return view('Admin.Barbers.Index');
     }
 
     public function create()

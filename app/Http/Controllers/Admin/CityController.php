@@ -18,11 +18,11 @@ class CityController extends Controller
 
     function __construct()
     {
-        $this->middleware('permission:state-list', ['only' => ['index']]);
-        $this->middleware('permission:state-create', ['only' => ['create', 'store']]);
-        $this->middleware('permission:state-edit', ['only' => ['edit', 'update']]);
-        $this->middleware('permission:state-delete', ['only' => ['destroy']]);
-        $this->middleware('permission:state-status', ['only' => ['stateStatus']]);
+        $this->middleware('permission:city-list', ['only' => ['index']]);
+        $this->middleware('permission:city-create', ['only' => ['create', 'store']]);
+        $this->middleware('permission:city-edit', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:city-delete', ['only' => ['destroy']]);
+        $this->middleware('permission:city-status', ['only' => ['cityStatus']]);
     }
 
     /**

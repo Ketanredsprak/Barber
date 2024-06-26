@@ -1,6 +1,8 @@
 <?php
 
+use App\Models\User;
 use App\Models\Module;
+use App\Models\Services;
 use App\Models\Countries;
 use Spatie\Permission\Models\Permission;
 
@@ -93,6 +95,28 @@ if (!function_exists('generate_rederal_code')) {
                 return $referral_code =  substr(str_shuffle($str_result), 0, 10);
     }
 }
+
+
+if (!function_exists('getbarbers')) {
+    function getbarbers()
+    {
+        $barbers = User::where('user_type',3)->where('is_approved',"2")->get();
+        return $barbers;
+    }
+}
+
+
+if (!function_exists('getServices')) {
+    function getServices()
+    {
+        $services = Services::where('parent_id',0)->where('status',1)->get();
+        return $services;
+    }
+}
+
+
+
+
 
 
 

@@ -117,7 +117,7 @@ class CustomerController extends Controller
                 ->rawColumns(['action','user_details','joing_date','status'])
                 ->make(true);
         }
-        return view('Admin.Customers.index');
+        return view('Admin.Customers.Index');
     }
 
     public function create()
