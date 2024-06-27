@@ -135,6 +135,21 @@
 
 
 
+            <li class="sidebar-list"><a
+                class="sidebar-link sidebar-title link-nav @if ($url == 'get-website-config') badge-light-primary @endif"
+                href="{{ route('get-website-config') }}">
+                <svg class="stroke-icon">
+                    <use href="{{ static_asset('admin/assets/svg/icon-sprite.svg#stroke-user') }}"></use>
+                </svg>
+                <svg class="fill-icon">
+                    <use href="{{ static_asset('admin/assets/svg/icon-sprite.svg#fill-user') }}"> </use>
+                </svg><span>{{ __('labels.Website Setting') }}</span></a></li>
+
+
+
+
+
+
 
             </ul>
         </div>

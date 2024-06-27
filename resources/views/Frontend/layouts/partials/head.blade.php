@@ -30,7 +30,7 @@ CSS
 <link rel="stylesheet" type="text/css" href="{{ static_asset('frontend/assets/styles/custom.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ static_asset('frontend/assets/styles/layout.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ static_asset('frontend/assets/styles/fonts.css') }}">
-{{-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/> --}}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
 <link rel="stylesheet" type="text/css" href="{{ static_asset('frontend/assets/styles/font-awesome.min.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ static_asset('frontend/assets/styles/line-awesome.min.css') }}">
 

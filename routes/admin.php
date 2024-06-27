@@ -17,6 +17,7 @@ use App\Http\Controllers\Admin\SubAdminController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\BlogAndNewsController;
 use App\Http\Controllers\Admin\TestimonialController;
+use App\Http\Controllers\Admin\WebsiteConfigController;
 
 
 Route::prefix('admin')->middleware('auth')->group(function () {
@@ -85,6 +86,9 @@ Route::prefix('admin')->middleware('auth')->group(function () {
       Route::resource('page', PageController::class);
       Route::get('page-status/{id}', [PageController::class, 'pageStatus'])->name('page.status');
 
+
+      Route::get('get-website-config', [WebsiteConfigController::class, 'getWebsiteConfig'])->name('get-website-config');
+      Route::post('website-config-update', [WebsiteConfigController::class, 'websiteConfigUpdate'])->name('website-config-update');
 
 
       // Route::resource('blog', BlogAndNewsController::class);

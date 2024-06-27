@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 // use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Front\HomeController;
 use App\Http\Controllers\Admin\AdminController;
 
 
@@ -16,11 +17,12 @@ use App\Http\Controllers\Admin\AdminController;
 |
 */
 
-Route::get('/', function () {
-      return view('Frontend.home');
-      return view('Frontend.under-development');
-});
+// Route::get('/', function () {
+//       return view('Frontend.home');
+//     //   return view('Frontend.under-development');
+// });
 
+Route::get('/', [HomeController::class,'home'])->name('home');
 
 Route::get('admin/login', [AdminController::class, 'adminLogin'])->name('admin/login');
 Route::post('admin-login', [AdminController::class, 'storeLogin'])->name('admin-login');

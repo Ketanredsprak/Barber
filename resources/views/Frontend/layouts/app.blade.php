@@ -1,5 +1,9 @@
 <!doctype html>
 <html class="nojs">
+<?php
+  $locale = config('app.locale');
+  $config = getWebsiteConfig();
+ ?>
 
 
 <head>
@@ -42,3 +46,27 @@
 </body>
 
 </html>
+
+<script>
+    function change_lang(lang)
+    {
+       var data = lang;
+        $.ajax({
+                    type: 'POST',
+                    headers: {
+                        'XSRF-TOKEN': $('meta[name="_token"]').attr('content')
+                    },
+                    url: '{{ route('language.change') }}',
+                    data: {
+                        data: lang,
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function(response) {
+                        window.location.reload();
+                    },
+                     error: function(response) {
+                      alert("errror");
+                    }
+        });
+    }
+</script>

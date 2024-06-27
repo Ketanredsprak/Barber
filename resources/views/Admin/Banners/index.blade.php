@@ -35,7 +35,8 @@
                                         <th>{{ __('labels.ID') }}</th>
                                         <th>{{ __('labels.Banner Image') }} </th>
                                         <th>{{ __('labels.Title') }}</th>
-                                        <th>{{ __('labels.Content') }} </th>
+                                        <th>{{ __('labels.Created At') }}</th>
+                                        {{-- <th>{{ __('labels.Content') }} </th> --}}
                                         <th>{{ __('labels.Status') }}</th>
                                         <th>{{ __('labels.Action') }}</th>
                                     </tr>
@@ -120,9 +121,13 @@
                         name: 'title'
                     },
                     {
-                        data: 'content',
-                        name: 'content'
+                        data: 'created_at',
+                        name: 'created_at'
                     },
+                    // {
+                    //     data: 'content',
+                    //     name: 'content'
+                    // },
                     {
                         data: 'status',
                         name: 'status'

@@ -153,17 +153,6 @@
 
 
 
-            ///edit cms
-            $(document).on('submit', '#page-edit-frm', function(e) {
-                e.preventDefault();
-                var frm = this;
-                var url = $(this).attr('action');
-                var formData = new FormData(frm);
-                formData.append("_method", 'PUT');
-                var model_name = "#editcmsmodel";
-                edit_record(frm, url, formData, model_name, table);
-            });
-            //edit cms end
 
         });
     </script>

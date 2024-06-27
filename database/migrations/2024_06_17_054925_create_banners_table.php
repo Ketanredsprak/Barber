@@ -17,10 +17,10 @@ return new class extends Migration
             $table->string('title_ar')->nullable();
             $table->string('title_ur')->nullable();
             $table->string('title_tr')->nullable();
-            $table->string('content_en')->nullable();
-            $table->string('content_ar')->nullable();
-            $table->string('content_ur')->nullable();
-            $table->string('content_tr')->nullable();
+            $table->text('content_en')->nullable();
+            $table->text('content_ar')->nullable();
+            $table->text('content_ur')->nullable();
+            $table->text('content_tr')->nullable();
             $table->integer('barber_id')->default(0)->nullable();
             $table->string('banner_image')->nullable();
             $table->integer('status')->default(0);

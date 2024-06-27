@@ -4,6 +4,7 @@ use App\Models\User;
 use App\Models\Module;
 use App\Models\Services;
 use App\Models\Countries;
+use App\Models\WebsiteConfig;
 use Spatie\Permission\Models\Permission;
 
 if (!function_exists('static_asset')) {
@@ -113,6 +114,16 @@ if (!function_exists('getServices')) {
         return $services;
     }
 }
+
+
+if (!function_exists('getWebsiteConfig')) {
+    function getWebsiteConfig()
+    {
+        $data = WebsiteConfig::first();
+        return $data;
+    }
+}
+
 
 
 

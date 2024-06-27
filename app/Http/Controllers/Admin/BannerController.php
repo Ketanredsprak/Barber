@@ -98,8 +98,11 @@ class BannerController extends Controller
                     return @$row->$content;
                })
 
+               ->addColumn('created_at', function ($data) {
+                return date('Y-M-d h:i A', strtotime($data->created_at));
+                })
 
-                ->rawColumns(['action','status','title','content','banner_image'])
+                ->rawColumns(['action','status','title','content','banner_image','created_at'])
                 ->make(true);
         }
         return view('Admin.Banners.index');
