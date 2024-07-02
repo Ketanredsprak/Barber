@@ -133,6 +133,19 @@
                             </div>
 
 
+                            <div class="col-6">
+                                <label class="form-label" for="whatsapp">{{ __('labels.Whatsapp') }} <span
+                                        class="text-danger">*</span> </label>
+                                <input class="form-control @error('whatsapp') is-invalid @enderror" id="whatsapp"
+                                    type="text" aria-label="whatsapp" name="whatsapp" value="{{ $data->whatsapp }}">
+                                @error('whatsapp')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+
+
 
 
                             <div class="col-6">

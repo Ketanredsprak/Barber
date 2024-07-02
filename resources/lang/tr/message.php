@@ -93,6 +93,7 @@ return[
     'Otp not match' => 'OTP eşleşmiyor.',
     'Password reset successfully' => 'Şifre başarıyla sıfırlandı.',
     'Password not reset' => 'Şifre sıfırlanamadı.',
+    'Thanks For Contact Us' => 'Bizimle İletişime Geçtiğiniz İçin Teşekkürler.',
     '' => '',
     '' => '',
     '' => '',

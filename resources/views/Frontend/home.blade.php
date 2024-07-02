@@ -7,6 +7,7 @@
         $content = 'content_' . $language;
         $testimonial_content = 'testimonial_content_' . $language;
         $name = 'name_' . $language;
+        $service_name = 'service_name_' . $language;
         $designation = 'designation_' . $language;
 
     @endphp
@@ -59,76 +60,22 @@
             </div>
 
             <div class="row">
-                <div class="col-sm-4">
-                    <div class="explore_box">
-                        <img src="{{ static_asset('frontend/assets/images/service1.png') }}" class="img-fluid"
-                            alt="explore">
-                        <div class="info">
-                            <a href="">
-                                <h4 class="text-center">Haircut & Beard Trim</h4>
-                            </a>
-                        </div>
-                    </div>
-                </div>
+                @foreach ($services as $service)
+                            <div class="col-sm-4">
+                                <div class="explore_box">
+                                    <img src="{{ static_asset('service_image/' . $service->service_image) }}" class="img-fluid"
+                                        alt="explore">
+                                    <div class="info">
+                                        <a href="">
+                                            <h4 class="text-center">{{ $service->$service_name }}</h4>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                @endforeach
 
-                <div class="col-sm-4">
-                    <div class="explore_box">
-                        <img src="{{ static_asset('frontend/assets/images/service2.png') }}" class="img-fluid"
-                            alt="explore">
-                        <div class="info">
-                            <a href="">
-                                <h4 class="text-center">Hair Coloring</h4>
-                            </a>
-                        </div>
-                    </div>
-                </div>
 
-                <div class="col-sm-4">
-                    <div class="explore_box">
-                        <img src="{{ static_asset('frontend/assets/images/service3.png') }}" class="img-fluid"
-                            alt="explore">
-                        <div class="info">
-                            <a href="">
-                                <h4 class="text-center">Hair Treatment</h4>
-                            </a>
-                        </div>
-                    </div>
-                </div>
 
-                <div class="col-sm-4">
-                    <div class="explore_box">
-                        <img src="{{ static_asset('frontend/assets/images/service4.png') }}" class="img-fluid"
-                            alt="explore">
-                        <div class="info">
-                            <a href="">
-                                <h4 class="text-center">Skin Care</h4>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-sm-4">
-                    <div class="explore_box">
-                        <img src="{{ static_asset('frontend/assets/images/service5.png') }}" class="img-fluid"
-                            alt="explore">
-                        <div class="info">
-                            <a href="">
-                                <h4 class="text-center">Children's Care</h4>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-4">
-                    <div class="explore_box">
-                        <img src="{{ static_asset('frontend/assets/images/service6.png') }}" class="img-fluid"
-                            alt="explore">
-                        <div class="info">
-                            <a href="">
-                                <h4 class="text-center">Hair Dyeing</h4>
-                            </a>
-                        </div>
-                    </div>
-                </div>
             </div>
 
             <!-- <div class="row">

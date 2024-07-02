@@ -5,6 +5,7 @@ use App\Models\Module;
 use App\Models\Services;
 use App\Models\Countries;
 use App\Models\WebsiteConfig;
+use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Permission;
 
 if (!function_exists('static_asset')) {
@@ -121,6 +122,25 @@ if (!function_exists('getWebsiteConfig')) {
     {
         $data = WebsiteConfig::first();
         return $data;
+    }
+}
+
+
+if (!function_exists('getauthdata')) {
+    function getauthdata()
+    {
+        $profile_data = Auth::user();
+        return $profile_data;
+    }
+}
+
+
+
+
+if (!function_exists('country_code')) {
+    function country_code()
+    {
+         return ['1','91','93','355','213'];
     }
 }
 

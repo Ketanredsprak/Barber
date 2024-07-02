@@ -96,6 +96,7 @@ return[
     'Otp not match' => 'او ٹی پی میل نہیں کھاتا۔',
     'Password reset successfully' => 'پاس ورڈ کامیابی سے ری سیٹ ہو گیا۔',
     'Password not reset' => 'پاس ورڈ ری سیٹ نہیں ہو سکا۔',
+    'Thanks For Contact Us' => 'ہم سے رابطہ کرنے کا شکریہ۔',
      '' => '',
      '' => '',
      '' => '',

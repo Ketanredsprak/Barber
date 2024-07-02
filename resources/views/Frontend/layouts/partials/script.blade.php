@@ -9,6 +9,7 @@
     <script src="{{ static_asset('frontend/assets/js/owl.carousel.js') }}"></script>
     <script src="{{ static_asset('frontend/assets/js/select2.min.js') }}"></script>
     <script src="{{ static_asset('frontend/assets/js/owl.carousel.min.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
 
 

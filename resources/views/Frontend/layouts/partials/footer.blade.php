@@ -12,10 +12,10 @@
                     <li> <i class="fa fa-map-marker"></i> <a href="javascript:void(0)"> {{ __('labels.Location') }}</a>
                         <p>{{ $config->$location }}</p>
                     </li>
-                    <li> <i class="fa fa-phone"></i> <a href="javascript:void(0)"> {{ __('labels.Phone') }}</a>
+                    <li> <i class="fa fa-phone"></i> <a href="tel:{{ $config->phone }}"> {{ __('labels.Phone') }}</a>
                         <p>{{ $config->phone }}</p>
                     </li>
-                    <li> <i class="fa fa-envelope-o"></i> <a href="javascript:void(0)"> {{ __('labels.Email') }}</a>
+                    <li> <i class="fa fa-envelope-o"></i> <a href="mailto:{{ $config->email }}"> {{ __('labels.Email') }}</a>
                         <p>{{ $config->email }}</p>
                     </li>
 
@@ -27,11 +27,11 @@
             <h5>{{ __('labels.Useful Links') }}</h5>
             <div class="footer_info">
                 <ul class="list-unstyled pl-0">
-                    <li> <a href="#">{{ __('labels.Home') }}</a></li>
-                    <li> <a href="#">{{ __('labels.About Us') }}</a></li>
-                    <li> <a href="#">{{ __('labels.Contact Us') }}</a></li>
-                    <li> <a href="#">{{ __('labels.Terms & Conditions') }}</a></li>
-                    <li> <a href="#">{{ __('labels.Privacy Policy') }}</a></li>
+                    <li> <a href="{{ route('index')}}">{{ __('labels.Home') }}</a></li>
+                    <li> <a href="{{ route('about-us')}}">{{ __('labels.About Us') }}</a></li>
+                    <li> <a href="{{ route('contact-us')}}">{{ __('labels.Contact Us') }}</a></li>
+                    <li> <a href="{{ route('temrs-and-condition')}}">{{ __('labels.Terms & Conditions') }}</a></li>
+                    <li> <a href="{{ route('privacy-policy')}}">{{ __('labels.Privacy Policy') }}</a></li>
                 </ul>
             </div>
         </div>

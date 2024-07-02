@@ -24,7 +24,7 @@ class AccountController extends Controller
         $validated['password'] = "required";
 
         $customMessages = [
-            'email_or_phone.required' =>  __('error.The email or phone field is required.'),
+            'email_or_phone.required' =>  __('error.The email or phone field is required'),
             'password.required' => __('error.The password field is required.'),
         ];
 
@@ -366,7 +366,7 @@ class AccountController extends Controller
             return response()->json(
                 [
                     'status' => 1,
-                    'message' => __('message.Password changed successfully'),
+                    'message' => __('message.Password changed successfully.'),
                 ], 200);
 
         } catch (Exception $ex) {
@@ -640,7 +640,7 @@ class AccountController extends Controller
             $user = User::where('email', $email)->first();
             if ($user != null || $user != "") {
 
-             $otp = mt_rand(100000, 999999);
+             $otp = mt_rand(1000, 9999);
                 // $otp = 123456;
                 $user->otp = $otp;
                 $user->update();

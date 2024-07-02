@@ -144,8 +144,8 @@ return [
     'The email must be a valid email address.' => 'E-posta geçerli bir e-posta adresi olmalıdır.',
     'The user id field is required.' => 'Kullanıcı kimliği alanı gereklidir.',
     'The otp field is required.' => 'OTP alanı gereklidir.',
-    'The otp must be exactly 6 digits.' => 'OTP tam olarak 6 rakam olmalıdır.',
-    'The otp must be exactly 6 digits.' => 'OTP tam olarak 6 rakam olmalıdır.',
+    'The otp must be exactly 4 digits.' => 'OTP tam olarak 4 rakam olmalıdır.',
+    'The otp must be exactly 4 digits.' => 'OTP tam olarak 4 rakam olmalıdır.',
     'The social login type field is required.' => 'Sosyal giriş türü alanı zorunludur.',
 
     '' => '',
@@ -158,6 +158,25 @@ return [
     '' => '',
     '' => '',
     '' => '',
+    '' => '',
+    '' => '',
+    '' => '',
+    '' => '',
+    '' => '',
+    '' => '',
+    '' => '',
+    '' => '',
+    '' => '',
+    '' => '',
+    '' => '',
+
+
+
+  //frontend
+    'The subject field is required.' => 'Konu alanı gereklidir.',
+    'The note field is required.' => 'Not alanı gereklidir.',
+    'The terms and conditions field is required.' => 'Şartlar ve koşullar alanı zorunludur.',
+     '' => '',
     '' => '',
     '' => '',
     '' => '',

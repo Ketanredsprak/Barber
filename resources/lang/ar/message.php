@@ -95,6 +95,7 @@ return[
     'Otp not match' => 'الرمز غير مطابق.',
     'Password reset successfully' => 'تم إعادة تعيين كلمة المرور بنجاح.',
     'Password not reset' => 'لم يتم إعادة تعيين كلمة المرور.',
+    'Thanks For Contact Us' => 'شكرا على الاتصال بنا.',
     '' => '',
     '' => '',
     '' => '',

@@ -353,6 +353,17 @@
                 });
         }
 
+
+         // clear all  input and select and textarea
+         function close_or_clear() {
+            $('#myModal input[type="email"]').val(''); // Clear text inputs
+            $('#myModal input[type="text"]').val(''); // Clear text inputs
+            $('#myModal input[type="file"]').val(''); // Clear text inputs
+            $('#myModal textarea').val(''); // Clear textareas
+            $('#myModal select').val(''); // Clear textareas
+        };
+
+
 </script>
 
 

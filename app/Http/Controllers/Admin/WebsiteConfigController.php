@@ -29,6 +29,7 @@ class WebsiteConfigController extends Controller
         $data->location_ur = $request->location_ur;
         $data->location_tr = $request->location_tr;
         $data->phone = $request->phone;
+        $data->whatsapp = $request->whatsapp;
         $data->email = $request->email;
         $data->facebook_link = $request->facebook_link;
         $data->twitter_link = $request->twitter_link;

@@ -14,7 +14,7 @@
             <div class="col-xl-12">
                 <div class="card height-equal">
                     <div class="card-header">
-                        <h4>Update Page Content</h4>
+                        <h4>{{ __('labels.Update Page Content') }}</h4>
                     </div>
                     <div class="card-body custom-input">
                         <form class="form-bookmark" method="post" action="{{ route('page.update', $data->id) }}"
@@ -24,7 +24,7 @@
 
 
                             <div class="">
-                                <h4>Page Detail</h4>
+                                <h4>{{ __('labels.Page Detail') }}</h4>
                                 <hr>
                             </div>
                             <div class="row g-2">
@@ -75,7 +75,7 @@
 
 
                             <div class="">
-                                <h4>Page Meta Detail</h4>
+                                <h4>{{ __('labels.Page Meta Detail') }}</h4>
                                 <hr>
                             </div>
 
@@ -166,7 +166,7 @@
 
 
                             <div class="">
-                                <h4>Page Section Detail</h4>
+                                <h4>{{ __('labels.Page Section Detail') }}</h4>
                             </div><br>
 
                             @foreach ($data->cms_content as $key => $cms)

@@ -19,6 +19,7 @@ class WebsiteConfig extends Model
         "location_ur",
         "location_tr",
         "phone",
+        "whatsapp",
         "email",
         "facebook_link",
         "twitter_link",

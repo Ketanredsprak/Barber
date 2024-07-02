@@ -20,12 +20,11 @@ class AdminController extends Controller
 
     public function adminLogin()
     {
-
         if(!empty((Auth::user()))) {
-                if(Auth::user()->user_type  == 1)
-                {
+            if(Auth::user()->user_type  == 1)
+            {
                     return redirect('admin/dashboard');
-                }
+            }
         }else
         {
             return  view('Admin.login');

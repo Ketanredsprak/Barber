@@ -52,7 +52,7 @@ class UserController extends Controller
 
                 ->make(true);
         }
-        return view('Admin.User.index');
+    return view('Admin.User.index');
     }
 
     public function create()
