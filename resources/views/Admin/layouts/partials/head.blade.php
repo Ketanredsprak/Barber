@@ -6,13 +6,16 @@
 <meta name="keywords" content="">
 <meta name="author" content="redpark">
 {{-- {{ static_asset('admin/assets/media/logos/favicon.jpeg') }} --}}
-<?php $url = Request::route()->getName(); ?>
+@php
+      $url = Request::route()->getName();
+      $currentRouteName = Route::currentRouteName();
+@endphp
 
 
 
 <link rel="icon" href="{{ static_asset('admin/assets/images/favicon.ico') }}" type="image/x-icon">
 <link rel="shortcut icon" href="{{ static_asset('admin/assets/images/favicon.ico') }}" type="image/x-icon">
-<title>Barber Booking</title>
+<title>{{ config('app.name') }} - {{ $currentRouteName }}</title>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <link href="https://fonts.googleapis.com/css?family=Rubik:400,400i,500,500i,700,700i&amp;display=swap" rel="stylesheet">

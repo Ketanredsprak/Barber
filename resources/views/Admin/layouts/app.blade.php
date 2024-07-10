@@ -149,9 +149,7 @@
                     success: function(response) {
                         window.location.reload();
                     },
-                     error: function(response) {
-                      alert("errror");
-                    }
+
         });
     }
 

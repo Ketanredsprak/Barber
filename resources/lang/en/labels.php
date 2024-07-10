@@ -43,6 +43,23 @@ return [
     'Add Sub Admin' => 'Add Sub Admin',
     'Edit Sub Admin' => 'Edit Sub Admin',
     'Content Management' => 'Content Management',
+    'Enter your email & password to login' => 'Enter your email & password to login',
+    'Login' => 'Login',
+    'Total Sub Admin' => 'Total Sub Admin',
+    'Total Barbers' => 'Total Barbers',
+    'Total Customers' => 'Total Customers',
+    'Contact Us Inquiry' => 'Contact Us Inquiry',
+    'Per Booking Points' => 'Per Booking Points',
+    'Per Active Referral Points' => 'Per Active Referral Points',
+    'How Many Point Equal 1 SR' => 'How Many Point Equal 1 SR',
+    'Point System' => 'Point System',
+    '' => '',
+    '' => '',
+    '' => '',
+    '' => '',
+    '' => '',
+    '' => '',
+    '' => '',
 
 
     //Module
@@ -167,6 +184,7 @@ return [
       'Page Meta Detail' => 'Page Meta Detail',
       'Page Section Detail' => 'Page Section Detail',
       'Cms Image' => 'Cms Image',
+      'Pagies' => 'Pagies',
 
 
 
@@ -220,7 +238,21 @@ return [
     'Countries' => 'Countries',
     'Short Code' => 'Short Code',
     'Phone Code' => 'Phone Code',
-    '' => '',
+    'Referral Code' => 'Referral Code',
+    'Joining Date' => 'Joining Date',
+    'Customer Status' => 'Customer Status',
+    'Customer Booking Record' => 'Customer Booking Record',
+    'Location' => 'Location',
+    'Latitude' => 'Latitude',
+    'Longitude' => 'Longitude',
+    'Register Type' => 'Register Type',
+    'Register Method' => 'Register Method',
+    'System' => 'System',
+    'Facebook' => 'Facebook',
+    'Google' => 'Google',
+    'Apple' => 'Apple',
+    'App' => 'App',
+    'Web' => 'Web',
     '' => '',
     '' => '',
 
@@ -281,6 +313,7 @@ return [
      '' => '',
      //Service
      'Services' => 'Services',
+     'Select Service' => 'Select Service',
      'Service Name' => 'Service Name',
      'Add Service' => 'Add Service',
      'Service Image' => 'Service Image',
@@ -309,6 +342,33 @@ return [
      'Website Setting' => 'Website Setting',
 
      '' => '',
+     'Permission For User' => 'Permission For User',
+     'Permission Key' => 'Permission Key',
+     'Input Box' => 'Input Box',
+     'Subscription Permission' => 'Subscription Permission',
+     'Permission Name' => 'Permission Name',
+     'Permission Type' => 'Permission Type',
+     'Customer' => 'Customer',
+
+
+     'Subscriptions' => 'Subscriptions',
+     'Subscription Name' => 'Subscription Name',
+     'Subscription Price' => 'Subscription Price',
+     'Number of Booking' => 'Number of Booking',
+     'Subscription English Name' => 'Subscription English Name',
+     'Subscription Arabic Name' => 'Subscription Arabic Name',
+     'Subscription Urdu Name' => 'Subscription Urdu Name',
+     'Subscription Turkish Name' => 'Subscription Turkish Name',
+     'Price' => 'Price',
+     'Number Of Booking' => 'Number Of Booking',
+     'Duration (in-Days)' => 'Duration (in-Days)',
+     'Subscription English Description' => 'Subscription English Description',
+     'Subscription Arabic Description' => 'Subscription Arabic Description',
+     'Subscription Urdu Description' => 'Subscription Urdu Description',
+     'Subscription Turkish Description' => 'Subscription Turkish Description',
+     'Add Subscription' => 'Add Subscription',
+     'Edit Subscription' => 'Edit Subscription',
+     'Subscription Type' => 'Subscription Type',
      '' => '',
 
 
@@ -326,6 +386,7 @@ return [
     'About Us' => 'About Us',
     'Contact Us' => 'Contact Us',
     'Log In' => 'Log In',
+    'Sign In' => 'Sign In',
     'Sign Up' => 'Sign Up',
     'Learn More' => 'Learn More',
     'Our Services' => 'Our Services',
@@ -375,6 +436,10 @@ return [
     'My Booking' => 'My Booking',
     'My Favorite' => 'My Favorite',
     'Points' => 'Points',
+    'Barber Name' => 'Barber Name',
+    'Salon Name' => 'Salon Name',
+    'Service' => 'Service',
+    'City Name' => 'City Name',
 
 
 ];

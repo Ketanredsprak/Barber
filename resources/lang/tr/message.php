@@ -1,5 +1,5 @@
 <?php
-return[
+return [
     'Password updated successfully.' => 'Şifre başarıyla güncellendi.',
     'Old Password Does not match!' => 'Eski şifre eşleşmiyor!',
     'Profile edit Successfully' => 'Profil başarıyla düzenlendi.',
@@ -66,6 +66,14 @@ return[
     'Service Deleted Successfully.' => 'Hizmet Başarıyla Silindi.',
     'Service Deactived Successfully.' => 'Hizmet Başarıyla Devre Dışı Bırakıldı.',
     'Service Actived Successfully.' => 'Hizmet Başarıyla Etkinleştirildi.',
+    'Website point system update successfully' => 'Web sitesi puan sistemi güncellemesi başarıyla yapıldı',
+    'Subscription Added Successfully.' => 'Abonelik Başarıyla Eklendi.',
+    'Subscription Update Successfully.' => 'Abonelik Başarıyla Güncellendi.',
+    'Subscription Deleted Successfully.' => 'Abonelik Başarıyla Silindi.',
+    'Subscription Deactived Successfully.' => 'Abonelik Başarıyla Devre Dışı Bırakıldı.',
+    'Subscription Actived Successfully.' => 'Abonelik Başarıyla Etkinleştirildi.',
+    'Barber added successfully to favourite list.' => 'Berber başarıyla favori listeye eklendi.',
+    'Barber removed successfully from favourite list.' => 'Berber başarıyla favori listeden çıkarıldı.',
     '' => '',
     '' => '',
     '' => '',
@@ -80,7 +88,7 @@ return[
     //api
     'Login successfully' => 'Başarıyla giriş yapıldı.',
     'Incorrect Email/Phone Number and Password.' => 'Yanlış E-posta/Telefon Numarası ve Şifre.',
-    'Regiter successfully' => 'Başarıyla kayıt olundu.',
+    'Register successfully' => 'Başarıyla kaydolun.',
     'Profile get successfully' => 'Profil başarıyla alındı.',
     'Profile not found' => 'Profil bulunamadı.',
     'Password changed successfully.' => 'Şifre başarıyla değiştirildi.',
@@ -94,6 +102,7 @@ return[
     'Password reset successfully' => 'Şifre başarıyla sıfırlandı.',
     'Password not reset' => 'Şifre sıfırlanamadı.',
     'Thanks For Contact Us' => 'Bizimle İletişime Geçtiğiniz İçin Teşekkürler.',
+    'Website config update successfully' => 'Web sitesi yapılandırması başarıyla güncellendi.',
     '' => '',
     '' => '',
     '' => '',

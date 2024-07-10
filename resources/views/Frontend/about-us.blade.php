@@ -303,6 +303,7 @@
                 contentType: false,
                 success: function(response) {
                     if (response.status == 1) {
+                        $(".error").removeClass('is-invalid');
                         $('#succuess-message').removeClass('d-none');
                         setTimeout(function () {
                             $('#succuess-message').fadeOut('fast');

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\User;
+use App\Models\ContactUS;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use App\Http\Controllers\Controller;
@@ -47,7 +48,11 @@ class AdminController extends Controller
 
     public function dashboard()
     {
-          return view('Admin.dashboard');
+        $customers = User::where('user_type',4)->count();
+        $barbers = User::where('user_type',3)->count();
+        $subadmin = User::where('user_type',2)->count();
+        $contactus = ContactUS::count();
+        return view('Admin.dashboard',compact('customers','subadmin','barbers','contactus'));
     }
 
     public function setting(Request $request)

@@ -13,6 +13,15 @@ use Illuminate\Support\Facades\DB;
 
 class PageController extends Controller
 {
+
+    function __construct()
+    {
+        $this->middleware('permission:page-list', ['only' => ['index']]);
+        $this->middleware('permission:page-edit', ['only' => ['edit', 'update']]);
+
+    }
+
+
     /**
      * Display a listing of the resource.
      */

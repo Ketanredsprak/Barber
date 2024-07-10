@@ -4,6 +4,7 @@ use App\Models\User;
 use App\Models\Module;
 use App\Models\Services;
 use App\Models\Countries;
+use App\Models\Subscription;
 use App\Models\WebsiteConfig;
 use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Permission;
@@ -143,6 +144,26 @@ if (!function_exists('country_code')) {
          return ['1','91','93','355','213'];
     }
 }
+
+
+if (!function_exists('getSubscription')) {
+    function getSubscription($subscription_type)
+    {
+        // dd($subscription_type);
+        $data = Subscription::where('subscription_type',$subscription_type)->get();
+        return $data;
+    }
+}
+
+
+if (!function_exists('getSubServices')) {
+    function getSubServices()
+    {
+        $services = Services::where('parent_id', '!=', 0)->where('status',1)->get();
+        return $services;
+    }
+}
+
 
 
 

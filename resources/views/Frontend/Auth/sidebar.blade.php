@@ -11,14 +11,14 @@
     </li>
 
     <li class="nav-item d-block">
-        <a href="dashboard.html" class="nav-link">
+        <a href="{{ route('my-account-about')}}" class="nav-link @if($currentRouteName == "my-account-about") active @endif">
             <span class="dashboard_icon post"></span>
             <span>{{ __('labels.About') }}</span>
         </a>
     </li>
 
     <li class="nav-item d-block">
-        <a href="dashboard.html" class="nav-link">
+        <a href="{{ route('my-package') }}" class="nav-link @if($currentRouteName == "my-package") active @endif">
             <span class="dashboard_icon review"></span>
             <span>{{ __('labels.My Package') }}</span>
         </a>

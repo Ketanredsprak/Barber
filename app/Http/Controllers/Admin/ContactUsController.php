@@ -11,6 +11,14 @@ use App\Http\Controllers\Controller;
 
 class ContactUsController extends Controller
 {
+
+    function __construct()
+    {
+        $this->middleware('permission:contact-us-list', ['only' => ['index']]);
+        $this->middleware('permission:contact-us-delete', ['only' => ['destroy']]);
+        $this->middleware('permission:contact-us-show', ['only' => ['show']]);
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -79,7 +87,7 @@ class ContactUsController extends Controller
         try {
             $data = ContactUS::find($id);
             if (!empty($data)) {
-                return view('Admin.Contact-us.show', compact('data'));
+                return view('Admin.Contact-Us.show', compact('data'));
             }
         } catch (Exception $ex) {
             return response()->json(

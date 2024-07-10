@@ -10,9 +10,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\URL;
-use Illuminate\Support\Facades\File;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Crypt;
 
 class BarberController extends Controller
 {
@@ -24,6 +25,7 @@ class BarberController extends Controller
         $this->middleware('permission:barber-edit', ['only' => ['edit', 'update']]);
         $this->middleware('permission:barber-delete', ['only' => ['destroy']]);
         $this->middleware('permission:barber-status', ['only' => ['barberStatus']]);
+        $this->middleware('permission:barber-show', ['only' => ['show']]);
     }
 
     public function index(Request $request)
@@ -40,7 +42,7 @@ class BarberController extends Controller
                         <button class="btn btn-light dropdown-toggle text-primary" id="btnGroupDrop1" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-ellipsis-h"></i></button>
                         <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">';
 
-
+                        $encrypted_Id = Crypt::encryptString($row->id);
                           if ($row->is_approved == 1) {
                                 $btn = $btn . '<a    href="' . route('barber.approved', $row->id) . '" title="' . __('labels.Approved') . '" class="dropdown-item status-change" data-url="' . route('barber.approved', $row->id) . '">' . __('labels.Approved') . '</a>';
                           }
@@ -57,6 +59,9 @@ class BarberController extends Controller
 
 
                        $btn = $btn . '<a href="" data-url="' . route('barber.destroy', $row->id) . '" class="dropdown-item destroy-data" title="' . __('labels.Delete') . '">' . __('labels.Delete') . '</a>';
+
+                       $btn = $btn . '<a href="' . route('barber.show', $encrypted_Id) . '"  class="dropdown-item show-data" title="' . __('labels.Show') . '">' . __('labels.Show') . '</a>';
+
                        $btn = $btn . '</div>
                       </div>
                     </div>';
@@ -198,7 +203,15 @@ class BarberController extends Controller
 
     public function show($id)
     {
-
+        $Decrypt_id = Crypt::decryptString($id);
+        $data = User::find($Decrypt_id);
+        if($data)
+        {
+                return view('Admin.Barbers.show', compact('data'));
+        }else
+        {
+            return route('errors.404');
+        }
 
     }
 

@@ -2,19 +2,30 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\PointSystem;
 use Illuminate\Http\Request;
 use App\Models\WebsiteConfig;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\WebsiteConfigRequest;
+use App\Http\Requests\Admin\WebsitePointSystemRequest;
 
 class WebsiteConfigController extends Controller
 {
+
+
+    function __construct()
+    {
+        $this->middleware('permission:website-config-list', ['only' => ['getWebsiteConfig']]);
+        $this->middleware('permission:website-config-edit', ['only' => ['websiteConfigUpdate']]);
+        $this->middleware('permission:point-system-edit', ['only' => ['pointSystemUpdate']]);
+    }
 
     public function getWebsiteConfig()
     {
         //
         $data = WebsiteConfig::first();
-        return view('Admin.website-config',compact('data'));
+        $pointSystem = PointSystem::first();
+        return view('Admin.website-config',compact('data','pointSystem'));
 
     }
 
@@ -59,7 +70,25 @@ class WebsiteConfigController extends Controller
 
 
         if (!empty($data)) {
-            return redirect()->route('get-website-config');
+            return response()->json(['status' => 1, 'message' => __('message.Website config update successfully')]);
+        }
+
+
+    }
+
+
+    public function pointSystemUpdate(WebsitePointSystemRequest $request)
+    {
+        //
+        $data = PointSystem::first();
+        $data->per_booking_points = $request->per_booking_points;
+        $data->per_active_referral_points = $request->per_active_referral_points;
+        $data->how_many_point_equal_sr = $request->how_many_point_equal_sr;
+        $data->update();
+
+
+        if (!empty($data)) {
+            return response()->json(['status' => 1, 'message' => __('message.Website point system update successfully')]);
         }
 
 

@@ -29,14 +29,14 @@ $url = URL::to('/dashboard');
 
                             <form method="POST" action="{{ route('admin-login') }}" class="theme-form">
                                 @csrf
-                                <h4>Login {{ __('labels.login') }}</h4>
-                                <p>Enter your email & password to login</p>
+                                <h4>{{ __('labels.login') }}</h4>
+                                <p>{{ __('labels.Enter your email & password to login') }}</p>
 
                                 <div class="form-group">
-                                    <label class="col-form-label">Email</label>
+                                    <label class="col-form-label">{{ __('labels.Email') }}</label>
                                     <div class="form-input position-relative">
                                         <input class="form-control @error('email') is-invalid @enderror"
-                                            type="email" name="email" placeholder="Enter Email Address"  value="{{old('email')}}">
+                                            type="email" name="email" placeholder="{{ __('labels.Email') }}"  value="{{old('email')}}">
                                         @error('email')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
@@ -47,10 +47,10 @@ $url = URL::to('/dashboard');
                                 </div>
 
                                 <div class="form-group">
-                                    <label class="col-form-label">Password</label>
+                                    <label class="col-form-label">{{ __('labels.Password') }}</label>
                                     <div class="form-input position-relative">
                                         <input class="form-control @error('password') is-invalid @enderror"
-                                            type="password" name="password" placeholder="Enter Password" value="{{old('password')}}">
+                                            type="password" name="password" placeholder="{{ __('labels.Password') }}" value="{{old('password')}}">
                                         @error('password')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
@@ -61,7 +61,7 @@ $url = URL::to('/dashboard');
                                 </div>
                                 <div class="form-group mb-0">
                                     <div class="text-end mt-3">
-                                        <input class="btn btn-primary btn-block w-100" type="submit" value="Login">
+                                        <input class="btn btn-primary btn-block w-100" type="submit" value="{{ __('labels.Login')}}">
                                     </div>
                                 </div>
                             </form>

@@ -1,0 +1,791 @@
+ @media (min-width:568px)and (max-width:767px) {}
+
+ @media (max-width: 767px) {
+	.follow_btn {
+		top: -30px;
+	}
+	.seller_profile .profile_img img {
+		width: 70px;
+		height: 70px;
+	}
+	.seller_profile .seller_info h2 {
+		font-size: 23px;
+	}
+	.profile_statistic {
+		float: left;
+	}
+	.seller_detailbox {
+		transform: translateY(20px);
+	}
+	.review_list .user{
+		position: static;
+		margin-bottom: 15px;
+	}
+	.review_list {
+		padding-left: 0;
+	}
+	.buynow_box {
+		margin-bottom: 20px;
+	}
+	.seller_head {
+		padding: 125px 0 30px 0;
+	}
+	.post_box{
+		margin-bottom: 15px;
+	}
+	.explore_sec .container-fluid {
+		padding: 0 15px;
+	}
+	.heading_sec .heading_title h2 {
+		font-size: 30px;
+	}
+	.contact_sec .contact_info{
+		margin-bottom: 20px;
+	}
+	.about_inner .text-right {
+		text-align: left !important;
+	}
+	.mobile_footer .nav-link {
+		padding: 4px 10px;
+	}
+	.search_box form .form-group {
+		margin-bottom: 15px;
+	}
+ 	.header .navbar-nav .nav-link {
+ 		color: #000;
+ 	}
+
+ 	.page-link {
+ 		padding: 0.54rem 1.1rem;
+ 	}
+
+ 	.profile_statistic li {
+ 		margin-right: 10px;
+ 	}
+
+	 .detailbox .review{
+		float: left;
+	 }
+	 .detail_btn {
+		float: left;
+		margin-top: 25px;
+	}
+
+ 	.timeline_box .timeline .events ul li {
+ 		margin-right: 1px !important;
+ 	}
+
+ 	.timeline_box .timeline .events ul li a::after {
+ 		height: 8px;
+ 		bottom: -15px;
+ 		width: 8px;
+ 		border: 1px solid #f15e2b;
+ 	}
+
+ 	.timeline_box .timeline .events ul li a {
+ 		font-size: 12px;
+ 		top: -31px;
+ 	}
+
+ 	.register_form .btn {
+ 		padding: 10px 60px;
+ 	}
+
+ 	.register_tab .nav-link {
+ 		padding: .5rem 25px;
+ 	}
+
+ 	.post_box.mobile_hide {
+ 		display: none;
+ 	}
+
+ 	.explore-slider.owl-theme .owl-nav .owl-prev,
+ 	.explore-slider.owl-theme .owl-nav .owl-next {
+ 		height: 40px !important;
+ 		width: 40px !important;
+ 	}
+
+ 	.filter_btn_mobile {
+ 		display: block;
+ 		width: 110px;
+ 	}
+
+ 	.filter_web {
+ 		display: none;
+ 	}
+
+ 	.navbar {
+ 		padding: .5rem 0;
+ 	}
+
+ 	.header_btn {
+ 		position: absolute;
+ 		top: 25px;
+ 		right: 30px;
+ 	}
+
+ 	.header_btn .btn {
+ 		padding: 6px 15px !important;
+ 		margin-right: 0 !important;
+ 	}
+
+ 	.nav-link {
+ 		padding: .5rem 1rem;
+ 	}
+
+ 	.navbar-brand img {
+ 		width: 80px;
+ 	}
+
+ 	.banner .banner_info h1 {
+ 		font-size: 52px;
+ 	}
+
+	.banner_slider .banner_info{
+		width: 66%;
+	}
+
+ 	.header.affix {
+ 		background-size: auto;
+ 	}
+
+ 	.navbar-collapse {
+ 		padding-top: 20px;
+ 	}
+
+ 	.switch {
+ 		bottom: 90px;
+ 		z-index: 22;
+ 	}
+
+ 	.footer {
+ 		text-align: center;
+ 	}
+
+
+ 	.modal.right .modal-dialog {
+ 		margin: auto;
+ 		width: 100%;
+ 		height: 100%;
+ 	}
+
+ 	.navbar-collapse {
+ 		position: absolute;
+ 		background: #fff;
+ 		width: 100%;
+ 		left: 0;
+ 		top: 100px;
+ 		padding: 20px;
+ 		z-index: 2;
+ 		box-shadow: 0px 0px 13px 0px rgba(0, 0, 0, 0.25);
+ 	}
+
+	 .heading_sec {
+		padding: 145px 0 50px 0;
+	}
+
+ 	.explore-slider.owl-theme .owl-nav,
+ 	.explore-slider.owl-theme .owl-nav .owl-next,
+ 	.explore-slider.owl-theme .owl-nav .owl-prev {
+ 		position: static !important;
+ 	}
+
+ 	.explore-slider.owl-theme .owl-nav {
+ 		display: block !important;
+ 	}
+
+	 .explore_sec .explore_box {
+		height: 170px;
+		margin-bottom: 20px;
+	}
+
+ 	.explore_sec .explore_box .info h4 {
+ 		font-size: 18px;
+ 		margin-bottom: 0;
+ 	}
+	 .about_inner .about_img {
+		margin-top: 60px;
+	}
+	 .about_img {
+		margin-bottom: 60px;
+	}
+
+	.about_sec.pb-75 {
+		padding: 0;
+	}
+	 .about_img .img2 {
+		top: 60px;
+		left: 110px;
+	}
+ 	.about_img .img2 img,
+ 	.about_img .img1 img {
+ 		width: 230px;
+ 		height: 265px;
+ 		object-fit: cover;
+ 	}
+
+ 	.title h2 {
+ 		font-size: 26px;
+ 	}
+
+ 	.about_sec .search_box {
+ 		margin-top: 30px;
+ 	}
+
+ 	.about_sec .search_box .form-group {
+ 		margin-bottom: 20px;
+ 	}
+
+ 	.section-shape {
+ 		background-image: none !important;
+ 	}
+
+ 	.pb-75 {
+ 		padding-bottom: 50px;
+ 	}
+	
+ 	.pt-75 ,.explore_detail_sec, .seller_profile_sec{
+ 		padding-top: 50px;
+ 	}
+
+ 	.testimonial_sec .shape1,
+ 	.testimonial_sec .bottom_pattern,
+ 	.about_sec .shape1 {
+ 		display: none;
+ 	}
+
+	 .support_sec .support_box {
+		padding: 0;
+	}
+
+ 	.support_sec .support_box h3 {
+ 		margin-bottom: 20px;
+ 		font-size: 25px;
+ 	}
+
+ 	.mobile_footer {
+ 		display: block;
+ 	}
+
+ 	.login_form {
+ 		padding: 30px;
+ 	}
+
+ 	.gokamp_logo {
+ 		width: 120px;
+ 		height: 120px;
+ 		line-height: 120px;
+ 		margin-bottom: 20px;
+ 	}
+
+ 	.gokamp_logo img {
+ 		width: 80px;
+ 	}
+
+ 	.register_form .nickname {
+ 		margin-bottom: 20px;
+ 	}
+
+ 	.login_form h2,
+ 	.register_form h2 {
+ 		font-size: 28px;
+ 	}
+
+ 	.detail_list li {
+ 		border: none;
+ 		margin-bottom: 8px;
+ 		display: block;
+ 	}
+
+ 	.detailbox h2 {
+ 		font-size: 23px;
+ 		padding-top: 0;
+ 	}
+
+ 	.overview {
+ 		margin-top: 20px;
+ 	}
+
+ 	.seller_profile .profile_img {
+ 		float: none;
+ 	}
+
+ 	.seller_profile .seller_info {
+ 		padding-left: 0;
+ 	}
+
+ 	.follow_btn {
+ 		float: left !important;
+ 	}
+
+ 	.border-right {
+ 		border: none !important;
+ 	}
+
+ 	.mobile_menu {
+ 		display: block;
+ 	}
+
+ 	.dropdown.profile_btn {
+ 		position: absolute;
+ 		top: 18px;
+ 		right: 30px;
+ 	}
+
+ 	.profile_sidebar {
+ 		display: none;
+ 	}
+
+ 	.stasticbox {
+ 		margin-bottom: 20px;
+ 	}
+
+ 	.mypost_box .post_info {
+ 		margin-top: 15px;
+ 	}
+
+ 	.post_btn {
+ 		text-align: left;
+ 	}
+
+ 	.image_upload .file-select.file-select-box {
+ 		min-width: 135px;
+ 	}
+
+ 	.addpost_tab .nav-link {
+ 		padding: .5rem 1.2rem;
+ 	}
+
+ 	.level_box {
+ 		margin-bottom: 20px;
+ 	}
+	.line{
+		width: 150px !important;
+	}
+
+	.notifications-item {
+		margin-right: 204px;
+	}
+	.form-controls {
+		
+		margin-right: 40px;
+	
+	}
+ }
+
+
+ @media (min-width: 768px)and (max-width: 991px) {}
+
+ @media (min-width: 992px)and (max-width: 1024px) {}
+
+ @media (min-width: 992px) {}
+
+ @media only screen and (min-width: 768px) and (max-width:1024px) {
+	.post_box{
+		margin-bottom: 15px;
+	}
+	.post_box .bottom {
+		padding: 7px 13px;
+	}
+	.post_box .bottom ul li {
+		padding-right: 10px;
+		padding-left: 10px;
+	}
+	.heading_sec {
+		padding: 135px 0 70px 0;
+	}
+	.listing-avatar .user img {
+		width: 60px !important;
+		height: 60px !important;
+	}
+	.post_box .post_img img {
+		height: 190px;
+	}
+	.post_box .post_info {
+		padding: 33px 15px 5px 15px;
+	}
+	.post_box .post_info h5 {
+		font-size: 18px;
+	}
+	.listing-avatar {
+		right: 10px;
+	}
+	.page-link {
+		padding: 10px 20px;
+	}
+	.explore_sec .container-fluid {
+		padding: 0 20px;
+	}
+	.footer {
+		padding: 50px 0 20px 0;
+	}
+	.heading_sec {
+		padding: 165px 0 70px 0;
+	}
+	.header .navbar-nav .nav-link{
+		color: #000;
+	}
+	.banner .banner_info p {
+		font-size: 18px;
+	}
+ 	.about_sec .text-left {
+ 		text-align: right !important;
+ 	}
+
+ 	.dropdown-toggle {
+ 		padding: 7px 10px 3px 9px;
+ 	}
+
+ 	.modal_info .border-right {
+ 		border: none !important;
+ 	}
+
+ 	.sidebar_profile img {
+ 		height: 145px;
+ 	}
+
+ 	.stasticbox {
+ 		margin-bottom: 20px;
+ 	}
+
+ 	.sidebar_nav .nav-link {
+ 		padding: 5px 0;
+ 	}
+
+ 	.sidebar_nav .nav-link:hover,
+ 	.sidebar_nav .nav-link.active {
+ 		padding: 5px 8px;
+ 	}
+
+ 	.mypost_box .post_img img {
+ 		height: 160px;
+ 	}
+
+ 	.sidebar_nav li {
+ 		padding: 4px;
+ 	}
+
+ 	.dashboard_icon {
+ 		margin-right: 5px;
+ 	}
+
+ 	.sidebar_nav li a span {
+ 		padding-left: 0;
+ 		color: #626262;
+ 		margin-top: 4px;
+ 		font-size: 13px;
+ 	}
+
+ 	.dropdown.profile_btn {
+ 		position: absolute;
+ 		top: 23px;
+ 		right: 50px;
+ 	}
+
+ 	.footer_social ul li a img {
+ 		width: 35px;
+ 	}
+
+ 	.timeline_box .timeline .events ul li {
+ 		margin-right: 8px;
+ 	}
+
+ 	.timeline_box .timeline .events ul li a::after {
+ 		height: 11px;
+ 		width: 11px;
+ 	}
+
+ 	.timeline_box .timeline .events ul li a {
+ 		top: -34px;
+ 	}
+
+ 	.review_box .btn {
+ 		float: right;
+ 	}
+
+ 	.filter_btn .btn {
+ 		margin-bottom: 10px;
+ 		display: block;
+ 	}
+
+ 	.login_form h2,
+ 	.register_form h2 {
+ 		font-size: 30px;
+ 	}
+
+ 	.about_img .img2 img,
+ 	.about_img .img1 img {
+ 		width: 190px;
+ 		height: 305px;
+ 	}
+
+ 	.mobile_footer {
+ 		display: none;
+ 	}
+
+ 	.login_form {
+ 		padding: 30px;
+ 	}
+
+ 	.section-shape {
+ 		bottom: -70px;
+ 	}
+
+ 	.about_sec .search_box .form-group {
+ 		margin-bottom: 20px;
+ 	}
+
+ 	.title h2 {
+ 		font-size: 32px;
+ 	}
+
+ 	.about_img .img2 {
+ 		bottom: -180px;
+ 		left: 0;
+ 	}
+
+ 	.explore-slider.owl-theme .owl-nav,
+ 	.explore-slider.owl-theme .owl-nav .owl-next,
+ 	.explore-slider.owl-theme .owl-nav .owl-prev {
+ 		position: static !important;
+ 	}
+
+ 	.explore-slider.owl-theme .owl-nav {
+ 		display: block !important;
+ 	}
+
+ 	.pb-75 {
+ 		padding-bottom: 55px;
+ 	}
+
+ 	.pt-75 {
+ 		padding-top: 55px;
+ 	}
+
+ 	.testimonial_sec .bottom_pattern {
+ 		bottom: -65px;
+ 	}
+
+ 	.testimonial_sec .top_pattern {
+ 		top: -5px;
+ 	}
+
+ 	.testimonial_sec .shape1 {
+ 		top: 0;
+ 	}
+
+ 	.support_sec .support_box h3 {
+ 		font-size: 26px;
+ 	}
+
+	 .support_sec .support_box {
+		padding: 10px 30px;
+	}
+
+
+ 	.banner .banner_info h1 {
+ 		font-size: 54px;
+ 	}
+
+	 .header_btn .btn {
+		padding: 7px 16px;
+		margin-right: 0;
+	}
+	.btn{
+		font-size: 15px;
+	}
+	.header_btn .btn {
+		margin-right: 6px !important;
+	}
+	.avatar-tooltip {
+		top: 6px;
+		padding: 6px 60px 6px 20px;
+		min-width: 190px;
+		height: 49px;
+		line-height: 12px;
+	}
+ 	.header_btn {
+ 		position: absolute;
+ 		right: 50px;
+ 	}
+
+ 	.navbar-collapse {
+ 		position: absolute;
+ 		background: #fff;
+ 		width: 100%;
+ 		left: 0;
+ 		top: 120px;
+ 		padding: 20px;
+ 		z-index: 2;
+ 		box-shadow: 0px 0px 13px 0px rgba(0, 0, 0, 0.25);
+ 	}
+
+ }
+
+ @media only screen and (min-width: 1025px) and (max-width:1200px) {}
+
+ @media only screen and (min-width:1200px) and (max-width:1480px) {}
+
+ @media (min-width: 901px)and (max-width: 980px) {}
+
+ @media (max-width:992px) {}
+
+ @media (max-width:375px) {}
+
+ @media (max-width:374px) {}
+
+ @media (min-width:376px) and (max-width:480px) {}
+
+ @media (min-width:590px) {}
+
+ @media only screen and (min-width:1199px) and (max-width:1320px) {}
+
+ @media only screen and (min-width:1200px) and (max-width:1280px) {}
+
+ @media only screen and (min-width:1300px) and (max-width:1366px) {
+	.explore_sec.pt-75.pb-75 .container-fluid {
+		padding: 0 40px;
+	}
+	.page-link {
+		padding: 10px 16px;
+	}
+ }
+
+
+
+ /* ----------- iPhone 5, 5S, 5C and 5SE ----------- */
+
+
+
+ /* Portrait and Landscape */
+
+ @media only screen and (min-device-width: 320px) and (max-device-width: 568px) and (-webkit-min-device-pixel-ratio: 2) {}
+
+
+
+ /* Portrait */
+
+ @media only screen and (min-device-width: 320px) and (max-device-width: 568px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: portrait) {
+ 	.header_btn .btn {
+ 		padding: 6px 9px !important;
+ 		font-size: 14px;
+ 	}
+
+ 	.image_upload .file-select.file-select-box {
+ 		min-width: 105px;
+ 	}
+
+ 	.timeline_box .timeline .events ul li {
+ 		width: auto;
+ 		margin-right: 60px !important;
+ 	}
+
+ 	.timeline_box .timeline .events ul li:last-child {
+ 		margin-right: 0 !important;
+ 	}
+ }
+
+
+
+ /* Landscape */
+
+
+
+
+ @media only screen and (min-device-width: 320px) and (max-device-width: 568px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: landscape) {}
+
+
+
+ /* ----------- iPhone 6, 6S, 7 and 8 ----------- */
+
+
+
+ /* Portrait and Landscape */
+
+
+
+ @media only screen and (min-device-width: 375px) and (max-device-width: 667px) and (-webkit-min-device-pixel-ratio: 2) {}
+
+
+
+ /* Portrait */
+
+
+
+ @media only screen and (min-device-width: 375px) and (max-device-width: 667px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: portrait) {}
+
+
+
+ /* Landscape */
+
+
+
+ @media only screen and (min-device-width: 375px) and (max-device-width: 667px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: landscape) {}
+
+
+
+ /* ----------- iPhone 6+, 7+ and 8+ ----------- */
+
+
+
+ /* Portrait and Landscape */
+
+
+
+ @media only screen and (min-device-width: 414px) and (max-device-width: 736px) and (-webkit-min-device-pixel-ratio: 3) {}
+
+
+
+ /* Portrait */
+
+
+
+
+
+
+
+ @media only screen and (min-device-width: 414px) and (max-device-width: 736px) and (-webkit-min-device-pixel-ratio: 3) and (orientation: portrait) {}
+
+
+
+
+
+ /* Landscape */
+
+
+
+
+
+
+
+ @media only screen and (min-device-width: 414px) and (max-device-width: 736px) and (-webkit-min-device-pixel-ratio: 3) and (orientation: landscape) {}
+
+
+
+ /* ----------- iPhone X ----------- */
+
+
+
+ /* Portrait and Landscape */
+
+ @media only screen and (min-device-width: 375px) and (max-device-width: 812px) and (-webkit-min-device-pixel-ratio: 3) {}
+
+
+
+ /* Portrait */
+
+
+
+
+
+
+
+ @media only screen and (min-device-width: 375px) and (max-device-width: 812px) and (-webkit-min-device-pixel-ratio: 3) and (orientation: portrait) {}
+
+
+
+ /* Landscape */
+
+
+
+ @media only screen and (min-device-width: 375px) and (max-device-width: 812px) and (-webkit-min-device-pixel-ratio: 3) and (orientation: landscape) {}

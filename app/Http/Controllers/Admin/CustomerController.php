@@ -10,9 +10,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\URL;
-use Illuminate\Support\Facades\File;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Crypt;
 
 class CustomerController extends Controller
 {
@@ -24,6 +25,7 @@ class CustomerController extends Controller
         $this->middleware('permission:customer-edit', ['only' => ['edit', 'update']]);
         $this->middleware('permission:customer-delete', ['only' => ['destroy']]);
         $this->middleware('permission:customer-status', ['only' => ['customerStatus']]);
+        $this->middleware('permission:customer-show', ['only' => ['show']]);
     }
 
     public function index(Request $request)
@@ -38,6 +40,10 @@ class CustomerController extends Controller
                       <div class="btn-group" role="group">
                         <button class="btn btn-light dropdown-toggle text-primary" id="btnGroupDrop1" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-ellipsis-h"></i></button>
                         <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">';
+
+
+                        $encrypted_Id = Crypt::encryptString($row->id);
+
 
                         if ($row->is_approved == 1) {
                                 $btn = $btn . '<a    href="' . route('customer.approved', $row->id) . '" title="' . __('labels.Approved') . '" class="dropdown-item status-change" data-url="' . route('customer.approved', $row->id) . '">' . __('labels.Approved') . '</a>';
@@ -55,6 +61,8 @@ class CustomerController extends Controller
 
                     //    $btn = $btn . '<a class="edit-data dropdown-item"  href="javascript:void(0)" title="' . __('labels.Edit') . '" data-url="'.route('customer.edit', $row->id).'">' . __('labels.Edit') . '</a>';
                        $btn = $btn . '<a href="" data-url="' . route('customer.destroy', $row->id) . '" class="dropdown-item destroy-data" title="' . __('labels.Delete') . '">' . __('labels.Delete') . '</a>';
+
+                        $btn = $btn . '<a href="' . route('customer.show', $encrypted_Id) . '"  class="dropdown-item show-data" title="' . __('labels.Show') . '">' . __('labels.Show') . '</a>';
 
                        $btn = $btn . '</div>
                       </div>
@@ -194,7 +202,15 @@ class CustomerController extends Controller
     public function show($id)
     {
 
-
+        $Decrypt_id = Crypt::decryptString($id);
+        $data = User::find($Decrypt_id);
+        if($data)
+        {
+                return view('Admin.Customers.show', compact('data'));
+        }else
+        {
+            return route('errors.404');
+        }
     }
 
     public function edit($id)

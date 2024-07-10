@@ -26,6 +26,13 @@ class CustomerAccount extends JsonResource
             'gender' => $this->gender,
             'referral_code' => $this->referral_code,
             'token' => $this->token ?? "",
+            'country_code' => $this->country_code ?? "",
+            'location' => $this->location ?? "",
+            'country_name' => $this->country_name ?? "",
+            'state_name' => $this->state_name ?? "",
+            'city_name' => $this->city_name ?? "",
+            'latitude' => $this->latitude ?? "",
+            'longitude' => $this->longitude ?? "",
             'created_at' =>  date('Y-M-d h:i A', strtotime($this->created_at)),
             'updated_at' => date('Y-M-d h:i A', strtotime($this->updated_at)),
         ];

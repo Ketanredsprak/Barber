@@ -38,7 +38,7 @@ class CustomerAccountController extends Controller
             }
         }
         $data = Pagies::with("meta_content", "cms_content")->find(6);
-        return view('Frontend.Auth.register', compact('data'));
+    return view('Frontend.Auth.register', compact('data'));
     }
 
     public function registerSubmit(CustomerRegisterRequest $request)
@@ -62,7 +62,7 @@ class CustomerAccountController extends Controller
             $user->save();
 
             if (!empty($user)) {
-                return response()->json(['status' => 1, 'message' => __('message.Regiter successfully')]);
+                return response()->json(['status' => 1, 'message' => __('message.Register successfully')]);
             }
         } catch (Exception $ex) {
             return response()->json(
@@ -273,7 +273,7 @@ class CustomerAccountController extends Controller
     public function myAccount()
     {
         $data = Pagies::with("meta_content", "cms_content")->find(10);
-        return view('Frontend.Auth.my_account', compact('data'));
+        return view('Frontend.Auth.my-account', compact('data'));
     }
 
     public function editMyAccount(Request $request)
@@ -407,5 +407,22 @@ class CustomerAccountController extends Controller
                 );
             }
         }
+
+
+
+        public function  myAccountAbout()
+        {
+            $data = Pagies::with("meta_content", "cms_content")->find(10);
+            return view('Frontend.Auth.my-account-about', compact('data'));
+        }
+
+
+        public function  myPackage()
+        {
+            $data = Pagies::with("meta_content", "cms_content")->find(10);
+            return view('Frontend.Auth.my-package', compact('data'));
+        }
+
+
 
 }

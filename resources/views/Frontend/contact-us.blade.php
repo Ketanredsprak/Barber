@@ -151,6 +151,7 @@
                     success: function(response) {
                         if (response.status == 1) {
                             $('#succuess-message').removeClass('d-none');
+                            $(".error").removeClass('is-invalid');
                             setTimeout(function() {
                                 $('#succuess-message').fadeOut('fast');
                             }, 2000);

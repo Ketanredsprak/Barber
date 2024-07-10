@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 // use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Front\HomeController;
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Front\MyFavoriteController;
 use App\Http\Controllers\Frontend\AccountController;
 use App\Http\Controllers\Customer\CustomerAccountController;
 
@@ -40,14 +41,23 @@ Route::get('reset-password/{id}', [CustomerAccountController::class, 'resetPassw
 Route::post('reset-password-submit', [CustomerAccountController::class, 'resetPasswordSubmit'])->name('reset-password-submit');
 Route::get('/privacy-policy', [HomeController::class,'privacyPolicy'])->name('privacy-policy');
 Route::get('/temrs-and-condition', [HomeController::class,'temrsAndCondition'])->name('temrs-and-condition');
+Route::get('/barber-list', [HomeController::class,'barberList'])->name('barber-list');
+Route::post('/barber-list-filter', [HomeController::class,'barberListFilter'])->name('barber-list-filter');
+Route::get('barber-detail/{id}', [HomeController::class,'barberDetail'])->name('barber-detail');
 
 
+
+Route::middleware('auth')->group(function () {
 
 Route::get('my-account', [CustomerAccountController::class, 'myAccount'])->name('my-account');
+Route::get('my-account-about', [CustomerAccountController::class, 'myAccountAbout'])->name('my-account-about');
+Route::get('my-package', [CustomerAccountController::class, 'myPackage'])->name('my-package');
 Route::post('edit-my-account', [CustomerAccountController::class, 'editMyAccount'])->name('edit-my-account');
 Route::get('change-password', [CustomerAccountController::class, 'changePassword'])->name('change-password');
 Route::post('change-password-submit', [CustomerAccountController::class, 'changePasswordSubmit'])->name('change-password-submit');
+Route::get('add-and-remove-favorite/{id}', [MyFavoriteController::class, 'addAndRemoveFavorite'])->name('add-and-remove-favorite');
 
+});
 
 
 

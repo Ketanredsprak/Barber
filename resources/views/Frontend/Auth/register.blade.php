@@ -82,8 +82,8 @@
                                         <div class="col-sm-6">
                                             <div class="input-group mb-3">
                                                 <div class="input-group-prepend">
-                                                    <select class="form-control" id="country_code"
-                                                        name="country_code" id="country_code">
+                                                    <select class="form-control" id="country_code" name="country_code"
+                                                        id="country_code">
                                                         @foreach (country_code() as $country_code)
                                                             <option value="{{ $country_code }}">+ {{ $country_code }}
                                                             </option>
@@ -93,7 +93,8 @@
                                                 </div>
                                                 <input type="text" class="form-control"
                                                     placeholder="{{ __('labels.Phone Number') }}"
-                                                    @error('phone') is-invalid @enderror name="phone" id="phone" value="{{ old('phone') }}">
+                                                    @error('phone') is-invalid @enderror name="phone" id="phone"
+                                                    value="{{ old('phone') }}">
                                                 @error('phone')
                                                     <span class="invalid-feedback" role="alert">
                                                         <strong>{{ $message }}</strong>
@@ -107,7 +108,8 @@
                                             <div class="form-group">
                                                 <input type="text"
                                                     class="form-control @error('email') is-invalid @enderror"
-                                                    placeholder="{{ __('labels.Email') }}" id="email" name="email" value="{{ old('email') }}">
+                                                    placeholder="{{ __('labels.Email') }}" id="email" name="email"
+                                                    value="{{ old('email') }}">
                                                 @error('email')
                                                     <span class="invalid-feedback" role="alert">
                                                         <strong>{{ $message }}</strong>
@@ -118,7 +120,7 @@
 
                                         <div class="col-sm-6">
                                             <div class="form-group">
-                                                <input type="text"
+                                                <input type="password"
                                                     class="form-control @error('password') is-invalid @enderror"
                                                     placeholder="{{ __('labels.Password') }}" id="password"
                                                     name="password" value="{{ old('password') }}">
@@ -131,7 +133,7 @@
                                         </div>
                                         <div class="col-sm-6">
                                             <div class="form-group">
-                                                <input type="text"
+                                                <input type="password"
                                                     class="form-control @error('confirm_password') is-invalid @enderror"
                                                     placeholder="{{ __('labels.Confirm Password') }}" id="confirm_password"
                                                     name="confirm_password" value="{{ old('confirm_password') }}">
@@ -148,7 +150,8 @@
                                                     id="terms_and_conditions"
                                                     @if (old('terms_and_conditions') == 'on') checked @endif />
                                                 {{ __('labels.I have read and agreed to the') }}<a
-                                                    href="{{ route('temrs-and-condition')}}"> {{ __('labels.Terms and Conditions') }}</a>.</label>
+                                                    href="{{ route('temrs-and-condition') }}">
+                                                    {{ __('labels.Terms and Conditions') }}</a>.</label>
                                             @error('terms_and_conditions')
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong>{{ $message }}</strong>
@@ -167,14 +170,17 @@
                                         <div class="col-sm-12 text-center">
                                             <div class="text-center py-3">
                                                 <a href="#" target="_blank" class="px-2"> <img
-                                                        src="images/gmail-icon.png" alt=""> </a>
+                                                        src="{{ static_asset('frontend/assets/images/gmail-icon.png') }}"
+                                                        alt="Gmail-Login"> </a>
                                                 <a href="#" target="_blank" class="px-2"> <img
-                                                        src="images/fb-icon.png" alt=""> </a>
+                                                        src="{{ static_asset('frontend/assets/images/fb-icon.png') }}"
+                                                        alt="Facebook-Login"> </a>
                                                 <a href="#" target="_blank" class="px-2"> <img
-                                                        src="images/apple-icon.png" alt=""> </a>
+                                                        src="{{ static_asset('frontend/assets/images/apple-icon.png') }}"
+                                                        alt="Apple-Login"> </a>
                                             </div>
 
-                                            <p>{{ __('labels.Already have an account?') }}<a href="{{ route('login')}}"
+                                            <p>{{ __('labels.Already have an account?') }}<a href="{{ route('login') }}"
                                                     class="text-warning"> {{ __('labels.login') }} </a>
                                             </p>
                                         </div>

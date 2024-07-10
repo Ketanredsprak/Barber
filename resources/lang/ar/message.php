@@ -1,5 +1,5 @@
 <?php
-return[
+return [
     'Password updated successfully.' => 'تم تحديث كلمة السر بنجاح.',
     'Old Password Does not match!' => 'كلمة المرور القديمة غير متطابقة!',
     'Profile edit Successfully' => 'تم تعديل الملف الشخصي بنجاح',
@@ -41,9 +41,9 @@ return[
     'Role Added Successfully.' => 'تمت إضافة الدور بنجاح.',
     'Role Update Successfully.' => 'رول اپ ڈیٹ کامیابی کے ساتھ۔',
     'Role Deleted Successfully.' => 'تم حذف الدور بنجاح.',
-    'Record Added Successfully' =>  'تمت إضافة السجل بنجاح',
-    'Record Update Successfully' =>  'سجل التحديث بنجاح',
-    'Record Deleted Successfully' =>  'تم حذف السجل بنجاح',
+    'Record Added Successfully' => 'تمت إضافة السجل بنجاح',
+    'Record Update Successfully' => 'سجل التحديث بنجاح',
+    'Record Deleted Successfully' => 'تم حذف السجل بنجاح',
     'Sub Admin Account Added Successfully.' => 'تمت إضافة حساب المسؤول الفرعي بنجاح.',
     'Sub Admin Account Update Successfully.' => 'تم تحديث حساب المسؤول الفرعي بنجاح.',
     'Sub Admin Account Delete Successfully.' => 'تم حذف حساب المسؤول الفرعي بنجاح.',
@@ -65,6 +65,12 @@ return[
     'Service Deleted Successfully.' => 'تم حذف الخدمة بنجاح.',
     'Service Deactived Successfully.' => 'تم تعطيل الخدمة بنجاح.',
     'Service Actived Successfully.' => 'تم تفعيل الخدمة بنجاح.',
+    'Website point system update successfully' => 'تم تحديث نظام نقطة الموقع بنجاح',
+    'Subscription Added Successfully.' => 'تم إضافة الاشتراك بنجاح.',
+    'Subscription Update Successfully.' => 'تم تحديث الاشتراك بنجاح.',
+    'Subscription Deleted Successfully.' => 'تم حذف الاشتراك بنجاح.',
+    'Subscription Deactived Successfully.' => 'تم إلغاء تفعيل الاشتراك بنجاح.',
+    'Subscription Actived Successfully.' => 'تم تفعيل الاشتراك بنجاح.',
     '' => '',
     '' => '',
     '' => '',
@@ -82,7 +88,7 @@ return[
     //api
     'Login successfully' => 'تم تسجيل الدخول بنجاح.',
     'Incorrect Email/Phone Number and Password.' => 'البريد الإلكتروني/رقم الهاتف وكلمة المرور غير صحيحة.',
-    'Regiter successfully' => 'تم التسجيل بنجاح.',
+    'Register successfully' => 'تسجيل بنجاح.',
     'Profile get successfully' => 'تم الحصول على الملف الشخصي بنجاح.',
     'Profile not found' => 'لم يتم العثور على الملف الشخصي.',
     'Password changed successfully.' => 'تم تغيير كلمة المرور بنجاح.',
@@ -96,6 +102,9 @@ return[
     'Password reset successfully' => 'تم إعادة تعيين كلمة المرور بنجاح.',
     'Password not reset' => 'لم يتم إعادة تعيين كلمة المرور.',
     'Thanks For Contact Us' => 'شكرا على الاتصال بنا.',
+    'Website config update successfully' => 'تم تحديث تكوين موقع الويب بنجاح.',
+    'Barber added successfully to favourite list.' => 'تمت إضافة الحلاق بنجاح إلى قائمة المفضلة.',
+    'Barber removed successfully from favourite list.' => 'تمت إزالة الحلاق بنجاح من قائمة المفضلة.',
     '' => '',
     '' => '',
     '' => '',
@@ -109,6 +118,5 @@ return[
     '' => '',
     '' => '',
     '' => '',
-
 
 ];

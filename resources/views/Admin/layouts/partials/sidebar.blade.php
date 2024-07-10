@@ -1,4 +1,17 @@
 <div>
+    <style>
+        .custom_icon {
+            font-size: 19px;
+            /* Adjust the size here */
+        }
+
+        .custom_active {
+            background-color: #cac5ff;
+            color: #ffffff;
+            border-radius: 5px 0px 0px 5px;
+
+        }
+    </style>
     <div class="logo-wrapper"><a href="{{ route('dashboard') }}"><img class="img-fluid for-light"
                 src="{{ static_asset('admin/assets/images/logo/logo.png') }}" alt=""></a>
         <div class="back-btn"><i class="fa fa-angle-left"></i></div>
@@ -16,138 +29,132 @@
                 </li>
 
                 <li class="sidebar-list">
-                    <a class="sidebar-link sidebar-title  link-nav  @if ($url == 'dashboard') badge-light-primary @endif"
+                    <a class="sidebar-link sidebar-title  link-nav  @if ($url == 'dashboard') badge-light-primary custom_active @endif"
                         href="{{ route('dashboard') }}">
-                        <svg class="stroke-icon">
-                            <use href="{{ static_asset('admin/assets/svg/icon-sprite.svg#stroke-home') }}"></use>
-                        </svg>
-                        <svg class="fill-icon">
-                            <use href="{{ static_asset('admin/assets/svg/icon-sprite.svg#fill-home') }}"></use>
-                        </svg><span>{{ __('labels.dashboard') }}</span>
+                        <div class="col-sm-6 col-md-6 col-lg-6"> <i class="icofont custom_icon icofont-dashboard-web"
+                                style=""></i>&nbsp;&nbsp;{{ __('labels.dashboard') }}</div>
                     </a>
                 </li>
 
 
-                <li class="sidebar-list"><a
-                        class="sidebar-link sidebar-title link-nav @if ($url == 'customer.index' || $url == 'customer.create' || $url == 'customer.edit') badge-light-primary @endif"
-                        href="{{ route('customer.index') }}">
-                        <svg class="stroke-icon">
-                            <use href="{{ static_asset('admin/assets/svg/icon-sprite.svg#stroke-user') }}"></use>
-                        </svg>
-                        <svg class="fill-icon">
-                            <use href="{{ static_asset('admin/assets/svg/icon-sprite.svg#fill-user') }}"> </use>
-                        </svg><span>{{ __('labels.Customers') }}</span></a></li>
+
 
 
                 <li class="sidebar-list"><a
-                        class="sidebar-link sidebar-title link-nav @if ($url == 'subadmin.index' || $url == 'subadmin.create' || $url == 'subadmin.edit') badge-light-primary @endif"
+                        class="sidebar-link sidebar-title link-nav @if ($url == 'subadmin.index' || $url == 'subadmin.create' || $url == 'subadmin.edit') badge-light-primary custom_active @endif"
                         href="{{ route('subadmin.index') }}">
-                        <svg class="stroke-icon">
-                            <use href="{{ static_asset('admin/assets/svg/icon-sprite.svg#stroke-user') }}">
-                            </use>
-                        </svg>
-                        <svg class="fill-icon">
-                            <use href="{{ static_asset('admin/assets/svg/icon-sprite.svg#fill-user') }}">
-                            </use>
-                        </svg><span>{{ __('labels.Sub Admin') }}</span></a></li>
+
+                        <div class="col-sm-6 col-md-6 col-lg-6"> <i
+                                class="icofont custom_icon icofont-business-man-alt-2"></i>&nbsp;&nbsp;{{ __('labels.Sub Admin') }}
+                        </div>
+                    </a></li>
 
 
 
                 <li class="sidebar-list"><a
-                        class="sidebar-link sidebar-title link-nav @if ($url == 'permission.index' || $url == 'permission.create' || $url == 'permission.edit') badge-light-primary @endif"
+                        class="sidebar-link sidebar-title link-nav @if ($url == 'barber.index' || $url == 'barber.create' || $url == 'barber.edit' || $url == 'barber.show') badge-light-primary custom_active @endif"
+                        href="{{ route('barber.index') }}">
+
+                        <div class="col-sm-6 col-md-6 col-lg-6"> <i
+                                class="icofont custom_icon icofont-man-in-glasses"></i>&nbsp;&nbsp;{{ __('labels.Barbers') }}
+                        </div>
+                    </a></li>
+
+
+                <li class="sidebar-list"><a
+                        class="sidebar-link sidebar-title link-nav @if ($url == 'customer.index' || $url == 'customer.create' || $url == 'customer.edit' || $url == 'customer.show') badge-light-primary custom_active @endif"
+                        href="{{ route('customer.index') }}">
+                        <div class="col-sm-6 col-md-6 col-lg-6"> <i
+                                class="icofont custom_icon icofont-users"></i>&nbsp;&nbsp;{{ __('labels.Customers') }}
+                        </div>
+                    </a></li>
+
+
+
+
+                <li class="sidebar-list"><a
+                        class="sidebar-link sidebar-title link-nav @if ($url == 'permission.index' || $url == 'permission.create' || $url == 'permission.edit') badge-light-primary custom_active @endif"
                         href="{{ route('permission.index') }}">
-                        <svg class="stroke-icon">
-                            <use href="{{ static_asset('admin/assets/svg/icon-sprite.svg#stroke-user') }}"></use>
-                        </svg>
-                        <svg class="fill-icon">
-                            <use href="{{ static_asset('admin/assets/svg/icon-sprite.svg#fill-user') }}"> </use>
-                        </svg><span>{{ __('labels.Permissions') }}</span></a></li>
+                        <div class="col-sm-6 col-md-6 col-lg-6"> <i
+                                class="icofont custom_icon icofont-ui-lock"></i>&nbsp;&nbsp;{{ __('labels.Permissions') }}
+                        </div>
+                    </a></li>
 
 
 
                 <li class="sidebar-list"><a
-                        class="sidebar-link sidebar-title link-nav @if ($url == 'module.index' || $url == 'module.create' || $url == 'module.edit') badge-light-primary @endif"
+                        class="sidebar-link sidebar-title link-nav @if ($url == 'module.index' || $url == 'module.create' || $url == 'module.edit') badge-light-primary custom_active @endif"
                         href="{{ route('module.index') }}">
-                        <svg class="stroke-icon">
-                            <use href="{{ static_asset('admin/assets/svg/icon-sprite.svg#stroke-user') }}"></use>
-                        </svg>
-                        <svg class="fill-icon">
-                            <use href="{{ static_asset('admin/assets/svg/icon-sprite.svg#fill-user') }}"> </use>
-                        </svg><span>{{ __('labels.Modules') }}</span></a></li>
+                        <div class="col-sm-6 col-md-6 col-lg-6"> <i
+                                class="icofont custom_icon icofont-ui-note"></i>&nbsp;&nbsp;{{ __('labels.Modules') }}
+                        </div>
+                    </a></li>
 
 
                 <li class="sidebar-list"><a
-                        class="sidebar-link sidebar-title link-nav @if ($url == 'role.index' || $url == 'role.create' || $url == 'role.edit') badge-light-primary @endif"
+                        class="sidebar-link sidebar-title link-nav @if ($url == 'role.index' || $url == 'role.create' || $url == 'role.edit') badge-light-primary custom_active @endif"
                         href="{{ route('role.index') }}">
-                        <svg class="stroke-icon">
-                            <use href="{{ static_asset('admin/assets/svg/icon-sprite.svg#stroke-user') }}"></use>
-                        </svg>
-                        <svg class="fill-icon">
-                            <use href="{{ static_asset('admin/assets/svg/icon-sprite.svg#fill-user') }}"> </use>
-                        </svg><span>{{ __('labels.Roles') }}</span></a></li>
-
-
-
-
-
+                        <div class="col-sm-6 col-md-6 col-lg-6"> <i
+                                class="icofont custom_icon icofont-tools-alt-2"></i>&nbsp;&nbsp;{{ __('labels.Roles') }}
+                        </div>
+                    </a></li>
 
                 <li class="sidebar-list"><a
-                        class="sidebar-link sidebar-title link-nav @if ($url == 'cms.index' || $url == 'cms.create' || $url == 'cms.edit') badge-light-primary @endif"
-                        href="{{ route('cms.index') }}">
-                        <svg class="stroke-icon">
-                            <use href="{{ static_asset('admin/assets/svg/icon-sprite.svg#stroke-user') }}"></use>
-                        </svg>
-                        <svg class="fill-icon">
-                            <use href="{{ static_asset('admin/assets/svg/icon-sprite.svg#fill-user') }}"> </use>
-                        </svg><span>{{ __('labels.Content Management') }}</span></a></li>
-
-                <li class="sidebar-list"><a
-                        class="sidebar-link sidebar-title link-nav @if ($url == 'testimonial.index' || $url == 'testimonial.create' || $url == 'testimonial.edit') badge-light-primary @endif"
+                        class="sidebar-link sidebar-title link-nav @if ($url == 'testimonial.index' || $url == 'testimonial.create' || $url == 'testimonial.edit') badge-light-primary custom_active @endif"
                         href="{{ route('testimonial.index') }}">
-                        <svg class="stroke-icon">
-                            <use href="{{ static_asset('admin/assets/svg/icon-sprite.svg#stroke-user') }}"></use>
-                        </svg>
-                        <svg class="fill-icon">
-                            <use href="{{ static_asset('admin/assets/svg/icon-sprite.svg#fill-user') }}"> </use>
-                        </svg><span>{{ __('labels.Testimonials') }}</span></a></li>
+                        <div class="col-sm-6 col-md-6 col-lg-6"> <i
+                                class="icofont custom_icon  icofont-comment"></i>&nbsp;&nbsp;{{ __('labels.Testimonials') }}
+                        </div>
+                    </a></li>
 
 
 
-               <li class="sidebar-list"><a
-                            class="sidebar-link sidebar-title link-nav @if ($url == 'banner.index' || $url == 'banner.create' || $url == 'banner.edit') badge-light-primary @endif"
-                            href="{{ route('banner.index') }}">
-                            <svg class="stroke-icon">
-                                <use href="{{ static_asset('admin/assets/svg/icon-sprite.svg#stroke-user') }}"></use>
-                            </svg>
-                            <svg class="fill-icon">
-                                <use href="{{ static_asset('admin/assets/svg/icon-sprite.svg#fill-user') }}"> </use>
-                            </svg><span>{{ __('labels.Banners') }}</span></a></li>
-
-               <li class="sidebar-list"><a
-                            class="sidebar-link sidebar-title link-nav @if ($url == 'service.index' || $url == 'service.create' || $url == 'service.edit') badge-light-primary @endif"
-                            href="{{ route('service.index') }}">
-                            <svg class="stroke-icon">
-                                <use href="{{ static_asset('admin/assets/svg/icon-sprite.svg#stroke-user') }}"></use>
-                            </svg>
-                            <svg class="fill-icon">
-                                <use href="{{ static_asset('admin/assets/svg/icon-sprite.svg#fill-user') }}"> </use>
-                            </svg><span>{{ __('labels.Services') }}</span></a></li>
+                <li class="sidebar-list"><a
+                        class="sidebar-link sidebar-title link-nav @if ($url == 'banner.index' || $url == 'banner.create' || $url == 'banner.edit') badge-light-primary custom_active @endif"
+                        href="{{ route('banner.index') }}">
+                        <div class="col-sm-6 col-md-6 col-lg-6"> <i
+                                class="icofont custom_icon icofont-image"></i>&nbsp;&nbsp;{{ __('labels.Banners') }}
+                        </div>
+                    </a></li>
 
 
+                <li class="sidebar-list"><a
+                        class="sidebar-link sidebar-title link-nav @if ($url == 'service.index' || $url == 'service.create' || $url == 'service.edit') badge-light-primary custom_active @endif"
+                        href="{{ route('service.index') }}">
+                        <div class="col-sm-6 col-md-6 col-lg-6"> <i
+                                class="icofont custom_icon  icofont-bullhorn"></i>&nbsp;&nbsp;{{ __('labels.Services') }}
+                        </div>
+                    </a></li>
 
-            <li class="sidebar-list"><a
-                class="sidebar-link sidebar-title link-nav @if ($url == 'get-website-config') badge-light-primary @endif"
-                href="{{ route('get-website-config') }}">
-                <svg class="stroke-icon">
-                    <use href="{{ static_asset('admin/assets/svg/icon-sprite.svg#stroke-user') }}"></use>
-                </svg>
-                <svg class="fill-icon">
-                    <use href="{{ static_asset('admin/assets/svg/icon-sprite.svg#fill-user') }}"> </use>
-                </svg><span>{{ __('labels.Website Setting') }}</span></a></li>
+
+                <li class="sidebar-list"><a
+                        class="sidebar-link sidebar-title link-nav @if ($url == 'get-website-config') badge-light-primary custom_active @endif"
+                        href="{{ route('get-website-config') }}">
+                        <div class="col-sm-12 col-md-12 col-lg-12"> <i
+                                class="icofont custom_icon icofont-web"></i>&nbsp;&nbsp;{{ __('labels.Website Setting') }}
+                        </div>
+                    </a></li>
 
 
 
+                <li class="sidebar-list"><a
+                        class="sidebar-link sidebar-title link-nav @if ($url == 'page.index' || $url == 'page.create' || $url == 'page.edit') custom_active badge-light-primary custom_active @endif"
+                        href="{{ route('page.index') }}">
+                        <div class="col-sm-6 col-md-6 col-lg-6"> <i
+                                class="icofont custom_icon  icofont-papers"></i>&nbsp;&nbsp;{{ __('labels.Pagies') }}
+                        </div>
+                    </a></li>
 
+
+                <li class="sidebar-list"><a
+                        class="sidebar-link sidebar-title link-nav @if ($url == 'contact-us.index') custom_active  badge-light-primary custom_active @endif"
+                        href="{{ route('contact-us.index') }}">
+
+                        <div class="col-sm-6 col-md-6 col-lg-6">
+                            <i class="icofont custom_icon icofont-ui-contact-list"></i>
+                            &nbsp;&nbsp;{{ __('labels.Contact Us') }}
+                        </div>
+                    </a></li>
 
 
 

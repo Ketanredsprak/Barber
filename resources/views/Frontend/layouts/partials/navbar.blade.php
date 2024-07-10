@@ -72,7 +72,7 @@
 
              @guest
 
-                 <a class="btn btn-warning mr-2" href="{{ route('login') }}" type="submit">{{ __('labels.Log In') }}</a>
+                 <a class="btn btn-warning mr-2" href="{{ route('login') }}" type="submit">{{ __('labels.Sign In') }}</a>
                  <a class="btn btn-light" href="{{ route('register') }}" type="submit">{{ __('labels.Sign Up') }}</a>
              @else
                  <div class="dropdown profile_btn">

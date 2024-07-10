@@ -37,8 +37,8 @@ $name = 'page_name_' . $language;
                                             <div class="col-sm-12">
                                                 <div class="form-group">
                                                     <input type="hidden" class="form-control" name="id" value="{{ $id }}">
-                                                    <input type="text" class="form-control  @error('password') is-invalid @enderror" id="password"
-                                                        aria-describedby="textHelp" placeholder="{{ __('labels.New Password') }}" name="password">
+                                                    <input type="password" class="form-control  @error('password') is-invalid @enderror" id="password"
+                                                        aria-describedby="tpasswordelp" placeholder="{{ __('labels.New Password') }}" name="password">
                                                         @error('password')
                                                         <span class="invalid-feedback" role="alert">
                                                             <strong>{{ $message }}</strong>
@@ -48,7 +48,7 @@ $name = 'page_name_' . $language;
                                             </div>
                                             <div class="col-sm-12">
                                                 <div class="form-group">
-                                                    <input type="text" class="form-control  @error('confirm_password') is-invalid @enderror" name="confirm_password" id="confirm_password"
+                                                    <input type="password" class="form-control  @error('confirm_password') is-invalid @enderror" name="confirm_password" id="confirm_password"
                                                         placeholder="{{ __('labels.Confirm Password') }}">
                                                         @error('confirm_password')
                                                         <span class="invalid-feedback" role="alert">

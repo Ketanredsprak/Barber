@@ -32,7 +32,8 @@ class User extends Authenticatable
         'iqama_no',
         'health_license',
         'store_registration',
-        'expiration_date',
+        'health_license_expiration_date',
+        'store_registration_expiration_date',
         'salon_name',
         'location',
         'country_name',
@@ -71,4 +72,9 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+
+    public function barber_service(){
+        return $this->hasMany(BarberServices::class, 'barber_id', 'id');
+    }
 }

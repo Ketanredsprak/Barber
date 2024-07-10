@@ -53,7 +53,8 @@ Based url for redspark server : https://redsparkte.a2hosted.com/ehjez/api/
                                         email:barbernewnewnew@mailinator.com
                                         nationality:India
                                         iqama_no:78989897456
-                                        expiration_date:2024-06-05
+                                        health_license_expiration_date:2024-06-05
+                                        store_registration_expiration_date:2024-06-05
                                         salon_name:The Angel One
                                         location:Indian ,Vadodara,Bhalyi vasana 236005
                                         country_name:india
@@ -166,7 +167,8 @@ Based url for redspark server : https://redsparkte.a2hosted.com/ehjez/api/
                                         country_code:92
                                         gender:Male
                                         salon_name:The  Barber shop
-                                        expiration_date:2024-06-06
+                                        health_license_expiration_date:2024-06-05
+                                        store_registration_expiration_date:2024-06-05
                                         location:vadodara
                                         country_name:india
                                         state_name:gujarat
@@ -213,3 +215,52 @@ Based url for redspark server : https://redsparkte.a2hosted.com/ehjez/api/
                 header : language(code)
 
     }
+
+
+==============================================
+
+
+(12)  V1 => get-all-services
+    {
+            url : {{live}}get-all-services
+                method : get
+                authorization : {token}
+                header : language(code)
+
+    }
+
+
+=============================================
+
+
+(13)   V1 => add-and-update-services
+    {
+            url : {{live}}add-and-update-services
+                method : post
+                authorization : {token}
+                header : language(code)
+                input parm : {
+                                       subids[0]:13
+                                       subids[1]:14
+                                       prices[0]:100
+                                       prices[1]:55
+                                       special_services[0]:1
+                                       special_services[1]:0
+                            }
+    }
+
+
+===========================================
+
+
+(14)   V1 => get-country-code
+    {
+            url : {{live}}get-country-code
+                method : get
+                authorization : {token}
+                header : language(code)
+   }
+
+
+===========================================
+

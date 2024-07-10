@@ -3,7 +3,13 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 <meta name="csrf-token" content="{{ csrf_token() }}" />
-<title>{{ config('app.name', 'Laravel') }}</title>
+@php
+      $currentRouteName = Route::currentRouteName();
+@endphp
+<title>{{ config('app.name') }} - {{ $currentRouteName }}</title>
+
+
+
 
 <!--
 =====================================================================
@@ -11,7 +17,8 @@ FAVICON
 =====================================================================
 -->
 
-<link rel="icon" href="images/logos/favicon.ico" sizes="16x16">
+<link rel="icon" href="{{ static_asset('admin/assets/images/favicon.ico') }}" type="image/x-icon">
+<link rel="shortcut icon" href="{{ static_asset('admin/assets/images/favicon.ico') }}" type="image/x-icon">
 <meta name="msapplication-TileColor" content="#79bde9">
 <meta name="msapplication-TileImage" content="/mstile-144x144.png">
 <meta name="theme-color" content="#ffffff">

@@ -133,7 +133,7 @@ class AccountController extends Controller
                     [
                         'data' => $data,
                         'status' => 1,
-                        'message' => __('message.Regiter successfully'),
+                        'message' => __('message.Register successfully'),
                     ], 200);
             }
 
@@ -156,7 +156,8 @@ class AccountController extends Controller
         $validated['email'] = "required|email|unique:users,email";
         $validated['nationality'] = "required";
         $validated['iqama_no'] = "required|numeric";
-        $validated['expiration_date'] = "required|date";
+        $validated['health_license_expiration_date'] = "required|date";
+        $validated['store_registration_expiration_date'] = "required|date";
         $validated['health_license'] = "required";
         $validated['store_registration'] = "required";
         $validated['salon_name'] = "required";
@@ -189,8 +190,10 @@ class AccountController extends Controller
         'nationality.required' => __('error.The nationality field is required.'),
         'iqama_no.required' => __('error.The iqama number field is required.'),
         'iqama_no.numeric' => __('error.The iqama number must be a number.'),
-        'expiration_date.required' => __('error.The expiration date field is required.'),
-        'expiration_date.date' => __('error.The expiration date must be a valid date.'),
+        'store_registration_expiration_date.required' => __('error.The expiration date field is required.'),
+        'store_registration_expiration_date.date' => __('error.The expiration date must be a valid date.'),
+        'health_license_expiration_date.required' => __('error.The expiration date field is required.'),
+        'health_license_expiration_date.date' => __('error.The expiration date must be a valid date.'),
         'health_license.required' => __('error.The health license field is required.'),
         'store_registration.required' => __('error.The store registration field is required.'),
         'salon_name.required' => __('error.The salon name field is required.'),
@@ -249,7 +252,8 @@ class AccountController extends Controller
                 'store_registration' => $store_registration_name,
                 'nationality' => $request->nationality,
                 'iqama_no' => $request->iqama_no,
-                'expiration_date' => $request->expiration_date,
+                'health_license_expiration_date' => $request->health_license_expiration_date,
+                'store_registration_expiration_date' => $request->store_registration_expiration_date,
                 'salon_name' => $request->salon_name,
                 'location' => $request->location,
                 'country_name' => $request->country_name,
@@ -273,7 +277,7 @@ class AccountController extends Controller
                     [
                         'data' => $data,
                         'status' => 1,
-                        'message' => __('message.Regiter successfully'),
+                        'message' => __('message.Register successfully'),
                     ], 200);
             }
 
@@ -496,7 +500,8 @@ class AccountController extends Controller
         $validated['profile_image'] = "required|file|mimes:jpeg,png,jpg";
         $validated['salon_name'] = "required";
         $validated['health_license'] = "required";
-        $validated['expiration_date'] = "required|date";
+        $validated['health_license_expiration_date'] = "required|date";
+        $validated['store_registration_expiration_date'] = "required|date";
         $validated['location'] = "required";
         $validated['country_name'] = "required";
         $validated['state_name'] = "required";
@@ -531,7 +536,10 @@ class AccountController extends Controller
             'profile_image.mimes' => __('error.The profile image must be a file of type: jpeg, png, jpg.'),
             'salon_name.required' => __('error.The salon name field is required.'),
             'health_license.required' => __('error.The health license field is required.'),
-            'expiration_date.required' => __('error.The expiration date field is required'),
+            'store_registration_expiration_date.required' => __('error.The expiration date field is required.'),
+            'store_registration_expiration_date.date' => __('error.The expiration date must be a valid date.'),
+            'health_license_expiration_date.required' => __('error.The expiration date field is required.'),
+            'health_license_expiration_date.date' => __('error.The expiration date must be a valid date.'),
             'location.required' => __('error.The location field is required.'),
             'nationality.required' => __('error.The nationality field is required.'),
             'iqama_no.required' => __('error.The iqama number field is required.'),
@@ -555,7 +563,8 @@ class AccountController extends Controller
             $auth->country_code = $request->country_code;
             $auth->phone = $request->phone;
             $auth->salon_name = $request->salon_name;
-            $auth->expiration_date = $request->expiration_date;
+            $auth->health_license_expiration_date = $request->health_license_expiration_date;
+            $auth->store_registration_expiration_date = $request->store_registration_expiration_date;
             $auth->location = $request->location;
             $auth->country_name = $request->country_name;
             $auth->state_name = $request->state_name;
@@ -689,17 +698,17 @@ class AccountController extends Controller
     public function verifyOTP(Request $request)
     {
 
-         $language_code = $request->header('language');
+        $language_code = $request->header('language');
 
         $validated = [];
         $validated['user_id'] = "required";
-        $validated['otp'] = "required|min:6|max:6";
+        $validated['otp'] = "required|min:4|max:4";
 
         $customMessages = [
             'user_id.required' => __('error.The user id field is required.'),
             'otp.required' =>  __('error.The otp field is required.'),
-            'otp.min' => __('error.The otp must be exactly 6 digits.'),
-            'otp.max' => __('error.The otp must be exactly 6 digits.'),
+            'otp.min' => __('error.The otp must be exactly 4 digits.'),
+            'otp.max' => __('error.The otp must be exactly 4 digits.'),
         ];
 
        $request->validate($validated, $customMessages);

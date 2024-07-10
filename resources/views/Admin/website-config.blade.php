@@ -26,10 +26,10 @@
                 <div class="card height-equal">
                     <div class="card-body custom-input">
                         <form class="row g-3" method="post" action="{{ route('website-config-update') }}"
-                            enctype="multipart/form-data" id="profile-submit">
+                            enctype="multipart/form-data" id="website_config_submit">
                             @csrf
 
-                            <div class="col-5">
+                            <div class="col-10">
                                 <label class="form-label" for="header_logo">{{ __('labels.Header Logo') }} <span
                                         class="text-danger">*</span> </label>
                                 <input class="form-control @error('header_logo') is-invalid @enderror" id="header_logo"
@@ -40,14 +40,14 @@
                                     </span>
                                 @enderror
                             </div>
-                            <div class="col-1">
+                            <div class="col-2">
                                 <label class="form-label" for="header_logo"></label><br>
                                 <img src="{{ static_asset('website-config/' . $data->header_logo) }}" class=""
                                     style="height:30px">
                             </div>
 
 
-                            <div class="col-5">
+                            {{-- <div class="col-5">
                                 <label class="form-label" for="footer_logo">{{ __('labels.Footer Logo') }} <span
                                         class="text-danger">*</span> </label>
                                 <input class="form-control @error('footer_logo') is-invalid @enderror" id="footer_logo"
@@ -62,7 +62,7 @@
                                 <label class="form-label" for="footer_logo"></label><br>
                                 <img src="{{ static_asset('website-config/' . $data->footer_logo) }}" class=""
                                     style="height:30px">
-                            </div>
+                            </div> --}}
 
 
 
@@ -146,8 +146,6 @@
                             </div>
 
 
-
-
                             <div class="col-6">
                                 <label class="form-label" for="email">{{ __('labels.Email') }} <span
                                         class="text-danger">*</span> </label>
@@ -224,6 +222,166 @@
                     </div>
                 </div>
             </div>
+
+
+            <div class="col-xl-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>{{ __('labels.Point System') }}</h4>
+                    </div>
+                    <div class="card-body custom-input">
+                        <form class="row g-3" method="post" action="{{ route('point-system-update') }}"
+                            id="point-sytem-submit">
+                            @csrf
+
+                            <div class="col-4">
+                                <label class="form-label" for="per_booking_points">{{ __('labels.Per Booking Points') }}
+                                    <span class="text-danger">*</span></label>
+                                <input class="form-control @error('per_booking_points') is-invalid @enderror"
+                                    id="per_booking_points" type="text"
+                                    placeholder="{{ __('labels.Per Booking Points') }}" aria-label="per_booking_points"
+                                    name="per_booking_points" value="{{ $pointSystem->per_booking_points }}">
+                                @error('per_booking_points')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+
+
+                            <div class="col-4">
+                                <label class="form-label"
+                                    for="per_active_referral_points">{{ __('labels.Per Active Referral Points') }} <span
+                                        class="text-danger">*</span></label>
+                                <input class="form-control @error('per_active_referral_points') is-invalid @enderror"
+                                    id="per_active_referral_points" type="text"
+                                    placeholder="{{ __('labels.Per Active Referral Points') }}"
+                                    aria-label="per_active_referral_points" name="per_active_referral_points" value="{{ $pointSystem->per_active_referral_points }}">
+                                @error('per_active_referral_points')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+
+
+
+                            <div class="col-4">
+                                <label class="form-label"
+                                    for="how_many_point_equal_sr">{{ __('labels.How Many Point Equal 1 SR') }} <span
+                                        class="text-danger">*</span> </label>
+                                <input class="form-control @error('how_many_point_equal_sr') is-invalid @enderror"
+                                    id="how_many_point_equal_sr" type="text"
+                                    placeholder="{{ __('labels.How Many Point Equal 1 SR') }}"
+                                    aria-label="how_many_point_equal_sr" name="how_many_point_equal_sr" value="{{ $pointSystem->how_many_point_equal_sr }}">
+                                @error('how_many_point_equal_sr')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+
+
+
+
+                            <div class="col-12">
+                                <input type="submit" class="btn btn-primary" value="{{ __('labels.Submit') }}"
+                                    id="point-system-update-submit">
+                                <a href="{{ route('dashboard') }}" class="btn btn-light">{{ __('labels.Cancel') }}</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+@endsection
+
+@section('script')
+    <script>
+        $(document).ready(function() {
+
+            ///website config update
+            $("#website_config_submit").submit(function(e) {
+                e.preventDefault();
+
+                var form_data = this;
+                var formData = new FormData(form_data);
+                var url = $(this).attr('action');
+                var type = "POST";
+
+                $.ajax({
+                    type: type,
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    url: url,
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        if (response.status == 1) {
+                            $(".is-invalid").removeClass('is-invalid');
+                            location.reload();
+                            show_toster(response.message)
+                            form_data.reset();
+                        }
+                    },
+                    error: function(response) {
+                        var errors = response.responseJSON;
+                        $(".is-invalid").removeClass('is-invalid');
+                        $.each(errors.errors, function(key, value) {
+                            var ele = "#" + key;
+                            $(ele).addClass('is-invalid');
+                            toastr.error(value);
+                        });
+                    }
+                })
+                return false;
+
+            });
+            ///website config update
+
+            // Website point system  update
+            $("#point-sytem-submit").submit(function(e) {
+               e.preventDefault();
+
+                var form_data = this;
+                var formData = new FormData(form_data);
+                var url = $(this).attr('action');
+                var type = "POST";
+
+                $.ajax({
+                    type: type,
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    url: url,
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        if (response.status == 1) {
+                            $(".is-invalid").removeClass('is-invalid');
+                            location.reload();
+                            show_toster(response.message)
+                            form_data.reset();
+                        }
+                    },
+                    error: function(response) {
+                        var errors = response.responseJSON;
+                        $(".is-invalid").removeClass('is-invalid');
+                        $.each(errors.errors, function(key, value) {
+                            var ele = "#" + key;
+                            $(ele).addClass('is-invalid');
+                            toastr.error(value);
+                        });
+                    }
+                })
+                return false;
+
+            });
+            // Website point system  update
+        });
+    </script>
 @endsection

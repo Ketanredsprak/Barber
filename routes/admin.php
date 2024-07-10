@@ -18,7 +18,9 @@ use App\Http\Controllers\Admin\ContactUsController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\BlogAndNewsController;
 use App\Http\Controllers\Admin\TestimonialController;
+use App\Http\Controllers\Admin\SubscriptionController;
 use App\Http\Controllers\Admin\WebsiteConfigController;
+use App\Http\Controllers\Admin\SubscriptionPermissionController;
 
 
 
@@ -97,9 +99,15 @@ Route::prefix('admin')->middleware('auth')->group(function () {
 
       Route::get('get-website-config', [WebsiteConfigController::class, 'getWebsiteConfig'])->name('get-website-config');
       Route::post('website-config-update', [WebsiteConfigController::class, 'websiteConfigUpdate'])->name('website-config-update');
+      Route::post('point-system-update', [WebsiteConfigController::class, 'pointSystemUpdate'])->name('point-system-update');
 
 
       Route::resource('contact-us', ContactUsController::class);
+      Route::resource('subscription-permission', SubscriptionPermissionController::class);
+      Route::post('/get.subscription.list', [SubscriptionPermissionController::class, 'getSubcriptions'])->name('get.subscription.list');
+
+      Route::resource('subscription', SubscriptionController::class);
+      Route::get('subscription-status/{id}', [SubscriptionController::class, 'subscriptionStatus'])->name('subscription.status');
 
 
 
