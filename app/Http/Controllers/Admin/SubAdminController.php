@@ -40,7 +40,7 @@ class SubAdminController extends Controller
     {
         //
         if ($request->ajax()) {
-            $data = User::where('user_type',2)->where("is_delete",0)->get();
+            $data = User::where('user_type',2)->where("is_delete",0)->orderBy('id', 'DESC')->get();
             return Datatables::of($data)->addIndexColumn()
                 ->addColumn('action', function ($row) {
                     $btn = "";
@@ -103,7 +103,7 @@ class SubAdminController extends Controller
                             <div class="media-body">
                               <div class="row">
                                 <div class="col-xl-12">
-                                <h6 class="mt-0">&nbsp;&nbsp; ' . $data->name .' ' . $data->last_name . '</span></h6>
+                                <h6 class="mt-0">&nbsp;&nbsp; ' . $data->first_name .' ' . $data->last_name . '</span></h6>
                                 </div>
                               </div>
                               <p>&nbsp;&nbsp; ' . $data->email . '</p>

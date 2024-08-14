@@ -14,6 +14,9 @@ use Illuminate\Http\RedirectResponse;
 use App\Providers\RouteServiceProvider;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Admin\AdminProfileRequest;
+use App\Models\Booking;
+use App\Models\Services;
+use App\Models\Subscription;
 
 class AdminController extends Controller
 {
@@ -21,16 +24,19 @@ class AdminController extends Controller
 
     public function adminLogin()
     {
-        if(!empty((Auth::user()))) {
-            if(Auth::user()->user_type  == 1)
-            {
-                    return redirect('admin/dashboard');
+        if (!empty((Auth::user()))) {
+            if (Auth::user()->user_type  == 1) {
+                return redirect('admin/dashboard');
+            } elseif (Auth::user()->user_type  == 2) {
+                return redirect('admin/dashboard');
+            } elseif (Auth::user()->user_type  == 3) {
+                return redirect('404');
+            } else {
+                return redirect('/');
             }
-        }else
-        {
+        } else {
             return  view('Admin.login');
         }
-
     }
 
 
@@ -48,23 +54,74 @@ class AdminController extends Controller
 
     public function dashboard()
     {
-        $customers = User::where('user_type',4)->count();
-        $barbers = User::where('user_type',3)->count();
-        $subadmin = User::where('user_type',2)->count();
-        $contactus = ContactUS::count();
-        return view('Admin.dashboard',compact('customers','subadmin','barbers','contactus'));
+        $customers = User::where('user_type', 4)->where('is_delete', 0)->count();
+        $barbers = User::where('user_type', 3)->where('is_delete', 0)->count();
+        $subadmin = User::where('user_type', 2)->where('is_delete', 0)->count();
+        $contactus = ContactUS::where('is_delete', 0)->count();
+
+        $booking = Booking::count();
+        $today_booking = Booking::where('booking_date', date('Y-m-d'))->count();
+
+        $pending_booking = Booking::where('status', 'pending')->count();
+        $reject_booking = Booking::where('status', 'reject')->count();
+        $accept_booking = Booking::where('status', 'accept')->count();
+        $finished_booking = Booking::where('status', 'finished')->count();
+        $rescheduled_booking = Booking::where('status', 'rescheduled')->count();
+        $cancel_booking = Booking::where('status', 'cancel')->count();
+
+        $subscription = Subscription::count();
+        $main_services = Services::where('parent_id', 0)->count();
+        $sub_services = Services::where('parent_id', '!=', 0)->count();
+
+
+        //booking details
+        $todays_bookings = Booking::with(['barber_detail', 'customer_detail','booking_service_detailss'])
+        ->orderBy('id', 'DESC')
+        ->where('booking_date', date('Y-m-d'))
+        ->get();
+
+        // booking details
+
+        // Initialize arrays to hold data
+        $monthlyOrderCounts = array_fill(0, 12, 0);
+
+
+        // Get the current year
+        $currentYear = date('Y');
+
+        // Fetch monthly booking counts and revenue
+        $graph_bookings = Booking::selectRaw('MONTH(booking_date) as month, COUNT(*) as count')
+            ->whereYear('booking_date', $currentYear)
+            ->groupBy('month')
+            ->orderBy('month')
+            ->get();
+
+        foreach ($graph_bookings as $graph_booking) {
+            $monthIndex = $graph_booking->month - 1; // months are 1-based, but array indices are 0-based
+            $monthlyOrderCounts[$monthIndex] = $graph_booking->count;
+        }
+
+        // Prepare labels for the months
+        $monthlyLabels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+        $orderCount = array_sum($monthlyOrderCounts); // Example value
+        $monthlyOrderCounts = [
+            'data' => $monthlyOrderCounts,
+            'labels' => $monthlyLabels
+        ];
+
+        return view('Admin.dashboard', compact('orderCount', 'monthlyOrderCounts', 'customers', 'subadmin', 'barbers', 'contactus','todays_bookings' ,'booking', 'today_booking', 'pending_booking', 'reject_booking', 'cancel_booking', 'accept_booking', 'finished_booking', 'rescheduled_booking', 'subscription', 'main_services', 'sub_services'));
     }
 
     public function setting(Request $request)
     {
 
-            return view('Admin.account_setting', [
-                'user' => $request->user(),
-            ]);
-
+        return view('Admin.account_setting', [
+            'user' => $request->user(),
+        ]);
     }
 
-      /**
+    /**
      * Update the user's profile information.
      */
     public function update(AdminProfileRequest $request)
@@ -75,8 +132,8 @@ class AdminController extends Controller
 
         // for Image
         if ($request->hasFile('profile_image')) {
-            if($data->profile_image) {
-             File::delete(public_path('profile_image/' . $data->profile_image));
+            if ($data->profile_image) {
+                File::delete(public_path('profile_image/' . $data->profile_image));
             }
             $source = $_FILES['profile_image']['tmp_name'];
             if ($source) {
@@ -90,7 +147,6 @@ class AdminController extends Controller
                 $profile_image = compressImage($source, $destination);
                 $data->profile_image = $filename;
             }
-
         }
 
 
@@ -100,7 +156,7 @@ class AdminController extends Controller
         $data->phone = $request['phone'];
         $data->save();
         if (!empty($data)) {
-            return redirect()->route('setting');
+            return redirect()->route('setting')->with('success', __('message.Profile edit Successfully'));
             // return redirect()->route('setting')->with('success',__('message.Profile edit Successfully'));
             // return response()->json(['status' => '1', 'success' => 'Profile edit Successfully']);
         }
@@ -134,7 +190,21 @@ class AdminController extends Controller
         } else {
             $data = User::find(Auth::id())->update(array('password' => $pass));
             if (!empty($data)) {
-                return redirect()->route('setting')->with('info', __('message.Password updated successfully.'));
+
+
+                $user_type = Auth::user()->user_type;
+
+                Auth::guard('web')->logout();
+
+                $request->session()->invalidate();
+
+                $request->session()->regenerateToken();
+
+                if ($user_type == 1) {
+                    return redirect('admin/login')->with('success', __('message.Password updated successfully.'));
+                } else {
+                    return redirect('/')->with('success', __('message.Password updated successfully.'));
+                }
             }
         }
     }
@@ -145,6 +215,4 @@ class AdminController extends Controller
         session()->put('locale', $request->data);
         return response()->json(['status' => 'success', 'success' => 'language change']);
     }
-
-
 }

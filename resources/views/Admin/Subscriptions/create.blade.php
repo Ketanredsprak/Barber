@@ -23,6 +23,19 @@
                             @csrf
                             <div class="row g-2">
 
+
+                                <div class="col-sm-12">
+                                    <label class="form-label">{{ __('labels.Subscription Type') }}</label>
+                                    <select name="subscription_type" id="subscription_type"
+                                        aria-label="{{ __('labels.Subscription Type') }}"
+                                        data-placeholder="{{ __('labels.Subscription Type') }}..." class="form-select">
+                                        <option value="">{{ __('labels.Subscription Type') }}</option>
+                                        <option value="barber">{{ __('labels.Barber') }}</option>
+                                        <option value="customer">{{ __('labels.Customer') }}</option>
+                                    </select>
+                                </div>
+
+
                                 <div class="col-md-6">
                                     <label class="form-label"
                                         for="subscription_name_en">{{ __('labels.Subscription English Name') }}
@@ -53,7 +66,8 @@
 
                                 <div class="col-md-6">
                                     <label class="col-form-label ">
-                                        <span class="required">{{ __('labels.Subscription Arabic Description') }}<span class="text-danger">*</span></span>
+                                        <span class="required">{{ __('labels.Subscription Arabic Description') }}<span
+                                                class="text-danger">*</span></span>
                                     </label>
                                     <textarea class="form-control" id="subscription_description_ar" name="subscription_description_ar" rows="5"></textarea>
                                 </div>
@@ -99,51 +113,44 @@
                                     <label class="form-label" for="price">{{ __('labels.Price') }} <span
                                             class="text-danger">*</span> </label>
                                     <input class="form-control" id="price" name="price" type="text"
+                                        pattern="[0-9]*" inputmode="numeric"
+                                        oninput="this.value = this.value.replace(/[^0-9]/g, '');"
                                         placeholder="{{ __('labels.Price') }}" aria-label="{{ __('labels.Price') }}">
+
                                     <div id="price_error" style="display: none;" class="text-danger"></div>
                                 </div>
 
-                                <div class="col-md-6">
+                                <div class="col-md-6" id="number_of_booking_container" style="display: none;">
                                     <label class="form-label"
                                         for="number_of_booking">{{ __('labels.Number Of Booking') }} <span
                                             class="text-danger">*</span> </label>
                                     <input class="form-control" id="number_of_booking" name="number_of_booking"
-                                        type="text" placeholder="{{ __('labels.Number Of Booking') }}"
+                                        type="text" pattern="[0-9]*" inputmode="numeric"
+                                        oninput="this.value = this.value.replace(/[^0-9]/g, '');"
+                                        placeholder="{{ __('labels.Number Of Booking') }}"
                                         aria-label="{{ __('labels.Number Of Booking') }}">
+
                                     <div id="number_of_booking_error" style="display: none;" class="text-danger"></div>
                                 </div>
 
 
                                 <div class="col-md-6">
-                                    <label class="form-label" for="duration">{{ __('labels.Duration (in-Days)') }} <span
-                                            class="text-danger">*</span> </label>
-                                    <input class="form-control" id="duration_in_days" name="duration_in_days"
-                                        type="text" placeholder="{{ __('labels.Duration (in-Days)') }}"
-                                        aria-label="{{ __('labels.Duration (in-Days)') }}">
+                                    <label class="form-label" for="duration">{{ __('labels.Duration (in-Months)') }}
+                                        <span class="text-danger">*</span> </label>
+                                    <input class="form-control" id="duration_in_months" name="duration_in_months"
+                                        type="text" pattern="[0-9]*" inputmode="numeric"
+                                        oninput="this.value = this.value.replace(/[^0-9]/g, '');"
+                                        placeholder="{{ __('labels.Duration (in-Months)') }}"
+                                        aria-label="{{ __('labels.Duration (in-Months)') }}">
+
                                     <div id="duration_error" style="display: none;" class="text-danger"></div>
                                 </div>
-
-
-                                <div class="col-sm-6">
-                                    <label class="form-label">{{ __('labels.Subscription Type') }}</label>
-                                    <select name="subscription_type" id="subscription_type" aria-label="{{ __('labels.Subscription Type') }}"
-                                        data-placeholder="{{ __('labels.Subscription Type') }}..." class="form-select">
-                                        <option value="">{{ __('labels.Subscription Type') }}</option>
-                                        <option value="barber">{{ __('labels.Barber') }}</option>
-                                        <option value="customer">{{ __('labels.Customer') }}</option>
-                                    </select>
-                                </div>
-
-
-
 
                             </div>
                             <button class="btn btn-primary btn-sm btn-custom" type="submit" id="subscriptionSubmit"><i
                                     class="fa fa-spinner fa-spin d-none icon"></i> {{ __('labels.Submit') }}</button>
-                            {{-- <button class="btn btn-secondary btn-sm" type="button" data-bs-dismiss="modal"
-                                id="is_close">{{ __('labels.Close') }}</button> --}}
-
-                                <a href="{{ route('subscription.index') }}" class="btn btn-light">{{ __('labels.Close') }}</a>
+                            <a href="{{ route('subscription.index') }}"
+                                class="btn btn-light">{{ __('labels.Close') }}</a>
 
                         </form>
                     </div>
@@ -206,7 +213,23 @@
                 });
 
             });
+
+
+
+
         });
 
+
+        $(document).on('change', '#subscription_type', function(e) {
+            const subscriptionType = document.getElementById('subscription_type');
+            const numberOfBookingContainer = document.getElementById('number_of_booking_container');
+            subscriptionType.addEventListener('change', function() {
+                if (this.value === 'customer') {
+                    numberOfBookingContainer.style.display = 'block';
+                } else {
+                    numberOfBookingContainer.style.display = 'none';
+                }
+            });
+        });
     </script>
 @endsection

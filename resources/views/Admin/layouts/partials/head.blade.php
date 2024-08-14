@@ -9,13 +9,18 @@
 @php
       $url = Request::route()->getName();
       $currentRouteName = Route::currentRouteName();
+
+      $prefix = strtoupper(explode('.', $currentRouteName)[0]);
+
+
+
 @endphp
 
 
 
 <link rel="icon" href="{{ static_asset('admin/assets/images/favicon.ico') }}" type="image/x-icon">
 <link rel="shortcut icon" href="{{ static_asset('admin/assets/images/favicon.ico') }}" type="image/x-icon">
-<title>{{ config('app.name') }} - {{ $currentRouteName }}</title>
+<title>{{ config('app.name') }} - {{ $prefix }}</title>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <link href="https://fonts.googleapis.com/css?family=Rubik:400,400i,500,500i,700,700i&amp;display=swap" rel="stylesheet">
@@ -52,6 +57,7 @@
 <!-----  Toastr Css---->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 <!-----  Toastr Css Ends---->
+
 
 <link rel="stylesheet" type="text/css" href="{{ static_asset('admin/assets/css/vendors/datatables.css') }}">
 <!--   End Datatable Css --->

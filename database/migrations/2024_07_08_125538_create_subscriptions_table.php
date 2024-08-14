@@ -23,7 +23,7 @@ return new class extends Migration
             $table->text('subscription_detail_tr')->nullable();
             $table->string('number_of_booking')->nullable();
             $table->string('price')->nullable();
-            $table->string('duration_in_days')->nullable();
+            $table->string('duration_in_months')->nullable();
             $table->integer('status')->default(0);
             $table->string('subscription_type')->comment("barber,customer");
             $table->string("is_delete")->default(0)->comment("1 => data delete,0 => data not delete");

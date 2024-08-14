@@ -56,7 +56,7 @@
 
 
               <div class="col-5">
-                <label class="form-label" for="profile_image">{{ __('labels.Profile Image') }} - <span class="text-danger">{{ __('labels.200px * 200px') }}</span> <span class="text-danger">*</span></label>
+                <label class="form-label" for="profile_image">{{ __('labels.Profile Image') }} - <span class="text-danger"> ({{ __('labels.Accept:png,jpg,jpeg') }}) </span> <span class="text-danger">*</span></label>
                 <input class="form-control" id="profile_image" type="file" name="profile_image" accept=".png, .jpg, .jpeg">
               </div>
               <div class="col-1">
@@ -76,9 +76,26 @@
              </div>
 
 
+             <?php
+                if(!empty(old('phone')))
+                {
+                     $phone_value = (old('phone'));
+                }else {
+                     $phone_value =  Auth::user()->phone;
+                }
+
+
+              ?>
               <div class="col-6">
                 <label class="form-label" for="phone">{{ __('labels.Phone') }} <span class="text-danger">*</span></label>
-                <input class="form-control  @error('phone') is-invalid @enderror" name="phone" id="phone" type="text" placeholder="{{ __('labels.Phone') }}"  value="{{ Auth::user()->phone }}">
+
+
+
+                <input class="form-control  @error('phone') is-invalid @enderror" id="phone" name="phone" type="text" pattern="[0-9]*" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '');"
+                placeholder="{{ __('labels.Phone') }}" aria-label="{{ __('labels.Phone') }}"  value="{{  $phone_value }}">
+
+
+
                 @error('phone')
                 <span class="invalid-feedback" role="alert">
                     <strong>{{ $message }}</strong>

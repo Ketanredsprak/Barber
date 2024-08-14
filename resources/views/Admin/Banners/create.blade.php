@@ -24,7 +24,7 @@
 
 
                     <div class="col-md-6">
-                        <label class="form-label" for="banner_image">{{ __('labels.Banner Image') }} <span class="text-danger">*</span> </label>
+                        <label class="form-label" for="banner_image">{{ __('labels.Banner Image') }}  ({{ __('labels.Accept:png,jpg,jpeg') }})<span class="text-danger">*</span> </label>
                         <input class="form-control" id="banner_image" name="banner_image" type="file" accept=""
                             placeholder="{{ __('labels.Banner Image') }}" aria-label="{{ __('labels.Banner Image') }}" accept=".png, .jpg, .jpeg">
                         <div id="banner_image_error" style="display: none;" class="text-danger"></div>

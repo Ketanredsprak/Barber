@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Front;
 
-use App\Http\Controllers\Controller;
+use App\Models\Pagies;
 use App\Models\MyFavorite;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Redirect;
 
 class MyFavoriteController extends Controller
@@ -30,4 +32,19 @@ class MyFavoriteController extends Controller
         return Redirect::back()->with('message', $message);
 
     }
+
+    public function myFavoriteList()
+    {
+        $user_id = Auth::user()->id;
+        $favorites = MyFavorite::with('barber')->where('user_id', $user_id)->paginate(4);
+
+        foreach ($favorites as $favorite) {
+            $favorite['barber']['encrypt_id'] = Crypt::encryptString($favorite->barber->id);
+        }
+
+
+        $data = Pagies::with("meta_content", "cms_content")->find(10);
+        return view('Frontend.Auth.my-favorite', compact('data','favorites'));
+    }
+
 }

@@ -34,7 +34,7 @@ class TestimonialController extends Controller
         //
 
         if ($request->ajax()) {
-            $data = Testimonial::where('is_delete',0)->get();
+            $data = Testimonial::where('is_delete',0)->orderBy('id', 'DESC')->get();
             $locale = App::getLocale();
             return Datatables::of($data)->addIndexColumn()
                 ->addColumn('action', function ($row) {

@@ -18,4 +18,19 @@ class BarberServices extends Model
         "service_price",
         "special_service",
     ];
+
+    public function service_detail(){
+        return $this->hasOne(Services::class, 'id', 'service_id');
+    }
+
+
+    public function sub_service_detail(){
+        return $this->hasOne(Services::class, 'id', 'sub_service_id');
+    }
+
+
+
+
+
+
 }

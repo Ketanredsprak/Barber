@@ -27,8 +27,8 @@
 
                     <div class="mb-3 col-md-6">
                         <label class="form-label" for="phone">{{ __('labels.Phone') }} <span class="text-danger">*</span> </label>
-                        <input class="form-control" id="phone" name="phone" type="text"
-                            placeholder="{{ __('labels.Phone') }}" aria-label="{{ __('labels.Phone') }}">
+                        <input class="form-control" id="phone" name="phone" type="text" pattern="[0-9]*" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '');"
+                        placeholder="{{ __('labels.Phone') }}" aria-label="{{ __('labels.Phone') }}">
                         <div id="phone_error" style="display: none;" class="text-danger"></div>
                     </div>
 
@@ -42,7 +42,7 @@
 
 
                     <div class="mb-3 col-md-6">
-                        <label class="form-label" for="profile_image">{{ __('labels.Profile Image') }} <span class="text-danger">*</span> </label>
+                        <label class="form-label" for="profile_image">{{ __('labels.Profile Image') }}  ({{ __('labels.Accept:png,jpg,jpeg') }})<span class="text-danger">*</span> </label>
                         <input class="form-control" id="profile_image" name="profile_image" type="file"
                             placeholder="{{ __('labels.Profile Image') }}" aria-label="{{ __('labels.Profile Image') }}" accept=".png, .jpg, .jpeg">
                         <div id="profile_image_error" style="display: none;" class="text-danger"></div>

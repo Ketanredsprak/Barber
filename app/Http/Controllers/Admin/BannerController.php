@@ -37,7 +37,7 @@ class BannerController extends Controller
         //
 
         if ($request->ajax()) {
-            $data = Banners::where('is_delete',0)->get();
+            $data = Banners::where('is_delete',0)->orderBy('id', 'DESC')->get();
             return Datatables::of($data)->addIndexColumn()
                 ->addColumn('action', function ($row) {
                     $btn = "";

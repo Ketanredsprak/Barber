@@ -2,373 +2,446 @@
 $config = getWebsiteConfig();
 $value = env('APP_URL', 'default_value').'/admin/login';
 @endphp
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
 
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>Welcome To Ehjez</title>
-    <style media="all" type="text/css">
-    /* -------------------------------------
-    GLOBAL RESETS
-------------------------------------- */
+@php
+    $url = env('APP_URL', 'default_value').'/login';
+@endphp
 
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="format-detection" content="date=no" />
+  <meta name="format-detection" content="address=no" />
+  <meta name="format-detection" content="telephone=no" />
+  <title></title>
+  <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
+  <style type="text/css">
     body {
-      font-family: Helvetica, sans-serif;
-      -webkit-font-smoothing: antialiased;
-      font-size: 16px;
-      line-height: 1.3;
-      -ms-text-size-adjust: 100%;
-      -webkit-text-size-adjust: 100%;
+      margin: 0px !important;
+      padding: 0px !important;
+      -webkit-text-size-adjust: 100% !important;
+      -ms-text-size-adjust: 100% !important;
+      -webkit-font-smoothing: antialiased !important;
+    }
+
+    html {
+      width: 100%;
+    }
+
+    img {
+      border: 0 !important;
+      outline: none !important;
+      display: block !important;
     }
 
     table {
-      border-collapse: separate;
-      mso-table-lspace: 0pt;
-      mso-table-rspace: 0pt;
-      width: 100%;
+      border-collapse: collapse;
+      mso-table-lspace: 0px;
+      mso-table-rspace: 0px;
     }
 
-    table td {
-      font-family: Helvetica, sans-serif;
-      font-size: 16px;
-      vertical-align: top;
-    }
-    /* -------------------------------------
-    BODY & CONTAINER
-------------------------------------- */
-
-    body {
-      background-color: #f4f5f6;
-      margin: 0;
-      padding: 0;
+    td {
+      border-collapse: collapse;
+      mso-line-height-rule: exactly;
     }
 
-    .body {
-      background-color: #f4f5f6;
-      width: 100%;
-    }
-
-    .container {
-      margin: 0 auto !important;
-      max-width: 600px;
-      padding: 0;
-      padding-top: 24px;
-      width: 600px;
-    }
-
-    .content {
-      box-sizing: border-box;
-      display: block;
-      margin: 0 auto;
-      max-width: 600px;
-      padding: 0;
-    }
-    /* -------------------------------------
-    HEADER, FOOTER, MAIN
-------------------------------------- */
-
-    .main {
-      background: #ffffff;
-      border: 1px solid #eaebed;
-      border-radius: 16px;
-      width: 100%;
-    }
-
-    .wrapper {
-      box-sizing: border-box;
-      padding: 24px;
-    }
-
-    .headder {
-      clear: both;
-      padding-top: 24px;
-      text-align: center;
-      width: 100%;
-      margin-bottom: 20px;
-    }
-
-    .footer {
-      clear: both;
-      padding-top: 24px;
-      text-align: center;
-      width: 100%;
-    }
-
-    .footer td,
-    .footer p,
-    .footer span,
-    .footer a {
-      color: #9a9ea6;
-      font-size: 16px;
-      text-align: center;
-    }
-    /* -------------------------------------
-    TYPOGRAPHY
-------------------------------------- */
-
-    p {
-      font-family: Helvetica, sans-serif;
-      font-size: 16px;
-      font-weight: normal;
-      margin: 0;
-      margin-bottom: 16px;
+    a,
+    span {
+      mso-line-height-rule: exactly;
     }
 
     a {
-      color: #0867ec;
-      text-decoration: underline;
+      text-decoration: none !important;
     }
-    /* -------------------------------------
-    BUTTONS
-------------------------------------- */
 
-    .btn {
-      box-sizing: border-box;
-      min-width: 100% !important;
+    .ExternalClass * {
+      line-height: 100%;
+    }
+
+    .video img {
       width: 100%;
+      height: auto;
     }
 
-    .btn > tbody > tr > td {
-      padding-bottom: 16px;
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      line-height: 100% !important;
+      -webkit-font-smoothing: antialiased;
     }
 
-    .btn table {
-      width: auto;
+    yshortcuts,
+    .yshortcuts a,
+    .yshortcuts a:link,
+    .yshortcuts a:visited,
+    .yshortcuts a:hover,
+    .yshortcuts a span {
+      color: black;
+      text-decoration: none !important;
+      border-bottom: none !important;
+      background: none !important;
     }
 
-    .btn table td {
-      background-color: #ffffff;
-      border-radius: 4px;
-      text-align: center;
+    code {
+      white-space: 300;
+      word-break: break-all;
     }
 
-    .btn a {
-      background-color: #ffffff;
-      border: solid 2px #0867ec;
-      border-radius: 4px;
-      box-sizing: border-box;
-      color: #0867ec;
-      cursor: pointer;
-      display: inline-block;
-      font-size: 16px;
-      font-weight: bold;
-      margin: 0;
-      padding: 12px 24px;
-      text-decoration: none;
-      text-transform: capitalize;
+    span a {
+      text-decoration: none !important;
     }
 
-    .btn-primary table td {
-      background-color: #0867ec;
+    .yshortcuts a {
+      border-bottom: none !important;
     }
 
-    .btn-primary a {
-      background-color: #0867ec;
-      border-color: #0867ec;
-      color: #ffffff;
+    *[class="gmail-fix"] {
+      display: none !important;
     }
 
-    @media all {
-      .btn-primary table td:hover {
-        background-color: #ec0867 !important;
-      }
-      .btn-primary a:hover {
-        background-color: #ec0867 !important;
-        border-color: #ec0867 !important;
-      }
-    }
-
-    /* -------------------------------------
-    OTHER STYLES THAT MIGHT BE USEFUL
-------------------------------------- */
-
-    .last {
-      margin-bottom: 0;
-    }
-
-    .first {
-      margin-top: 0;
-    }
-
-    .align-center {
-      text-align: center;
-    }
-
-    .align-right {
-      text-align: right;
-    }
-
-    .align-left {
-      text-align: left;
-    }
-
-    .text-link {
-      color: #0867ec !important;
-      text-decoration: underline !important;
-    }
-
-    .clear {
-      clear: both;
-    }
-
-    .mt0 {
-      margin-top: 0;
-    }
-
-    .mb0 {
-      margin-bottom: 0;
-    }
-
-    .preheader {
-      color: transparent;
-      display: none;
-      height: 0;
-      max-height: 0;
-      max-width: 0;
-      opacity: 0;
-      overflow: hidden;
-      mso-hide: all;
-      visibility: hidden;
-      width: 0;
-    }
-
-    .powered-by a {
-      text-decoration: none;
-    }
-
-    /* -------------------------------------
-    RESPONSIVE AND MOBILE FRIENDLY STYLES
-------------------------------------- */
-
-    @media only screen and (max-width: 640px) {
-      .main p,
-      .main td,
-      .main span {
-        font-size: 16px !important;
-      }
-      .wrapper {
-        padding: 8px !important;
-      }
-      .content {
-        padding: 0 !important;
-      }
-      .container {
-        padding: 0 !important;
-        padding-top: 8px !important;
+    @media only screen and (min-width:481px) and (max-width:599px) {
+      table[class=templetcontainer] {
         width: 100% !important;
       }
-      .main {
-        border-left-width: 0 !important;
-        border-radius: 0 !important;
-        border-right-width: 0 !important;
-      }
-      .btn table {
-        max-width: 100% !important;
+
+      table[class=spark_full_width_containt] {
         width: 100% !important;
       }
-      .btn a {
-        font-size: 16px !important;
-        max-width: 100% !important;
+
+      td[class=spacer] {
+        padding-left: 14px !important;
+        padding-right: 14px !important;
+      }
+
+      td[class=remove] {
+        display: none !important;
+      }
+
+      img[class=full_img] {
+        width: 100% !important;
+        height: auto !important;
+      }
+
+      td[class=height_f] {
+        height: 20px !important;
+      }
+
+      td[class=video] img {
+        width: 100% !important;
+        height: auto !important;
+      }
+
+      td[class=text_center] {
+        text-align: center !important;
+      }
+
+      .hide {
+        display: none !important;
+      }
+
+      td[class="mob_hide"] {
+        display: none !important;
+        font-size: 0 !important;
+        height: 0 !important;
+        line-height: 0 !important;
+        min-height: 0 !important;
+        width: 0 !important;
+      }
+
+      td[class="templetcontainer2"] {
+        float: left !important;
+        width: 100% !important;
+        display: block !important;
+      }
+
+      td[class=pad_bottom] {
+        padding-bottom: 10px;
+      }
+
+      td[class=pad_top] {
+        padding-top: 10px;
+      }
+    }
+
+    @media only screen and (max-width:480px) {
+      table[class=templetcontainer] {
         width: 100% !important;
       }
-    }
-    /* -------------------------------------
-    PRESERVE THESE STYLES IN THE HEAD
-------------------------------------- */
 
-    @media all {
-      .ExternalClass {
-        width: 100%;
+      table[class=spark_full_width_containt] {
+        width: 100% !important;
       }
-      .ExternalClass,
-      .ExternalClass p,
-      .ExternalClass span,
-      .ExternalClass font,
-      .ExternalClass td,
-      .ExternalClass div {
-        line-height: 100%;
+
+      td[class="spacer"] {
+        padding-left: 16px !important;
+        padding-right: 16px !important;
       }
-      .apple-link a {
-        color: inherit !important;
-        font-family: inherit !important;
-        font-size: inherit !important;
-        font-weight: inherit !important;
-        line-height: inherit !important;
-        text-decoration: none !important;
+
+      td[class=remove] {
+        display: none !important;
       }
-      #MessageViewBody a {
-        color: inherit;
-        text-decoration: none;
-        font-size: inherit;
-        font-family: inherit;
-        font-weight: inherit;
-        line-height: inherit;
+
+      img[class=full_img] {
+        width: 100% !important;
+        height: auto !important;
+      }
+
+      td[class=height_f] {
+        height: 20px !important;
+      }
+
+      td[class=video] img {
+        width: 100% !important;
+        height: auto !important;
+      }
+
+      td[class=text_center] {
+        text-align: center !important;
+      }
+
+      .hide {
+        display: none !important;
+      }
+
+      td[class=pad_bottom] {
+        padding-bottom: 10px;
+      }
+
+      td[class=pad_top] {
+        padding-top: 10px;
+      }
+
+      td[class="mob_hide"] {
+        display: none !important;
+        font-size: 0 !important;
+        height: 0 !important;
+        line-height: 0 !important;
+        min-height: 0 !important;
+        width: 0 !important;
+      }
+
+      td[class="templetcontainer2"] {
+        float: left !important;
+        width: 100% !important;
+        display: block !important;
+      }
+
+      table[class="center_align"] {
+        float: none !important;
+        margin: 0 auto !important;
+        display: block !important;
+        width: 165px !important;
       }
     }
-    </style>
-  </head>
-  <body>
-    <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="body">
-      <tr>
-        <td>&nbsp;</td>
-        <td class="container">
-          <div class="content">
 
-             <!-- START FOOTER -->
-             <div class="headder">
-              <table role="presentation" border="0" cellpadding="0" cellspacing="0">
+    /* Hide spacer image in applications that support media queries */
+    @media only screen and (max-width: 600px) {
+      *[class="gmail-fix"] {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+
+<body marginwidth="0" marginheight="0" offset="0" topmargin="0" leftmargin="0" bgcolor="#d2d2d2">
+  <table width="100%" border="0" align="center" cellspacing="0" cellpadding="0" bgcolor="#d2d2d2">
+    <tr class="gmail-fix">
+      <td>
+        <table cellpadding="0" cellspacing="0" border="0" align="center" width="600">
+          <tr>
+            <td cellpadding="0" cellspacing="0" border="0" height="1" ;
+              style="line-height: 1px; min-width: 600px; mso-line-height-rule: exactly;"><img src="images/spacer.gif"
+                width="600" height="1"
+                style="display: block; max-height: 1px; min-height: 1px; min-width: 600px; width: 600px; " /></td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+    <tr>
+      <td align="center">
+        <table width="600" border="0" cellspacing="0" cellpadding="0" align="center" class="templetcontainer"
+          style="table-layout:auto;">
+          <tr>
+            <td>
+              <table width="600" border="0" cellspacing="0" cellpadding="0" align="center" class="templetcontainer">
                 <tr>
-                  <td class="content-block">
-                    <img src="{{ static_asset('website-config/' . $config->header_logo) }}" class="img-fluid" alt="logo">
+                  <td class="remove">
+                    <table width="600" border="0" cellspacing="0" cellpadding="0" align="center"
+                      class="templetcontainer">
+                      <tr>
+                        <td width="20" class="remove">&nbsp;</td>
+                        <td>
+                          <table width="100%" border="0" cellspacing="0" cellpadding="0" align="center">
+                            <tr>
+                              <td height="" class="height_f">&nbsp;</td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <table width="100%" border="0" cellspacing="0" cellpadding="0" align="center"
+                                  class="templetcontainer">
+                                  <tr>
+                                    {{-- <td class="text_center"
+                                      style="font-family:Arial, sans-serif; font-size:12px; line-height:15px; color:#000000;"
+                                      align="center">If you are having problems viewing this message <a href="#"
+                                        target="_blank" style="color:#000000; ">view the online version.</a></td> --}}
+                                  </tr>
+                                </table>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td height="" class="height_f">&nbsp;</td>
+                            </tr>
+                          </table>
+                        </td>
+                        <td width="20" class="remove">&nbsp;</td>
+                      </tr>
+                    </table>
                   </td>
+                </tr>
+                <tr> </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+    <tr>
+      <td align="center">
+        <table width="600" border="0" cellspacing="0" cellpadding="0" align="center" class="templetcontainer"
+          bgcolor="#ffffff" style=" background-color:#ffffff; border-bottom:solid 2px #ccc;">
+          <tr>
+            <td height="20" class="height_f">&nbsp;</td>
+          </tr>
+          <tr>
+            <td align="center" valign="top">
+              <table width="600" border="0" cellspacing="0" cellpadding="0" class="templetcontainer"
+                style="table-layout:fixed;">
+                <tr>
+                  <td width="20" class="remove">&nbsp;</td>
+                  <td valign="top" class="spacer">
+                    <table width="560" border="0" align="center" cellpadding="0" cellspacing="0"
+                      class="templetcontainer" style="table-layout:fixed;">
+                      <tr>
+                        <td width="170" valign="middle" class="templetcontainer2">
+                          <table width="170" border="0" align="center" cellpadding="0" cellspacing="0"
+                            class="templetcontainer">
+                            <tr>
+                              <td align="center" valign="middle"><a href="#" target="_blank"><img class=""
+                                    src="{{ static_asset('admin/assets/images/logo/logo.png') }}" alt="" width="100" height="auto"
+                                    style="display:block; max-width:170px;" border="0" hspace="0" vspace="0" /></a></td>
+                            </tr>
+                          </table>
+                        </td>
+
+                      </tr>
+                    </table>
+                  </td>
+                  <td width="20" class="remove">&nbsp;</td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          <tr>
+            <td height="20" class="height_f">&nbsp;</td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+    <tr>
+      <td align="center">
+        <table width="600" border="0" cellspacing="0" cellpadding="0" align="center" class="templetcontainer"
+          bgcolor="#ffffff" style="table-layout:fixed; background-color:#ffffff;">
+          <tr>
+            <td width="20" class="remove">&nbsp;</td>
+            <td width="" class="spacer">
+              <table width="560" border="0" cellspacing="0" cellpadding="0" align="center" class="templetcontainer">
+                <tr>
+                  <td height="40">&nbsp;</td>
+                </tr>
+                <tr>
+                  <td align="left" valign="top"
+                    style="font-size:18px; line-height:28px; font-family:'Roboto',Arial, Helvetica, sans-serif; color:#4a4a4a; font-weight:700; text-align: left; padding: 0px 0px 10px 0;">
+                    <h2>Welcome To Ehjez As System SubAdmin</h2>
+                    <p>Email : {{ $email }}</p>
+                    <p>Password : {{ $password }}</p>
+                    {{-- <p>Login URL :  {{ $value }} </p> --}}
+                  
+                </td>
+                </tr>
+                <tr>
+                  <td height="40">&nbsp;</td>
+                </tr>
+                <tr>
+                  <td align="center" valign="left"
+                    style="font-size:16px; line-height:24px; font-family:'Roboto',Arial, Helvetica, sans-serif; color:#212121; font-weight:normal; text-align: center; padding: 0px 0px;">
+                    <a href="{{ $value }}" style="background-color: #1C2749;border-radius: 4px;color: #ffffff;padding: 10px 25px;">Go To Admin Panel </a>
+                  </td>
+
+
+                </tr>
+
+                <tr>
+                  <td height="40">&nbsp;</td>
                 </tr>
 
               </table>
-            </div>
+            </td>
+            <td width="20" class="remove">&nbsp;</td>
+          </tr>
+        </table>
+      </td>
+    </tr>
 
-            <!-- END FOOTER -->
 
-            <!-- START CENTERED WHITE CONTAINER -->
-            {{-- <span class="preheader">This is preheader text. Some clients will show this text as a preview.</span> --}}
-            <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="main">
-
-              <!-- START MAIN CONTENT AREA -->
-              <tr>
-                <td class="wrapper">
-                  <p>Welcome To Ehjez As System SubAdmin</p>
-               </td>
-               <td style="padding: 30px">
-                <p><span class="strong">Email</span> : {{ $email }}</p>
-                <p><span class="strong">Password </span>: {{ $password }}</p>
-                <p><span class="strong">Login URL </span>:  {{ $value }} </p>
-                <p style="text-align: center"><a href="{{ $value }}" style="padding: 10px; background-color: #7366ff; color: #fff; display: inline-block; border-radius: 4px">Login</a></p>
-               </td>
-              </tr>
-
-              <!-- END MAIN CONTENT AREA -->
-              </table>
-
-            <!-- START FOOTER -->
-            <div class="footer">
-              <table role="presentation" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+      <td align="center">
+        <table width="600" border="0" cellspacing="0" cellpadding="0" align="center" class="templetcontainer"
+          bgcolor="#002aa4" style="table-layout:fixed; background-color:#1C2749;">
+          <tr>
+            <td width="20" class="remove">&nbsp;</td>
+            <td width="" class="spacer">
+              <table width="560" border="0" cellspacing="0" cellpadding="0" align="center" class="templetcontainer">
                 <tr>
-                  <td class="content-block">
-                    <span class="apple-link">Copyright © 2024 Ehjez</span>
-                  </td>
+                  <td height="30" align="center" valign="top">&nbsp;</td>
                 </tr>
-
               </table>
-            </div>
+            </td>
+            <td width="20" class="remove">&nbsp;</td>
+          </tr>
+        </table>
+      </td>
+    </tr>
 
-            <!-- END FOOTER -->
+    <tr>
+      <td align="center">
+        <table width="600" border="0" cellspacing="0" cellpadding="0" align="center" class="templetcontainer"
+          style="table-layout:fixed; ">
+          <tr>
+            <td width="" class="spacer">
+              <table width="560" border="0" cellspacing="0" cellpadding="0" align="center" class="templetcontainer">
+                <tr>
+                  <td align="center" valign="top"
+                    style="font-size:12px; line-height:22px; font-family:'Roboto', Arial, Helvetica, sans-serif; color:#000000; font-weight:300; text-align: center; padding:10px 0;">
+                    © {{ date('Y')}}  Ehjez. All Rights Reserved<br /></td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
 
-<!-- END CENTERED WHITE CONTAINER --></div>
-        </td>
-        <td>&nbsp;</td>
-      </tr>
-    </table>
-  </body>
+
+  </table>
+</body>
+
 </html>
+
 

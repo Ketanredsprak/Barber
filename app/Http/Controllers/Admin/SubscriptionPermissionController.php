@@ -28,7 +28,7 @@ class SubscriptionPermissionController extends Controller
         //
 
         if ($request->ajax()) {
-            $data = SubscriptionPermission::get();
+            $data = SubscriptionPermission::orderBy('id', 'DESC')->get();
             $locale = App::getLocale();
             return Datatables::of($data)->addIndexColumn()
                 ->addColumn('action', function ($row) {

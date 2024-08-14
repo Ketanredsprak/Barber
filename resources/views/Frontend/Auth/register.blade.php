@@ -70,11 +70,7 @@
                                                     <option value="Male">{{ __('labels.Male') }}</option>
                                                     <option value="Female">{{ __('labels.Female') }}</option>
                                                 </select>
-                                                @error('gender')
-                                                    <span class="invalid-feedback" role="alert">
-                                                        <strong>{{ $message }}</strong>
-                                                    </span>
-                                                @enderror
+
                                             </div>
                                         </div>
 
@@ -91,10 +87,8 @@
 
                                                     </select>
                                                 </div>
-                                                <input type="text" class="form-control"
-                                                    placeholder="{{ __('labels.Phone Number') }}"
-                                                    @error('phone') is-invalid @enderror name="phone" id="phone"
-                                                    value="{{ old('phone') }}">
+                                                  <input class="form-control" id="phone" name="phone" type="text" pattern="[0-9]*" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '');"
+                                                    placeholder="{{ __('labels.Phone Number') }}" aria-label="{{ __('labels.Phone Number') }}" value="{{ old('phone') }}">
                                                 @error('phone')
                                                     <span class="invalid-feedback" role="alert">
                                                         <strong>{{ $message }}</strong>
@@ -150,8 +144,8 @@
                                                     id="terms_and_conditions"
                                                     @if (old('terms_and_conditions') == 'on') checked @endif />
                                                 {{ __('labels.I have read and agreed to the') }}<a
-                                                    href="{{ route('temrs-and-condition') }}">
-                                                    {{ __('labels.Terms and Conditions') }}</a>.</label>
+                                                    href="{{ route('terms-and-condition') }}">
+                                                    {{ __('labels.Terms and Conditions') }}</a></label>
                                             @error('terms_and_conditions')
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong>{{ $message }}</strong>
@@ -162,11 +156,14 @@
 
                                         <div class="col-sm-12 text-center">
                                             <button class="btn btn-success btn-block mb-3"
-                                                type="submit">{{ __('labels.Register') }}</button>
+                                                type="submit">{{ __('labels.Sign Up') }}</button>
 
                                         </div>
 
                                         <div class="text">{{ __('labels.or') }} </div>
+
+
+
                                         <div class="col-sm-12 text-center">
                                             <div class="text-center py-3">
                                                 <a href="#" target="_blank" class="px-2"> <img
@@ -174,16 +171,16 @@
                                                         alt="Gmail-Login"> </a>
                                                 <a href="#" target="_blank" class="px-2"> <img
                                                         src="{{ static_asset('frontend/assets/images/fb-icon.png') }}"
-                                                        alt="Facebook-Login"> </a>
+                                                        alt="FaceBook-Login"> </a>
                                                 <a href="#" target="_blank" class="px-2"> <img
                                                         src="{{ static_asset('frontend/assets/images/apple-icon.png') }}"
                                                         alt="Apple-Login"> </a>
                                             </div>
 
                                             <p>{{ __('labels.Already have an account?') }}<a href="{{ route('login') }}"
-                                                    class="text-warning"> {{ __('labels.login') }} </a>
-                                            </p>
+                                                    class="text-warning"> {{ __('labels.login') }} </a></p>
                                         </div>
+
 
 
 
@@ -230,7 +227,10 @@
                     success: function(response) {
                         toastr.success(response.message);
                         form_data.reset();
+
+
                         if (response.status == 1) {
+                            $(".error").removeClass('is-invalid');
                             window.setTimeout(function() {
                                 // Move to a new location or you can do something else
                                 window.location.href = "{{ route('login') }}";

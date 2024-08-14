@@ -22,7 +22,7 @@ class Subscription extends Model
         "subscription_detail_tr",
         "number_of_booking",
         "price",
-        "duration_in_days",
+        "duration_in_months",
         "subscription_type",
         "status",
         "is_delete",

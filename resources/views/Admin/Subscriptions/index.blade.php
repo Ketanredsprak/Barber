@@ -90,9 +90,10 @@
                     processing: '<i></i><span class="text-primary spinner-border"></span> '
                 },
                 ajax: "{{ route('subscription.index') }}",
-                columns: [{
-                        data: 'id',
-                        name: 'id'
+                columns: [
+                    {
+                        data: 'DT_RowIndex',
+                        name: 'DT_RowIndex',
                     },
                     {
                         data: 'subscription_name',

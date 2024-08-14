@@ -1,4 +1,9 @@
 @extends('Frontend.layouts.app')
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBN7PVmJtnKlsH164uR42PvclqQyUCqOXE&libraries=places">
+</script>
+
+
 @section('content')
     @php
         $language = config('app.locale');
@@ -26,10 +31,16 @@
                                         <h1>{{ @$banner->$title }}</h1>
                                         <p>{{ @$banner->$content }}</p>
                                         <div class="info_btn">
-                                            <button class="btn btn-warning mr-2"
-                                                type="submit">{{ __('labels.Learn More') }}</button>
-                                            <button class="btn btn-outline-light"
-                                                type="submit">{{ __('labels.Our Services') }}</button>
+                                            {{-- <button class="btn btn-warning mr-2"
+                                                type="submit">{{ __('labels.Learn More') }}</button> --}}
+                                            {{-- <button class="btn btn-outline-light"
+                                                type="submit">{{ __('labels.Book No') }}</button> --}}
+
+                                            @if (!empty($banner->barber_info->barber_service) && !empty($banner->barber_info->barber_schedule))
+                                                <a class="btn btn-outline-light" type="submit"
+                                                    href="{{ route('get-booking-page', $banner->encrypt_id) }}">{{ __('labels.Book Now') }}</a>
+                                            @endif
+
                                         </div>
                                     </div>
 
@@ -61,28 +72,29 @@
 
             <div class="row">
                 @foreach ($services as $service)
-                            <div class="col-sm-4">
-                                <div class="explore_box">
-                                    <img src="{{ static_asset('service_image/' . $service->service_image) }}" class="img-fluid"
-                                        alt="explore">
-                                    <div class="info">
-                                        <a href="">
-                                            <h4 class="text-center">{{ $service->$service_name }}</h4>
-                                        </a>
-                                    </div>
-                                </div>
+                    <div class="col-sm-4">
+                        <div class="explore_box">
+                            <img src="{{ static_asset('service_image/' . $service->service_image) }}" class="img-fluid"
+                                alt="explore">
+                            <div class="info">
+                                <a href="">
+                                    <h4 class="text-center">{{ $service->$service_name }}</h4>
+                                </a>
                             </div>
+                        </div>
+                    </div>
                 @endforeach
 
 
 
             </div>
 
-            <!-- <div class="row">
-                    <div class="col-sm-12 text-center">
-                      <a href="" class="btn btn-warning">View All Cities</a>
-                    </div>
-                  </div> -->
+            <div class="row">
+                <div class="col-sm-12 text-center">
+                    <a href="" class="btn btn-warning">View All Services</a>
+                </div>
+            </div>
+
         </div>
     </section>
 
@@ -97,93 +109,10 @@
                         <h2>{{ $data->cms_content[1]->$sub_title }}</h2>
                     </div>
                 </div>
-                <div class="col-md-4">
-                    <div class="item">
-                        <div class="post_box">
-                            <div class="top">
-                                <div class="post_img">
-                                    <div class="rating">
-                                        <p><i class="fa fa-star"></i> 4.5</p>
-                                    </div>
-                                    <a href="">
-                                        <img src="{{ static_asset('frontend/assets/images/nearest_1.png') }}"
-                                            class="img-fluid" alt="post">
-                                    </a>
-                                </div>
-                                <div class="post_info">
-                                    <h5><a href="">Jonson Barber</a></h5>
-                                    <h4 class="shop_name">Alfa Barber shop</h4>
-                                </div>
-                            </div>
-                            <div class="bottom">
-                                <ul class="list-unstyled">
-                                    <li> <i class="fa fa-map-marker"></i> Jalan Kaliurang (1 km)</span></li>
-                                    <button class="btn btn-success" type="submit">{{ __('labels.Book Now') }}</button>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
+                <div class="row" id="locationWiseBarberResponse">
                 </div>
 
-                <div class="col-md-4">
-                    <div class="item">
-                        <div class="post_box">
-                            <div class="top">
-                                <div class="post_img">
-                                    <div class="rating">
-                                        <p><i class="fa fa-star"></i> 4.5</p>
-                                    </div>
-                                    <a href="">
-                                        <img src="{{ static_asset('frontend/assets/images/nearest_2.png') }}"
-                                            class="img-fluid" alt="post">
-                                    </a>
-                                </div>
-                                <div class="post_info">
-                                    <h5><a href="">Jonson Barber</a></h5>
-                                    <h4 class="shop_name">Alfa Barber shop</h4>
-                                </div>
-                            </div>
 
-                            <div class="bottom">
-                                <ul class="list-unstyled">
-                                    <li> <i class="fa fa-map-marker"></i> Jalan Kaliurang (1 km)</span></li>
-                                    <button class="btn btn-success" type="submit">{{ __('labels.Book Now') }}</button>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="item">
-                        <div class="post_box">
-                            <div class="top">
-                                <div class="post_img">
-                                    <div class="rating">
-                                        <p><i class="fa fa-star"></i> 4.5</p>
-                                    </div>
-
-                                    <a href="">
-                                        <img src="{{ static_asset('frontend/assets/images/nearest_3.png') }}"
-                                            class="img-fluid" alt="post">
-                                    </a>
-
-                                </div>
-
-                                <div class="post_info">
-                                    <h5><a href="">Jonson Barber</a></h5>
-                                    <h4 class="shop_name">Alfa Barber shop</h4>
-                                </div>
-                            </div>
-
-                            <div class="bottom">
-                                <ul class="list-unstyled">
-                                    <li> <i class="fa fa-map-marker"></i> Jalan Kaliurang (1 km)</span></li>
-                                    <button class="btn btn-success" type="submit">{{ __('labels.Book Now') }}</button>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
         </div>
@@ -200,94 +129,53 @@
                         <h2>{{ $data->cms_content[2]->$title }}</h2>
                     </div>
                 </div>
-                <div class="col-md-4">
-                    <div class="item">
-                        <div class="post_box">
-                            <div class="top">
-                                <div class="post_img">
-                                    <div class="rating">
-                                        <p><i class="fa fa-star"></i> 4.5</p>
-                                    </div>
 
-                                    <a href="">
-                                        <img src="{{ static_asset('frontend/assets/images/higest_1.png') }}"
-                                            class="img-fluid" alt="post">
-                                    </a>
+                @foreach ($topBarbers as $barber)
+                    <div class="col-md-4">
+                        <div class="item">
+                            <div class="post_box">
+                                <div class="top">
+                                    <div class="post_img">
+                                        <div class="rating">
+                                            <p><i class="fa fa-star"></i>
+                                                {{ round($barber->barber_ratings_avg_rating, 2) }}</p>
+                                        </div>
+                                        @php
+                                            if (empty($barber->profile_image)) {
+                                                $profile_image = 'default.png';
+                                            } else {
+                                                $profile_image = $barber->profile_image;
+                                            }
+                                        @endphp
+                                        <a href="{{ route('get-booking-page', $barber->encrypt_id) }}">
+                                            <img src="{{ static_asset('profile_image/' . $profile_image) }}"
+                                                class="img-fluid" alt="post">
+                                        </a>
+                                    </div>
+                                    <div class="post_info">
+                                        <h5><a href="{{ route('get-booking-page', $barber->encrypt_id) }}">{{ $barber->first_name }}
+                                                - {{ $barber->last_name }}</a>
+                                        </h5>
+                                        <h4 class="shop_name">{{ $barber->salon_name }}</h4>
+                                    </div>
                                 </div>
-                                <div class="post_info">
-                                    <h5><a href="">Jonson Barber</a></h5>
-                                    <h4 class="shop_name">Alfa Barber shop</h4>
+                                <div class="bottom">
+                                    <ul class="list-unstyled">
+                                        <li> <i class="fa fa-map-marker"></i> {{ $barber->location }} (1 km)</span></li>
+                                        @if (!empty($barber->barber_service) && !empty($barber->barber_schedule))
+                                            <a class="btn btn-success" type="submit"
+                                                href="{{ route('get-booking-page', $barber->encrypt_id) }}">{{ __('labels.Book Now') }}</a>
+                                        @endif
+
+
+                                    </ul>
                                 </div>
-                            </div>
-                            <div class="bottom">
-                                <ul class="list-unstyled">
-                                    <li> <i class="fa fa-map-marker"></i> Jalan Kaliurang (1 km)</span></li>
-                                    <button class="btn btn-success" type="submit">{{ __('labels.Book Now') }}</button>
-                                </ul>
                             </div>
                         </div>
                     </div>
-                </div>
+                @endforeach
 
-                <div class="col-md-4">
-                    <div class="item">
-                        <div class="post_box">
-                            <div class="top">
-                                <div class="post_img">
-                                    <div class="rating">
-                                        <p><i class="fa fa-star"></i> 4.5</p>
-                                    </div>
-                                    <a href="">
-                                        <img src="{{ static_asset('frontend/assets/images/higest_2.png') }}"
-                                            class="img-fluid" alt="post">
-                                    </a>
-                                </div>
-                                <div class="post_info">
-                                    <h5><a href="">Jonson Barber</a></h5>
-                                    <h4 class="shop_name">Alfa Barber shop</h4>
-                                </div>
-                            </div>
 
-                            <div class="bottom">
-                                <ul class="list-unstyled">
-                                    <li> <i class="fa fa-map-marker"></i> Jalan Kaliurang (1 km)</span></li>
-                                    <button class="btn btn-success" type="submit">{{ __('labels.Book Now') }}</button>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="item">
-                        <div class="post_box">
-                            <div class="top">
-                                <div class="post_img">
-                                    <div class="rating">
-                                        <p><i class="fa fa-star"></i> 4.5</p>
-                                    </div>
-
-                                    <a href="">
-                                        <img src="{{ static_asset('frontend/assets/images/higest_3.png') }}"
-                                            class="img-fluid" alt="post">
-                                    </a>
-
-                                </div>
-
-                                <div class="post_info">
-                                    <h5><a href="">Jonson Barber</a></h5>
-                                    <h4 class="shop_name">Alfa Barber shop</h4>
-                                </div>
-                            </div>
-
-                            <div class="bottom">
-                                <ul class="list-unstyled">
-                                    <li> <i class="fa fa-map-marker"></i> Jalan Kaliurang (1 km)</li>
-                                    <button class="btn btn-success" type="submit">{{ __('labels.Book Now') }}</button>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
         </div>
@@ -339,3 +227,51 @@
         </div>
     </section>
 @endsection
+
+
+<script>
+    function initMap() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                var userLatitude = position.coords.latitude;
+                var userLongitude = position.coords.longitude;
+
+                // sendLocationToServer(userLatitude, userLongitude);
+                $('#userLatitude').val(userLatitude);
+                $('#userLongitude').val(userLongitude);
+
+                // Send location to the server
+                sendLocationToServer(userLatitude, userLongitude);
+
+
+            }, function(error) {
+                console.log("Error retrieving location: ", error);
+            });
+        } else {
+            console.log("Geolocation is not supported by this browser.");
+        }
+    }
+
+
+    function sendLocationToServer(lat, lng) {
+        $.ajax({
+            url: "{{ route('save-user-location') }}", // Adjust this route as needed
+            method: "post",
+            data: {
+                _token: "{{ csrf_token() }}",
+                latitude: lat,
+                longitude: lng
+            },
+            success: function(response) {
+                $("#locationWiseBarberResponse").html('');
+                $("#locationWiseBarberResponse").append(response);
+            },
+            error: function(xhr, status, error) {
+                alert("Error sending location: ");
+            }
+        });
+    }
+
+    // Initialize the map
+    initMap();
+</script>

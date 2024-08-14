@@ -318,8 +318,7 @@
                             @endforeach
                             <button class="btn btn-primary btn-sm btn-custom" type="submit" id="pageSubmit"><i
                                     class="fa fa-spinner fa-spin d-none icon"></i> {{ __('labels.Submit') }}</button>
-                            <button class="btn btn-secondary btn-sm" type="button" data-bs-dismiss="modal"
-                                id="is_close">{{ __('labels.Close') }}</button>
+                                    <a href="{{ route('page.index') }}" class="btn btn-light">{{ __('labels.Close') }}</a>
                         </form>
                     </div>
                 </div>

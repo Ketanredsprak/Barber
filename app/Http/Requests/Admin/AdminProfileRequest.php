@@ -21,7 +21,7 @@ class AdminProfileRequest extends FormRequest
             'first_name' => ['required', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', Rule::unique(User::class)->ignore($this->user()->id)],
-            'phone' => ['required', 'numeric'],
+            'phone' => ['required', 'min:9', 'max:11'],
         ];
     }
     public function messages(): array
@@ -39,9 +39,10 @@ class AdminProfileRequest extends FormRequest
             'email.email' => __('error.Please enter a valid email address.'),
             'email.max' =>  __('error.The field must not exceed :max characters.'),
             'email.unique' => __('error.The email address is already in use.'),
-            'phone.required' => __('error.This field is required'),
-            'phone.numeric' => __('error.Please enter a valid phone number.'),
-            'phone.max' =>  __('error.The field must not exceed :max characters.'),
+            'phone.required' => __('error.The phone number field is required.'),
+            'phone.min' => __('error.The phone number must be at least 9 characters.'),
+            'phone.max' => __('error.The phone number may not be greater than 11 characters.'),
+            'phone.unique' => __('error.The phone number has already been taken.'),
         ];
     }
 }

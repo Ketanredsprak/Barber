@@ -100,8 +100,8 @@
                 ajax: "{{ route('permission.index') }}",
                 columns: [
                     {
-                        data: 'id',
-                        name: 'id'
+                        data: 'DT_RowIndex',
+                        name: 'DT_RowIndex',
                     },
                     {
                         data: 'name',

@@ -18,13 +18,13 @@
 
                     <div class="mb-3 col-md-6">
                         <label class="form-label" for="phone">{{ __('labels.Phone') }}<span class="text-danger">*</span> </label>
-                        <input class="form-control" id="phone" name="phone" type="number"
-                            placeholder="{{ __('labels.Phone') }}" aria-label="{{ __('labels.Phone') }}" value="{{ $data->phone }}">
+                            <input class="form-control" id="phone" name="phone" type="text" pattern="[0-9]*" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '');"
+                            placeholder="{{ __('labels.Phone') }}" aria-label="{{ __('labels.Phone') }}"  value="{{ $data->phone }}">
                         <div id="phone_error" style="display: none;" class="text-danger"></div>
                     </div>
 
                     <div class="col-sm-10">
-                        <label class="form-label" for="profile_image">{{ __('labels.Profile Image') }}</label>
+                        <label class="form-label" for="profile_image">{{ __('labels.Profile Image') }}  ({{ __('labels.Accept:png,jpg,jpeg') }})</label>
                         <input class="form-control" id="profile_image" type="file" name="profile_image"
                             accept=".png, .jpg, .jpeg">
                         <div id="profile_image_error" style="display: none;" class="text-danger"></div>

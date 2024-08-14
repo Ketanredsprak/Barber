@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\App;
 use App\Http\Controllers\Controller;
+use App\Models\Subjects;
+use PSpell\Config;
 
 class ContactUsController extends Controller
 {
@@ -28,7 +30,9 @@ class ContactUsController extends Controller
 
         //
         if ($request->ajax()) {
-            $data = ContactUS::where('is_delete',0)->orderBY('id','DESC')->get();
+            $data = ContactUS::where('is_delete',0)->orderBY('id','DESC')->orderBy('id', 'DESC')->get();
+             
+
             return Datatables::of($data)->addIndexColumn()
                 ->addColumn('action', function ($row) {
                     $alert_delete = "return confirm('Are you sure want to delete !')";
@@ -38,7 +42,7 @@ class ContactUsController extends Controller
                         <button class="btn btn-light dropdown-toggle text-primary" id="btnGroupDrop1" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-ellipsis-h"></i></button>
                         <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">';
 
-                        $btn = $btn . '<a class="show-data dropdown-item"  href="javascript:void(0)" title="' . __('labels.Show') . '" data-url="'.route('contact-us.show', $row->id).'">' . __('labels.Show') . '</a>';
+                        $btn = $btn . '<a class="show-data dropdown-item"  href="javascript:void(0)" title="' . __('labels.View') . '" data-url="'.route('contact-us.show', $row->id).'">' . __('labels.View') . '</a>';
                         $btn = $btn . '<a href="" data-url="' . route('contact-us.destroy', $row->id) . '" class="dropdown-item destroy-data" title="' . __('labels.Delete') . '">' . __('labels.Delete') . '</a>';
 
                        $btn = $btn . '</div>
@@ -50,12 +54,29 @@ class ContactUsController extends Controller
                     return $btn;
 
                 })
+                ->addColumn('subject', function ($contact) {
+
+                    $language = config('app.locale');
+
+                    $subjectNameField = 'name_' . $language;
+        
+                    $subject = Subjects::where('id', $contact->subject)->first();
+
+
+                
+                    return $subject ?$subject[$subjectNameField] : 'N/A';
+
+
+               
+                    
+                })
+
 
                 ->addColumn('created_at', function ($data) {
                     return date('Y-M-d h:i A', strtotime($data->created_at));
 
                 })
-                ->rawColumns(['action','created_at'])
+                ->rawColumns(['subject','action','created_at'])
                 ->make(true);
         }
         return view('Admin.Contact-Us.index');
@@ -86,8 +107,12 @@ class ContactUsController extends Controller
         //
         try {
             $data = ContactUS::find($id);
+
+
+            $subject = Subjects::where('id', $data->subject)->first();
+
             if (!empty($data)) {
-                return view('Admin.Contact-Us.show', compact('data'));
+                return view('Admin.Contact-Us.show', compact('data','subject'));
             }
         } catch (Exception $ex) {
             return response()->json(
@@ -125,7 +150,7 @@ class ContactUsController extends Controller
             $data->is_delete  = 1;
             $data->update();
             DB::commit(); // Commit Transaction
-            return response()->json(['status' => '1', 'success' => __('message.Contact Us Deleted Successfully.')]);
+            return response()->json(['status' => '1', 'success' => __('message.Contact us deleted successfully.')]);
         } catch (\Exception $e) {
             DB::rollBack(); //Rollback Transaction
             return redirect()->back()->withErrors(['error' => $e->getMessage()]);

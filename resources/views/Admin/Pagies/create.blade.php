@@ -77,15 +77,10 @@
                             <textarea  class="form-control  ckeditor" id="content"
                                 name="content_tr"></textarea>
                     </div>
-
-
-
-
-
                 </div>
                 <button class="btn btn-primary btn-sm btn-custom" type="submit" id="cmsSubmit"><i class="fa fa-spinner fa-spin d-none icon"></i>{{ __('labels.Submit') }}  </button>
-                <button class="btn btn-secondary btn-sm" type="button" data-bs-dismiss="modal"
-                    id="is_close">{{ __('labels.Close') }} </button>
+                {{-- <a class="btn btn-sm" id="is_close" href="{{ route('page.index') }}">{{ __('labels.Close') }}</a> --}}
+                <a href="{{ route('page.index') }}" class="btn btn-light">{{ __('labels.Close') }}</a>
             </form>
         </div>
     </div>

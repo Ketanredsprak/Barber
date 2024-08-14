@@ -4,9 +4,11 @@ use Illuminate\Support\Facades\Route;
 // use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Front\HomeController;
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Cron\BookingCronController;
 use App\Http\Controllers\Front\MyFavoriteController;
 use App\Http\Controllers\Frontend\AccountController;
-use App\Http\Controllers\Customer\CustomerAccountController;
+use App\Http\Controllers\Front\Customer\BookingController;
+use App\Http\Controllers\Front\Customer\CustomerAccountController;
 
 
 /*
@@ -20,12 +22,14 @@ use App\Http\Controllers\Customer\CustomerAccountController;
 |
 */
 
-Route::get('/', function () {
-    return redirect()->route('index');
+
+Route::get('/admin', function () {
+    return redirect()->route('admin/login');
 });
 
+
 Route::post('/language-change', [AdminController::class, 'languageChange'])->name('language.change');
-Route::get('/index', [HomeController::class,'index'])->name('index');
+Route::get('/', [HomeController::class,'index'])->name('index');
 Route::get('/about-us', [HomeController::class,'AboutUs'])->name('about-us');
 Route::get('/contact-us', [HomeController::class,'contactUs'])->name('contact-us');
 Route::post('/contact-submit', [HomeController::class,'contactSubmit'])->name('contact-submit');
@@ -35,20 +39,23 @@ Route::get('register', [CustomerAccountController::class, 'register'])->name('re
 Route::post('register-submit', [CustomerAccountController::class, 'registerSubmit'])->name('register-submit');
 Route::get('forgot-password', [CustomerAccountController::class, 'forgotPassword'])->name('forgot-password');
 Route::post('forgot-password-submit', [CustomerAccountController::class, 'forgotPasswordSubmit'])->name('forgot-password-submit');
+Route::post('otp-resend-forgot-password', [CustomerAccountController::class, 'otpResendForgotPassword'])->name('otp-resend-forgot-password');
 Route::get('verify-otp/{id}', [CustomerAccountController::class, 'verifyOTP'])->name('verify-otp');
 Route::post('verify-otp-submit', [CustomerAccountController::class, 'verifyOtpSubmit'])->name('verify-otp-submit');
 Route::get('reset-password/{id}', [CustomerAccountController::class, 'resetPassword'])->name('reset-password');
 Route::post('reset-password-submit', [CustomerAccountController::class, 'resetPasswordSubmit'])->name('reset-password-submit');
 Route::get('/privacy-policy', [HomeController::class,'privacyPolicy'])->name('privacy-policy');
-Route::get('/temrs-and-condition', [HomeController::class,'temrsAndCondition'])->name('temrs-and-condition');
+Route::get('/terms-and-condition', [HomeController::class,'termsAndCondition'])->name('terms-and-condition');
 Route::get('/barber-list', [HomeController::class,'barberList'])->name('barber-list');
 Route::post('/barber-list-filter', [HomeController::class,'barberListFilter'])->name('barber-list-filter');
 Route::get('barber-detail/{id}', [HomeController::class,'barberDetail'])->name('barber-detail');
+Route::get('get-cms-content/{id}',[HomeController::class,'getCmsContent'])->name('get-cms-content');
 
 
 
-Route::middleware('auth')->group(function () {
+Route::middleware('webauth')->group(function () {
 
+Route::get('notification-list', [CustomerAccountController::class, 'notificationList'])->name('notification-list');
 Route::get('my-account', [CustomerAccountController::class, 'myAccount'])->name('my-account');
 Route::get('my-account-about', [CustomerAccountController::class, 'myAccountAbout'])->name('my-account-about');
 Route::get('my-package', [CustomerAccountController::class, 'myPackage'])->name('my-package');
@@ -56,16 +63,36 @@ Route::post('edit-my-account', [CustomerAccountController::class, 'editMyAccount
 Route::get('change-password', [CustomerAccountController::class, 'changePassword'])->name('change-password');
 Route::post('change-password-submit', [CustomerAccountController::class, 'changePasswordSubmit'])->name('change-password-submit');
 Route::get('add-and-remove-favorite/{id}', [MyFavoriteController::class, 'addAndRemoveFavorite'])->name('add-and-remove-favorite');
+Route::get('my-favorite', [MyFavoriteController::class, 'myFavoriteList'])->name('my-favorite');
+Route::get('my-booking-appointment-today', [BookingController::class, 'myBookingAppointmentToday'])->name('my-booking-appointment-today');
+Route::get('my-booking-appointment-history', [BookingController::class, 'myBookingAppointmentHistory'])->name('my-booking-appointment-history');
+Route::get('my-booking-appointment-detail/{id}', [BookingController::class, 'myBookingAppointmentDetail'])->name('my-booking-appointment-detail');
+Route::get('my-booking-appointment-success/{id}', [BookingController::class, 'myBookingAppointmentSuccess'])->name('my-booking-appointment-success');
+Route::get('reject-barber-proposal/{id}', [BookingController::class, 'rejectBarberProposal'])->name('reject-barber-proposal');
+Route::get('accept-barber-proposal/{id}', [BookingController::class, 'acceptBarberProposal'])->name('accept-barber-proposal');
+Route::post('save-user-location', [HomeController::class, 'saveUserLocation'])->name('save-user-location');
+Route::get('services', [HomeController::class, 'services'])->name('services');
+
+//booking
+Route::post('booking', [BookingController::class, 'booking'])->name('booking');
+Route::post('get-barber-slots', [BookingController::class, 'getBarberSlots'])->name('get-barber-slots');
+Route::post('get-barber-slots-reshedule', [BookingController::class, 'getBarberSlotsReshedule'])->name('get-barber-slots-reshedule');
+Route::get('get-booking-page/{id}', [BookingController::class, 'getBookingPage'])->name('get-booking-page');
+Route::get('get-join-waitlist/{id}', [BookingController::class, 'getJoinWaitlist'])->name('get-join-waitlist');
+Route::post('booking-join-waitlist', [BookingController::class, 'bookingJoinWaitlist'])->name('booking-join-waitlist');
+Route::post('join-waitlist', [BookingController::class, 'joinWaitlist'])->name('join-waitlist');
+Route::get('get-booking-detail/{id}', [BookingController::class, 'getBookingDetail'])->name('get-booking-detail');
+Route::get('cancel-booking/{id}', [BookingController::class, 'cancelBooking'])->name('cancel-booking');
+Route::get('reschedule-booking/{id}', [BookingController::class, 'rescheduleBooking'])->name('reschedule-booking');
+Route::post('reschedule-booking-submit', [BookingController::class, 'rescheduleBookingSubmit'])->name('reschedule-booking-submit');
+Route::post('rating-submit', [BookingController::class, 'ratingSubmit'])->name('rating-submit');
 
 });
 
 
-
-
-
-// Route::get('home', [AdminController::class, 'home'])->name('home');
-
-
+//cron job
+Route::get('/booking-finished', [BookingCronController::class,'bookingFinished']);
+Route::get('/cancel-pending-booking', [BookingCronController::class,'cancelPendingBooking']);
 
 
 

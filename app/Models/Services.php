@@ -20,4 +20,19 @@ class Services extends Model
         'service_image',
     ];
 
+
+    // Define the relationship to the parent service
+    public function parent()
+    {
+        return $this->belongsTo(Services::class, 'parent_id');
+    }
+
+    // Define the relationship to the child services
+    public function children()
+    {
+        return $this->hasMany(Services::class, 'parent_id');
+    }
+
+
+
 }

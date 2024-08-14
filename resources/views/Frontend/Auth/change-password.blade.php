@@ -113,6 +113,9 @@
                           {
                                 toastr.success(response.message);
                                 form_data.reset();
+                                window.setTimeout(function() {
+                                    window.location.href = "{{ route('login') }}";
+                                }, 1000);
                           }
 
                           if(response.status == 0)

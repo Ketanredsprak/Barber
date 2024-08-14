@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::table('users', function (Blueprint $table) {
             //
             $table->date("store_registration_expiration_date")->after('health_license_expiration_date')->comment("date")->nullable();
+            $table->date("iqama_no_expiration_date")->after('store_registration_expiration_date')->comment("date")->nullable();
         });
     }
 
@@ -25,6 +26,7 @@ return new class extends Migration
         Schema::table('users', function (Blueprint $table) {
             //
             $table->dropColumn('store_registration_expiration_date');
+            $table->dropColumn('iqama_no_expiration_date');
         });
     }
 };

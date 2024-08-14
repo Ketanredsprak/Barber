@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use App\Models\Cms;
-use App\Models\MetaContent;
-use App\Models\Pagies;
 use DataTables;
+use App\Models\Cms;
+use App\Models\Pagies;
+use App\Models\MetaContent;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\App;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Crypt;
 
 class PageController extends Controller
 {
@@ -29,12 +30,15 @@ class PageController extends Controller
     {
         //
         if ($request->ajax()) {
-            $data = Pagies::get();
+            $data = Pagies::orderBy('id', 'DESC')->get();
             return Datatables::of($data)->addIndexColumn()
                 ->addColumn('action', function ($row) {
                     $alert_delete = "return confirm('Are you sure want to delete !')";
                     $btn = "<ul class='action'>";
-                    $btn = $btn . '<li class="edit"> <a class="edit-data"  href="' . route('page.edit', $row->id) . '" title="Edit" data-url="' . route('page.edit', $row->id) . '"><i class="icon-pencil-alt"></i></a></li>  </ul>';
+
+                    $encrypted_Id = Crypt::encryptString($row->id);
+
+                    $btn = $btn . '<li class="edit"> <a class="edit-data"  href="' . route('page.edit', $encrypted_Id) . '" title="Edit" data-url="' . route('page.edit', $encrypted_Id) . '"><i class="icon-pencil-alt"></i></a></li>  </ul>';
                     return $btn;
 
                 })
@@ -125,9 +129,13 @@ class PageController extends Controller
     {
         //
         try {
+            $id = Crypt::decryptString($id);
             $data = Pagies::with("meta_content", "cms_content")->find($id);
             if (!empty($data)) {
                 return view('Admin.Pagies.edit', compact('data'));
+            }else
+            {
+                return view('errors.404');
             }
         } catch (Exception $ex) {
             return response()->json(

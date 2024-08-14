@@ -33,7 +33,7 @@ class BlogAndNewsController extends Controller
         //
 
         if ($request->ajax()) {
-            $data = BlogandNews::where('is_delete',0)->get();
+            $data = BlogandNews::where('is_delete',0)->orderBy('id', 'DESC')->get();
             return Datatables::of($data)->addIndexColumn()
                 ->addColumn('action', function ($row) {
                     $btn = "";

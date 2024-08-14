@@ -31,7 +31,7 @@ class CategoryController extends Controller
         //
 
         if ($request->ajax()) {
-            $data = Category::where('is_delete',0)->get();
+            $data = Category::where('is_delete',0)->orderBy('id', 'DESC')->get();
             $locale = App::getLocale();
             return Datatables::of($data)->addIndexColumn()
                 ->addColumn('action', function ($row) {

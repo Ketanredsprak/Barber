@@ -15,7 +15,7 @@ return new class extends Migration
             //
             $table->string("first_name")->after("id");
             $table->string("last_name")->after("first_name");
-            $table->string("gender")->after("last_name");
+            $table->string("gender")->after("last_name")->nullable();
             $table->string("referral_code")->after("gender");
             $table->integer("country_code")->after("referral_code")->default(0);
             $table->string("nationality")->after("phone")->nullable();

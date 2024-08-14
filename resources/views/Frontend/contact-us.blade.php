@@ -6,9 +6,10 @@
             $title = 'title_' . $language;
             $content = 'content_' . $language;
             $name = 'page_name_' . $language;
+            $subject_name = 'name_' . $language;
 @endphp
     <section class="heading_sec"
-        style="background-image: url(images/banner.png);background-position: center;background-repeat: no-repeat;background-size: cover;">
+        style="background-image: url({{ static_asset('frontend/assets/images/banner.png') }});background-position: center;background-repeat: no-repeat;background-size: cover;">
         <div class="container">
             <div class="row">
                 <div class="col-sm-12 text-center">
@@ -87,22 +88,19 @@
                                         </span>
                                     @enderror
                                 </div>
+
                                 <div class="col-sm-6">
-                                    <div class="form-group">
-                                        <input type="text" class="form-control" placeholder="{{ __("labels.Subject") }}" name="subject" id="subject">
+                                            <select class="form-control @error('subject') is-invalid @enderror"
+                                                    id="subject" name="subject">
+                                                    <option value="">{{ __('labels.Subject') }}</option>
+                                                    @foreach ($subjects as $subject)
+                                                       <option value="{{ $subject->id }}">{{ $subject->$subject_name }}</option>
+                                                    @endforeach
+
+
+                                            </select>
                                     </div>
-                                    @error('subject')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
-                                </div>
-                                <div class="col-sm-12">
-                                    <div class="form-group">
-                                        <input type="file" class="form-control"  name="contact_file"
-                                            id="contact_file">
-                                    </div>
-                                </div>
+
                                 <div class="col-sm-12">
                                     <div class="form-group">
                                         <textarea class="form-control" type="text"  rows="5" placeholder="{{ __("labels.Note") }}" name="note"
@@ -113,6 +111,13 @@
                                         <strong>{{ $message }}</strong>
                                     </span>
                                    @enderror
+                                </div>
+
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <input type="file" class="form-control"  name="contact_file"
+                                            id="contact_file">
+                                    </div>
                                 </div>
 
                                 <div class="col-sm-12 text-center mt-4">

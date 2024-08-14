@@ -35,7 +35,7 @@ class SubscriptionController extends Controller
         //
 
         if ($request->ajax()) {
-            $data = Subscription::where('is_delete',0)->get();
+            $data = Subscription::where('is_delete',0)->orderBy('id', 'DESC')->get();
             $locale = App::getLocale();
             return Datatables::of($data)->addIndexColumn()
                 ->addColumn('action', function ($row) {
@@ -122,7 +122,7 @@ class SubscriptionController extends Controller
             $data->subscription_detail_tr = $request->subscription_description_tr;
             $data->number_of_booking = $request->number_of_booking;
             $data->price = $request->price;
-            $data->duration_in_days = $request->duration_in_days;
+            $data->duration_in_months = $request->duration_in_months;
             $data->subscription_type = $request->subscription_type;
             $data->status = 1;
             $data->save();
@@ -182,7 +182,7 @@ class SubscriptionController extends Controller
             $data->subscription_detail_tr = $request->subscription_description_tr;
             $data->number_of_booking = $request->number_of_booking;
             $data->price = $request->price;
-            $data->duration_in_days = $request->duration_in_days;
+            $data->duration_in_months = $request->duration_in_months;
             $data->update();
             if (!empty($data)) {
             return response()->json(['status' => '1', 'success' => __('message.Subscription Update Successfully.')]);

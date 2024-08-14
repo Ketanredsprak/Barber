@@ -18,7 +18,7 @@ class CmsController extends Controller
     {
         //
         if ($request->ajax()) {
-            $data = Cms::where('is_delete',0)->orderBY('id','DESC')->get();
+            $data = Cms::where('is_delete',0)->orderBY('id','DESC')->orderBy('id', 'DESC')->get();
             return Datatables::of($data)->addIndexColumn()
                 ->addColumn('action', function ($row) {
                     $alert_delete = "return confirm('Are you sure want to delete !')";

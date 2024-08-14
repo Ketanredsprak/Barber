@@ -264,3 +264,552 @@ Based url for redspark server : https://redsparkte.a2hosted.com/ehjez/api/
 
 ===========================================
 
+
+(15)   V1 => add-and-update-barber-schedule
+    {
+            url : {{live}}add-and-update-barber-schedule
+                method : post
+                authorization : {token}
+                header : language(code)
+                input parm : {
+                                        monday_is_holiday:0
+                                        monday_start_time:11:00
+                                        monday_end_time:17:00
+                                        tuesday_is_holiday:0
+                                        tuesday_start_time:11:00
+                                        tuesday_end_time:17:00
+                                        wednesday_is_holiday:0
+                                        wednesday_start_time:11:00
+                                        wednesday_end_time:17:00
+                                        thursday_is_holiday:0
+                                        thursday_start_time:11:00
+                                        thursday_end_time:17:00
+                                        friday_is_holiday:0
+                                        friday_start_time:11:00
+                                        friday_end_time:17:00
+                                        saturday_is_holiday:0
+                                        saturday_start_time:11:00
+                                        saturday_end_time:17:00
+                                        sunday_is_holiday:0
+                                        sunday_start_time:11:00
+                                        sunday_end_time:14:00
+                            }
+    }
+
+
+===========================================
+
+(16)   V1 => customer-dashboard
+    {
+            url : {{live}}customer-dashboard
+                method : get
+                authorization : with token and without token
+                header : language(code)
+                input parm : {
+
+                             }
+    }
+
+
+=============================================
+
+(17)   V1 => get-all-barbers
+    {
+            url : {{live}}get-all-barbers
+                method : post
+                authorization : with token and without token
+                header : language(code)
+                input parm : {
+                                         barber_name:search barber name (optinal)
+                                         salon_name:search salon name (optinal)
+                                         gender:search gender (optinal)
+                                         service_id:select service_id (optinal)
+                             }
+    }
+
+
+=============================================
+
+(18)   V1 => {{live}}get-barber-detail/{id}
+    {
+            url : {{live}}get-barber-detail/86
+                method : get
+                authorization : with token and without token
+                header : language(code)
+
+    }
+
+
+=============================================
+customer and barber
+(19)   V1 => {{live}}get-all-subscriptions
+    {
+            url : {{live}}get-all-subscriptions
+                method : post
+                authorization : with token and without token
+                header : language(code)
+                input params
+                {
+                     user_type : customer,barber
+                }
+
+    }
+
+=============================================
+customer and barber
+(20)   V1 => {{live}}get-all-notification
+    {
+            url : {{live}}get-all-notification
+                method : get
+                authorization : token
+                header : language(code)
+                input params
+
+
+    }
+
+
+=============================================
+
+customer
+(21)   V1 => {{live}}get-all-my-favorites
+    {
+            url : {{live}}get-all-my-favorites
+                method : get
+                authorization : token
+                header : language(code)
+    }
+
+
+
+=============================================
+
+customer
+(22)   V1 => {{live}}add-and-remove-favorite
+    {
+            url : {{live}}add-and-remove-favorite
+                method : post
+                authorization : token
+                header : language(code)
+                 input params
+                 {
+                              barber_id:86
+                 }
+    }
+
+
+=============================================
+ barber
+(23)   V1 => {{live}}get-barber-provide-services
+    {
+            url : {{live}}get-barber-provide-services
+                method : get
+                authorization : token
+                header : language(code)
+
+    }
+
+=============================================
+ barber
+(24)   V1 => {{live}}delete-service-from-barber\{id}
+    {
+            url : {{live}}delete-service-from-barber\{id}
+                method : get
+                authorization : token
+                header : language(code)
+
+    }
+
+
+==============================================
+
+ customer
+(25)   V1 => {{live}}booking
+    {
+            url : {{live}}booking
+                method : post
+                authorization : token
+                header : language(code)
+                input params
+                 {
+                              barber_id:54,
+                              booking_date:2024-07-22,
+                              service_ids[0]:13,
+                              service_ids[1]:14
+                              slots[0]:12:00 - 12:30,
+                              slots[1]:12:30 - 01:00
+                 }
+
+    }
+
+=====================================================
+ customer and barber
+(26)   {{live}}{{live}}get-page-content
+    {
+            url : {{live}}{{live}}get-page-content
+                method : post
+                authorization : without token
+                header : language(code)
+                input_parmas
+                {
+                      page_name : privacy_policy,terms_and_conditions,about_us
+                }
+                note: without langaage pass api getting api ['en','ar','ur','tr']
+
+
+
+}
+
+==============================================
+
+ customer
+(27)   {{live}}barber-booking-list/91
+    {
+            url : {{live}}barber-booking-list/91
+                method : post
+                authorization : token
+                header : language(code)
+                 input params
+                 {
+                              barber_id:91,
+                              booking_date:2024-07-22,
+                }
+
+
+    }
+
+=====================================================
+ barber
+(28){{live}}get-all-barber-appointments?page=1
+    {
+            url : {{live}}get-all-barber-appointments
+                method : post
+                authorization : token
+                header : language(code)
+                 input params
+                 {
+                              status:all,upcoming,finished,
+                 }
+
+
+    }
+
+====================================================
+
+
+ barber
+(29){{live}}get-barber-appointment-detail/30
+    {
+            url : get-barber-appointment-detail/30
+                method : get
+                authorization : token
+                header : language(code)
+
+    }
+
+====================================================
+
+ barber
+
+(30){{live}}accept-or-reject-customer-appointment
+    {
+            url : accept-or-reject-customer-appointment
+                method : post
+                authorization : token
+                header : language(code)
+                 input params
+                 {
+                              booking_id:id
+                              status:accept,reject
+                 }
+
+    }
+
+=====================================================
+customer
+(31){{live}}get-all-customer-appointments?page=1
+    {
+            url : {{live}}get-all-customer-appointments
+                method : post
+                authorization : token
+                header : language(code)
+                 input params
+                 {
+                              status:appointment,history,barber-proposal
+                 }
+
+
+    }
+
+=====================================================
+
+customer
+(32){{live}}get-customer-appointment-detail/30
+    {
+            url : get-customer-appointment-detail/30
+                method : get
+                authorization : token
+                header : language(code)
+
+    }
+
+====================================================
+
+ customer
+(33)   V1 => {{live}}booking-with-join-waitlist
+    {
+            url : {{live}}booking-with-join-waitlist
+                method : post
+                authorization : token
+                header : language(code)
+                input params
+                 {
+                              barber_id:54,
+                              booking_date:2024-07-22,
+                              service_ids[0]:13,
+                              service_ids[1]:14
+                }
+
+    }
+
+
+
+=====================================================
+
+(34)   V1 => {{live}}join-waitlist
+    {
+        url : {{live}}join-waitlist
+                method : post
+                authorization : token
+                header : language(code)
+                input params
+                 {
+
+                                    booking_id:48
+                                    any_date:1
+                                    any_time:1
+                                    select_date_range:0
+                                    select_time_range:0
+                                    from_date[0]:2024-08-02
+                                    to_date[0]:2024-08-10
+                                    from_date[1]:2024-08-11
+                                    to_date[1]:2024-08-15
+                                    from_time[0]:05:00:00
+                                    to_time[0]:07:00:00
+                                    from_time[1]:10:00:00
+                                    to_time[1]:15:00:00
+                 }
+ }
+
+
+
+=====================================================
+
+customer
+
+(35){{live}}cancel-booking/54   <-------- booking_id
+    {
+            url : {{live}}cancel-booking/54
+                method : get
+                authorization : token
+                header : language(code)
+
+    }
+
+
+=====================================================
+
+
+customer
+
+(36){{live}}reschedule-booking/54   <-------- booking_id
+    {
+            url : {{live}}reschedule-booking/54
+                method : get
+                authorization : token
+                header : language(code)
+
+
+                after  api call in data key you will getdetail about  service_detail,booking_date and booking_id as id
+
+    }
+=====================================================
+
+
+customer
+
+(37){{live}}reschedule-booking-submit
+    {
+            url : {{live}}reschedule-booking-submit
+                method : post
+                authorization : token
+                header : language(code)
+                input params {
+                                booking_id:67
+                                booking_date:2024-08-04
+                                slots[0]:19:00-19:30
+                                slots[1]:19:30-20:00
+                }
+
+    }
+
+
+=====================================================
+
+(38){{live}}accept-or-reject-customer-with-join-waitlist-appointment
+    {
+            url : {{live}}accept-or-reject-customer-with-join-waitlist-appointment
+                method : post
+                authorization : token
+                header : language(code)
+                input params {
+                               status:accept
+                               booking_id:44
+                               booking_date:2024-08-05
+                               slots[0]:18:30-19:00
+                               slots[1]:19:00-20:00,
+                               barber_id,
+                               user_id,
+                }
+
+    }
+
+
+===================================================
+
+customer
+(39){{live}}accept-or-reject-barber-proposal
+    {
+            url : {{live}}accept-or-reject-barber-proposal
+                method : post
+                authorization : token
+                header : language(code)
+                input params {
+                               id:44
+                               status:accept,reject
+                               booking_id:44
+
+                }
+
+    }
+
+=====================================================
+
+both
+(39){{live}}get-my-chat-list
+    {
+            url : {{live}}get-my-chat-list
+                method : post
+                authorization : token
+                header : language(code)
+                input params {
+                               user_type : customer,barber
+
+                }
+
+    }
+====================================================
+
+both
+(39){{live}}send-message
+    {
+            url : {{live}}send-message
+                method : post
+                authorization : token
+                header : language(code)
+                input params {
+                               chat_unique_key :
+                               message_type : text,file
+                               message :message_type,text
+                               file : message_type,file
+                               receiver_id : receiver_id
+
+                }
+
+    }
+
+
+================================================
+
+both
+(39){{live}}get-one-to-one-chat
+    {
+            url : {{live}}get-one-to-one-chat
+                method : post
+                authorization : token
+                header : language(code)
+                input params {
+                               chat_unique_key :
+                }
+
+    }
+
+
+==============================================
+
+(39){{live}}rating-barber
+    {
+            url : {{live}}rating-barber
+                method : post
+                authorization : token
+                header : language(code)
+                input params {
+                               booking_id :
+                               rating : 0 to 5
+                }
+
+    }
+
+
+==============================================
+
+(39){{live}}notification-on-or-off
+    {
+            url : {{live}}notification-on-or-off
+                method : post
+                authorization : token
+                header : language(code)
+                input params {
+                               notification_status : 1 off, 0 on (for all user defualt it 0(on))
+                }
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

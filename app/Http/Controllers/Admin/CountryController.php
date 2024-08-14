@@ -31,7 +31,7 @@ class CountryController extends Controller
         //
 
         if ($request->ajax()) {
-            $data = Countries::where('is_delete',0)->get();
+            $data = Countries::where('is_delete',0)->orderBy('id', 'DESC')->get();
             $locale = App::getLocale();
             return Datatables::of($data)->addIndexColumn()
                 ->addColumn('action', function ($row) {

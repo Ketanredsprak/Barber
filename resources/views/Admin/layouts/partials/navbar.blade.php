@@ -20,12 +20,11 @@
           <div class="translate_wrapper">
             <div class="current_lang">
               <div class="lang">
-
                @if($locale == "ar") <i class="flag-icon flag-icon-ae"></i> @else <i class="flag-icon flag-icon-us"></i> @endif <span class="lang-txt">{{ $locale }} </span></div>
             </div>
             <div class="more_lang">
-              <div class="lang selected" data-value="en" onclick="change_lang('en');"><i class="flag-icon flag-icon-us"></i><span class="lang-txt" >English<span> (US)</span></span></div>
-              <div class="lang" data-value="ae" onclick="change_lang('ar');"><i class="flag-icon flag-icon-ae"></i><span class="lang-txt" onclick="change_lang('ar');">لعربية <span> (ae)</span></span></div>
+              <div class="lang selected" data-value="EN" onclick="change_lang('en');"><i class="flag-icon flag-icon-us"></i><span class="lang-txt" >English<span> (US)</span></span></div>
+              <div class="lang" data-value="AR" onclick="change_lang('ar');"><i class="flag-icon flag-icon-ae"></i><span class="lang-txt" onclick="change_lang('ar');">لعربية <span> (AR)</span></span></div>
             </div>
           </div>
         </li>
@@ -47,6 +46,3 @@
       </ul>
     </div>
   </div>
-
-
-

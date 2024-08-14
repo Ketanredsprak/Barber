@@ -22,9 +22,9 @@ class SubscriptionRequest extends FormRequest
             'subscription_description_ur' => ['required'],
             'subscription_description_tr' => ['required'],
             'price' => ['required','numeric'],
-            'duration_in_days' => ['required','numeric'],
-            'number_of_booking' => ['required','numeric'],
-            // 'subscription_type' => ['required'],
+            'duration_in_months' => ['required','numeric'],
+            'subscription_type' => ['required'],
+            'number_of_booking' => ['required_if:subscription_type,customer'],
             ];
     }
     public function messages(): array
@@ -40,8 +40,8 @@ class SubscriptionRequest extends FormRequest
             'subscription_description_tr.required' => __('error.The Subscription Description Turkish field is required'),
             'price.required' => __('error.The Price field is required'),
             'price.numeric' => __('error.The Price field must be a numeric'),
-            'duration_in_days.required' => __('error.The Duration field is required'),
-            'duration_in_days.numeric' => __('error.The Duration field must be a numeric'),
+            'duration_in_months.required' => __('error.The Duration field is required'),
+            'duration_in_months.numeric' => __('error.The Duration field must be a numeric'),
             'number_of_booking.required' => __('error.The Number of Booking field is required'),
             'number_of_booking.numeric' => __('error.The Number of Booking field must be a numeric'),
             'subscription_type.required' => __('error.The Subscription Type field is required'),

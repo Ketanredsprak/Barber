@@ -25,4 +25,10 @@ class Banners extends Model
         "status",
         "is_delete",
     ];
+
+
+    public function barber_info(){
+        return $this->hasOne(User::class, 'id', 'barber_id');
+    }
+
 }

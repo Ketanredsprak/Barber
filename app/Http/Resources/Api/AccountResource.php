@@ -19,7 +19,7 @@ class AccountResource extends JsonResource
             'id' => $this->id,
             'first_name' => $this->first_name ?? "",
             'last_name' => $this->last_name ?? "",
-            'profile_image' => URL::to('/public') . '/profile_image/' .$this->profile_image ?? "user.jpg",
+            'profile_image' => URL::to('/public/profile_image/' . ($this->profile_image ?: 'user.jpg')),
             'user_type' => $this->user_type,
             'phone' => $this->phone,
             'email' => $this->email,

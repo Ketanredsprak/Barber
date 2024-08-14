@@ -1,7 +1,7 @@
 @php
-  $locale = config('app.locale');
-  $config = getWebsiteConfig();
-  $location = "location_".$locale;
+    $locale = config('app.locale');
+    $config = getWebsiteConfig();
+    $location = 'location_' . $locale;
 @endphp
 <div class="container">
     <div class="row">
@@ -15,7 +15,8 @@
                     <li> <i class="fa fa-phone"></i> <a href="tel:{{ $config->phone }}"> {{ __('labels.Phone') }}</a>
                         <p>{{ $config->phone }}</p>
                     </li>
-                    <li> <i class="fa fa-envelope-o"></i> <a href="mailto:{{ $config->email }}"> {{ __('labels.Email') }}</a>
+                    <li> <i class="fa fa-envelope-o"></i> <a href="mailto:{{ $config->email }}">
+                            {{ __('labels.Email') }}</a>
                         <p>{{ $config->email }}</p>
                     </li>
 
@@ -27,11 +28,11 @@
             <h5>{{ __('labels.Useful Links') }}</h5>
             <div class="footer_info">
                 <ul class="list-unstyled pl-0">
-                    <li> <a href="{{ route('index')}}">{{ __('labels.Home') }}</a></li>
-                    <li> <a href="{{ route('about-us')}}">{{ __('labels.About Us') }}</a></li>
-                    <li> <a href="{{ route('contact-us')}}">{{ __('labels.Contact Us') }}</a></li>
-                    <li> <a href="{{ route('temrs-and-condition')}}">{{ __('labels.Terms & Conditions') }}</a></li>
-                    <li> <a href="{{ route('privacy-policy')}}">{{ __('labels.Privacy Policy') }}</a></li>
+                    <li> <a href="{{ route('index') }}">{{ __('labels.Home') }}</a></li>
+                    <li> <a href="{{ route('about-us') }}">{{ __('labels.About Us') }}</a></li>
+                    <li> <a href="{{ route('contact-us') }}">{{ __('labels.Contact Us') }}</a></li>
+                    <li> <a href="{{ route('terms-and-condition') }}">{{ __('labels.Terms & Conditions') }}</a></li>
+                    <li> <a href="{{ route('privacy-policy') }}">{{ __('labels.Privacy Policy') }}</a></li>
                 </ul>
             </div>
         </div>
@@ -53,10 +54,14 @@
             <div class="footer_info">
                 <div class="footer_social">
                     <ul class="list-unstyled pl-0">
-                        <li> <a href="{{ $config->facebook_link }}" target="_blank"> <i class="fa fa-facebook"></i></a> </li>
-                        <li> <a href="{{ $config->twitter_link }}" target="_blank"> <i class="fa fa-twitter"></i></a> </li>
-                        <li> <a href="{{ $config->linkedin_link }}" target="_blank"> <i class="fa fa-linkedin"></i></a> </li>
-                        <li> <a href="{{ $config->youtube_link }}" target="_blank"> <i class="fa fa-youtube"></i></a> </li>
+                        <li> <a href="{{ $config->facebook_link }}" target="_blank"> <i class="fa fa-facebook"></i></a>
+                        </li>
+                        <li> <a href="{{ $config->twitter_link }}" target="_blank"> <i class="fa fa-twitter"></i></a>
+                        </li>
+                        <li> <a href="{{ $config->youtube_link }}" target="_blank"> <i class="fa fa-youtube"></i></a>
+                        </li>
+                        <li> <a href="{{ $config->linkedin_link }}" target="_blank"> <i class="fa fa-linkedin"></i></a>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -64,10 +69,11 @@
 
     </div>
 
-
-</div>
-<div class="row copyright">
-    <div class="col-sm-12 text-center">
-        <p class="mb-0"> {{ __('labels.Copyright')}} © 2024 Ehjez</p>
+    <div class="row copyright">
+        <div class="col-sm-12 text-center">
+            <p class="mb-0">© {{ date('Y') }} Ehjez. All Rights Reserved</p>
+        </div>
     </div>
+
+
 </div>

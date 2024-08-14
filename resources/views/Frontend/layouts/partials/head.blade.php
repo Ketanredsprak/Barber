@@ -1,11 +1,16 @@
+@php
+      $currentRouteName = Route::currentRouteName();
+      $locale = config('app.locale');
+      $meta_keyword = "meta_title_".$locale;
+      $meta_description = "meta_content_".$locale;
+@endphp
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+<meta name="description" content="{{ $data->meta_content->$meta_keyword  ?? "" }}">
+<meta name="keywords" content="{{ $data->meta_content->$meta_description  ?? "" }}">
 <meta name="csrf-token" content="{{ csrf_token() }}" />
-@php
-      $currentRouteName = Route::currentRouteName();
-@endphp
 <title>{{ config('app.name') }} - {{ $currentRouteName }}</title>
 
 

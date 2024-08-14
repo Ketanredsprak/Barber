@@ -97,17 +97,22 @@
                             </div>
                         </div>
                         <hr>
-                        <div class="filter_btn pt-2">
+                        <div class="filter_btn pt-2 pb-2 content-center">
                             <button class="btn btn-warning" type="submit" id="filterSubmit">{{ __('labels.Submit') }}</button>
+                            <button class="btn btn-success" type="submit" id="filterReset">{{ __('labels.Reset') }}</button>
                         </div>
                     </div>
 
                 </div>
 
 
+                <div class="filter-box filter_web">
+                    <!-- Your existing filter code -->
+                </div>
+
 
                 <div class="col-sm-12 col-md-8 col-lg-9 right_sec barberList">
-
+                    <img src="{{ static_asset('frontend/assets/images/loader.gif') }}" alt="Loading..." />
                 </div>
 
 
@@ -132,6 +137,31 @@
             BarberList(barber_name, service_id, gender, salon_name, state_name, city_name, page);
 
 
+            $("#filterReset").click(function() {
+            $('#barber_name').val('');
+                $('#salon_name').val('');
+                $('#service_id').val('');
+                $('#gender').val('');
+                $('#city_name').val('');
+                $('#state_name').val('');
+
+                // Reset variables and reload the barber list
+                barber_name = '';
+                salon_name = '';
+                service_id = '';
+                gender = '';
+                city_name = '';
+                state_name = '';
+                page = 1;
+
+                $("#loader").show();
+
+                // Reload the barber list with reset filters
+                BarberList(barber_name, service_id, gender, salon_name, state_name, city_name, page);
+            });
+
+
+
 
             $("#filterSubmit").click(function() {
                 var barber_name = $('#barber_name').val();
@@ -141,6 +171,8 @@
                 var city_name = $('#city_name').val();
                 var state_name = $('#state_name').val();
                 var page = 1;
+
+                $("#loader").show();
 
                 BarberList(barber_name, service_id, gender, salon_name, state_name, city_name, page);
             });
@@ -156,6 +188,8 @@
                 var gender = $('#gender').val();
                 var city_name = $('#city_name').val();
                 var state_name = $('#state_name').val();
+
+                $("#loader").show();
 
                 BarberList(barber_name, service_id, gender, salon_name, state_name, city_name, page);
             });
@@ -177,6 +211,7 @@
                     city_name: city_name
                 },
                 success: function(response) {
+                    $("#loader").hide();
                     $(".barberList").html('');
                     $(".barberList").append(response);
                 },

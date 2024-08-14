@@ -108,3 +108,51 @@ $config = getWebsiteConfig();
 </body>
 
 </html>
+
+
+<!-- Custom Confirmation Modal -->
+<div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmationModalLabel">{{ __('labels.Confirmation') }}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="confirmationMessage">
+                <!-- Message will be dynamically inserted here -->
+                {{ __('message.Are you sure you want to logout from website?') }}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ __('labels.No') }}</button>
+                <button type="button" class="btn btn-primary" id="confirmYesButton">{{ __('labels.Yes') }}</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Custom Confirmation Modal -->
+
+
+<!-- Custom Confirmation Modal -->
+<div class="modal fade" id="confirmationModal1" tabindex="-1" role="dialog" aria-labelledby="confirmationModal1Label" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmationModal1Label">{{ __('labels.Confirmation') }}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="confirmationMessage">
+                <!-- Message will be dynamically inserted here -->
+                {{ __('message.Are you sure you resend otp from website?') }}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ __('labels.No') }}</button>
+                <button type="button" class="btn btn-primary" id="confirmYesButton1">{{ __('labels.Yes') }}</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Custom Confirmation Modal -->

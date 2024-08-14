@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string("location_ar");
             $table->string("location_ur");
             $table->string("location_tr");
+            $table->string("website_link");
             $table->string("phone");
             $table->string("whatsapp");
             $table->string("email");

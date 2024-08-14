@@ -76,7 +76,7 @@
                     "sProcessing":    "{{ __('labels.Processing') }}...",
                     "sLengthMenu":    "{{ __('labels.Show') }} _MENU_ {{ __('labels.Entries') }}",
                     "sZeroRecords":   "{{ __('labels.No matching records found') }}",
-                    "sEmptyTable":    "Ningún dato disponible en esta tabla",
+                    "sEmptyTable":    "{{ __('labels.No records found') }}",
                     "sInfo":          "{{ __('labels.Showing') }} _START_ {{ __('labels.To') }} _END_ {{ __('labels.Of')}} _TOTAL_ {{ __('labels.Entries') }}",
                     "sInfoEmpty":     "{{ __('labels.Showing') }} 0 {{ __('labels.To') }} 0 {{ __('labels.Of')}} 0 {{ __('labels.Entries') }}",
                     "sInfoFiltered":  "({{ __('labels.Filtered')}} {{ __('labels.Of')}} _MAX_ {{ __('labels.Entries') }})",
@@ -103,8 +103,8 @@
                 ajax: "{{ route('state.index') }}",
                 columns: [
                     {
-                        data: 'id',
-                        name: 'id'
+                        data: 'DT_RowIndex',
+                        name: 'DT_RowIndex',
                     },
                     {
                         data: 'country_name',

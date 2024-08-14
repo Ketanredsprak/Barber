@@ -1,13 +1,21 @@
 <?php
 
+use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Module;
+use App\Models\Booking;
 use App\Models\Services;
 use App\Models\Countries;
+use App\Models\CountryCode;
+use App\Models\BarberRating;
 use App\Models\Subscription;
 use App\Models\WebsiteConfig;
+use App\Models\UserSubscription;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use App\Models\SubscriptionPermission;
 use Spatie\Permission\Models\Permission;
+use App\Models\UserSubscriptionPermission;
 
 if (!function_exists('static_asset')) {
     /**
@@ -23,50 +31,55 @@ if (!function_exists('static_asset')) {
     }
 }
 
+//get getuser
+if (!function_exists('getuser')) {
+    function getuser($id)
+    {
+        $User = User::where("id", $id)->get();
+        return $User;
+    }}
+
 
 if (!function_exists('getcountries')) {
     function getcountries()
     {
-          $countrys = Countries::where("is_delete",0)->where('status',1)->get();
-          return $countrys;
+        $countrys = Countries::where("is_delete", 0)->where('status', 1)->get();
+        return $countrys;
     }
 }
-
 
 if (!function_exists('getmodules')) {
     function getmodules()
     {
-          $module = Module::get();
-          return $module;
+        $module = Module::get();
+        return $module;
     }
 }
-
-
 
 if (!function_exists('getPermission')) {
     function getPermission()
     {
         $permission_group = Permission::get()->groupBy('module_name');
-          return $permission_group;
+        return $permission_group;
     }
 }
 
-
 //get compressImage
 if (!function_exists('compressImage')) {
-    function compressImage($source, $destination) {
+    function compressImage($source, $destination)
+    {
         // Get image info
         //for $quality change 1 -100
         $quality = 60;
         $imgInfo = getimagesize($source);
         $mime = $imgInfo['mime'];
 
-         // Check image size
-         $fileSize = filesize($source); // in bytes
-         $quality = ($fileSize > 1024 * 1024) ? $quality : 100; // Check if size is greater than 1 MB
+        // Check image size
+        $fileSize = filesize($source); // in bytes
+        $quality = ($fileSize > 1024 * 1024) ? $quality : 100; // Check if size is greater than 1 MB
 
         // Create a new image from file
-        switch($mime){
+        switch ($mime) {
             case 'image/jpeg':
                 $image = imagecreatefromjpeg($source);
                 break;
@@ -89,34 +102,30 @@ if (!function_exists('compressImage')) {
 
 }
 
-
-
 //get raferal code
 if (!function_exists('generate_rederal_code')) {
-    function generate_rederal_code() {
-            $str_result = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
-                return $referral_code =  substr(str_shuffle($str_result), 0, 10);
+    function generate_rederal_code()
+    {
+        $str_result = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
+        return $referral_code = substr(str_shuffle($str_result), 0, 10);
     }
 }
-
 
 if (!function_exists('getbarbers')) {
     function getbarbers()
     {
-        $barbers = User::where('user_type',3)->where('is_approved',"2")->get();
+        $barbers = User::where('user_type', 3)->where('is_approved', "2")->get();
         return $barbers;
     }
 }
 
-
 if (!function_exists('getServices')) {
     function getServices()
     {
-        $services = Services::where('parent_id',0)->where('status',1)->get();
+        $services = Services::where('parent_id', 0)->where('status', 1)->get();
         return $services;
     }
 }
-
 
 if (!function_exists('getWebsiteConfig')) {
     function getWebsiteConfig()
@@ -126,7 +135,6 @@ if (!function_exists('getWebsiteConfig')) {
     }
 }
 
-
 if (!function_exists('getauthdata')) {
     function getauthdata()
     {
@@ -135,41 +143,532 @@ if (!function_exists('getauthdata')) {
     }
 }
 
-
-
-
 if (!function_exists('country_code')) {
     function country_code()
     {
-         return ['1','91','93','355','213'];
+        $phonecodes = CountryCode::pluck('phonecode')->toArray();
+        return $phonecodes;
     }
 }
-
 
 if (!function_exists('getSubscription')) {
     function getSubscription($subscription_type)
     {
-        // dd($subscription_type);
-        $data = Subscription::where('subscription_type',$subscription_type)->get();
+        $data = Subscription::where('subscription_type', $subscription_type)->where('status', 1)->where('is_delete', 0)->get();
         return $data;
     }
 }
 
-
 if (!function_exists('getSubServices')) {
     function getSubServices()
     {
-        $services = Services::where('parent_id', '!=', 0)->where('status',1)->get();
+        $services = Services::where('parent_id', '!=', 0)->where('status', 1)->get();
         return $services;
     }
 }
 
+if (!function_exists('getFirstTenWords')) {
+    function getFirstTenWords($string)
+    {
+        // Split the string into an array of words
+        $words = preg_split('/\s+/', $string);
+
+        // Check if there are more than 10 words
+        $moreThanTenWords = count($words) > 10;
+
+        // Get the first 10 words
+        $firstTenWords = array_slice($words, 0, 10);
+
+        // Join the words back into a string
+        $result = implode(' ', $firstTenWords);
+
+        // Add "......." if there are more than 10 words
+        if ($moreThanTenWords) {
+            $result .= ' .......';
+        }
+
+        return $result;
+    }
+}
+
+if (!function_exists('setUserPermissionBaseOnSubscription')) {
+    function setUserPermissionBaseOnSubscription($user_id, $subscription_id)
+    {
+
+        //assing basic subscription
+        $currentDateTime = Carbon::now();
+        $currentDate = $currentDateTime->format('Y-m-d H:i:s');
+        $subscription = Subscription::find($subscription_id);
+        $endDate = $currentDateTime->addDays($subscription->duration_in_months * 30);
+        $subscription_end_date = $endDate->format('Y-m-d H:i:s');
+        $user_subscription = new UserSubscription();
+        $user_subscription->user_id = $user_id;
+        $user_subscription->transaction_id = "1";
+        $user_subscription->subscription_id = "1";
+        $user_subscription->subscription_duration = $subscription->duration_in_months * 30;
+        $user_subscription->status = "active";
+        $user_subscription->availble_booking = $subscription->number_of_booking ?? 0;
+        $user_subscription->start_date_time = $currentDate;
+        $user_subscription->end_date_time = $subscription_end_date;
+        $user_subscription->save();
+        //assing basic subscription
+
+        //assing basic  permission to user subscription
+        //
+        if ($subscription->id == 1) {
+            $input_value = "basic_input_value";
+        }
+        if ($subscription->id == 2) {
+            $input_value = "silver_input_value";
+        }
+        if ($subscription->id == 3) {
+            $input_value = "bronz_input_value";
+        }
+        if ($subscription->id == 4) {
+            $input_value = "gold_input_value";
+        }
+        if ($subscription->id == 5) {
+            $input_value = "basic_input_value";
+        }
+        if ($subscription->id == 6) {
+            $input_value = "silver_input_value";
+        }
+        if ($subscription->id == 7) {
+            $input_value = "bronz_input_value";
+        }
+        if ($subscription->id == 8) {
+            $input_value = "gold_input_value";
+        }
+
+        $all_permission = SubscriptionPermission::whereJsonContains('subscription_array', "1")->get();
+        if ($all_permission) {
+            foreach ($all_permission as $permission) {
+                $UserSubscriptionPermission = new UserSubscriptionPermission();
+                $UserSubscriptionPermission->user_id = $user_id;
+                $UserSubscriptionPermission->subscription_id = $subscription->id;
+                $UserSubscriptionPermission->permission_id = $permission->id;
+                $UserSubscriptionPermission->permission_name = $permission->permission_name;
+                $UserSubscriptionPermission->is_input_box = $permission->is_input_box;
+                $UserSubscriptionPermission->input_value = $permission->$input_value;
+                $UserSubscriptionPermission->status = "active";
+                $UserSubscriptionPermission->save();
+            }
+        }
+
+        return "success";
+
+        //assing basic  permission to user subscription
+    }
+}
+
+if (!function_exists('getCurrentSubscription')) {
+    function getCurrentSubscription($user_id)
+    {
+        $data = UserSubscription::where("user_id", $user_id)->where('status', "active")->first();
+        return $data;
+    }
+}
+
+if (!function_exists('checkUserType')) {
+    function checkUserType()
+    {
+        if (Auth::check()) {
+            $userType = Auth::user()->user_type;
+            if ($userType == 1 || $userType == 2) {
+                return redirect('admin/dashboard');
+            } elseif ($userType == 3) {
+                return redirect('404');
+            } else {
+
+            }
+        }
+    }
+}
+
+if (!function_exists('decrypt_string')) {
+    function decrypt_string($encryptedString)
+    {
+        return $encryptedString;
+    }
+}
+
+if (!function_exists('sendEmail')) {
+    function sendEmail($user_id, $user_type, $booking_id)
+    {
+
+        $data = User::find($user_id);
+        $name = $data->first_name . ' ' . $data->last_name;
+        $email = $data->email;
+        $phone = $data->phone;
+
+        $admin_data = User::where('user_type', 1)->first();
+        $admin_email = $admin_data->email;
+
+        //customer
+        if ($user_type == "customer") {
+
+            //customer mail
+            Mail::send(
+                ['html' => 'email.customer-register-template'],
+                array(
+                    'name' => $name,
+                ),
+                function ($message) use ($email) {
+                    $message->from(env('MAIL_USERNAME'), 'Ehjez');
+                    $message->to($email);
+                    $message->subject("Thank For Joinning..");
+                }
+            );
+
+            //customer register mail to admin
+
+            Mail::send(
+                ['html' => 'email.customer-register-mail-to-admin-template'],
+                array(
+                    'name' => $name,
+                    'email' => $email,
+                    'phone' => $phone,
+                ),
+                function ($message) use ($admin_email) {
+                    $message->from(env('MAIL_USERNAME'), 'Ehjez');
+                    $message->to($admin_email);
+                    $message->subject("New Customer Registered..");
+                }
+            );
+
+        }
+
+        // barber
+        if ($user_type == "barber") {
+
+            //barber mail
+            $data_email = Mail::send(
+                ['html' => 'email.barber-register-template'],
+                array(
+                    'name' => $name,
+                ),
+                function ($message) use ($email) {
+                    $message->from(env('MAIL_USERNAME'), 'Ehjez');
+                    $message->to($email);
+                    $message->subject("Thank For Joinning..");
+                }
+            );
+
+            $data_email_1 = Mail::send(
+                ['html' => 'email.barber-register-mail-to-admin-template'],
+                array(
+                    'name' => $name,
+                    'email' => $email,
+                    'phone' => $phone,
+                ),
+                function ($message) use ($admin_email) {
+                    $message->from(env('MAIL_USERNAME'), 'Ehjez');
+                    $message->to($admin_email);
+                    $message->subject("New barber Registered..");
+                }
+            );
+
+            return true;
+
+        }
+
+        // customer suspend  by admin mail send to customer
+        if ($user_type == "account-suspend") {
+
+            //barber mail
+            $data_email = Mail::send(
+                ['html' => 'email.account-suspend-email-template'],
+                array(
+                    'name' => $name,
+                    'admin_email' => $admin_email,
+                ),
+                function ($message) use ($email) {
+                    $message->from(env('MAIL_USERNAME'), 'Ehjez');
+                    $message->to($email);
+                    $message->subject("Your Account is suspend..");
+                }
+            );
+        }
+
+        // customer approved by admin mail send to customer
+        if ($user_type == "account-approved") {
+
+            //barber mail
+            $data_email = Mail::send(
+                ['html' => 'email.account-approved-email-template'],
+                array(
+                    'name' => $name,
+                    'admin_email' => $admin_email,
+                ),
+                function ($message) use ($email) {
+                    $message->from(env('MAIL_USERNAME'), 'Ehjez');
+                    $message->to($email);
+                    $message->subject("Your Account is approved..");
+                }
+            );
+        }
+
+        // booking main to  customer
+        if ($user_type == "booking") {
+
+            $booking_data = Booking::with('barber_detail', 'customer_detail', 'booking_service_detailss.main_service', 'booking_service_detailss.sub_service')->find($booking_id);
+            $barber_email = $booking_data->barber_detail->email;
+            $customer_email = $booking_data->customer_detail->email;
+            //mail customer
+            $data_email = Mail::send(
+                ['html' => 'email.customer-booking-info-to-customer-template'],
+                array(
+                    'name' => $name,
+                    'booking' => $booking_data,
+                ),
+                function ($message) use ($customer_email) {
+                    $message->from(env('MAIL_USERNAME'), 'Ehjez');
+                    $message->to($customer_email);
+                    $message->subject("New Appointment..");
+                }
+            );
+
+            //barber mail
+            $data_email = Mail::send(
+                ['html' => 'email.barber-booking-info-to-barber-template'],
+                array(
+                    'name' => $name,
+                    'booking' => $booking_data,
+                ),
+                function ($message) use ($barber_email) {
+                    $message->from(env('MAIL_USERNAME'), 'Ehjez');
+                    $message->to($barber_email);
+                    $message->subject("New Appointment..");
+                }
+            );
+
+        }
+
+        if ($user_type == "barber-booking-status-chnage") {
+
+            $booking_data = Booking::with('barber_detail', 'customer_detail', 'booking_service_detailss.main_service', 'booking_service_detailss.sub_service')->find($booking_id);
+            $customer_email = $booking_data->customer_detail->email;
+
+            //mail customer
+            $data_email = Mail::send(
+                ['html' => 'email.customer-booking-status-change-to-customer-template'],
+                array(
+                    'booking' => $booking_data,
+                ),
+                function ($message) use ($customer_email) {
+                    $message->from(env('MAIL_USERNAME'), 'Ehjez');
+                    $message->to($customer_email);
+                    $message->subject("Barber responde on Appointment..");
+                }
+            );
+
+        }
+
+        if ($user_type == "barber-send-proposal-to-customer") {
+
+            $booking_data = Booking::with('barber_detail', 'customer_detail', 'barber_proposal')->find($booking_id);
+
+
+            $customer_email = $booking_data->customer_detail->email;
+
+            if ($booking_data->barber_proposal->slots) {
+                // Loop through the array
+
+
+                foreach ($booking_data->barber_proposal->slots as $index => $slot) {
+                    // Split the time range by " - "
+                    list($start, $end) = explode('-', $slot);
+
+                    // Set the first start time
+                    if ($index === 0) {
+                        $startTime = $start;
+                    }
+
+                    // Always update the last end time
+                    $endTime = $end;
+                }
+
+                $booking_data->barber_proposal->start_time = $startTime;
+                $booking_data->barber_proposal->end_time = $endTime;
+            }
 
 
 
+            //mail customer
+            $data_email = Mail::send(
+                ['html' => 'email.barber-proposal-for-booking-to-customer-template'],
+                array(
+                    'booking' => $booking_data,
+                ),
+                function ($message) use ($customer_email) {
+                    $message->from(env('MAIL_USERNAME'), 'Ehjez');
+                    $message->to($customer_email);
+                    $message->subject("Barber Propersal For JoinWait List Request..");
+                }
+            );
+
+        }
+
+        if ($user_type == "customer-chnage-status-for-barber-proposal") {
+
+            $booking_data = Booking::with('barber_detail', 'customer_detail', 'booking_service_detailss.main_service', 'booking_service_detailss.sub_service')->find($booking_id);
+            $barber_email = $booking_data->barber_detail->email;
+
+            //mail customer
+            $data_email = Mail::send(
+                ['html' => 'email.customer-chnage-status-for-barber-proposal-to-barber-template'],
+                array(
+                    'booking' => $booking_data,
+                ),
+                function ($message) use ($barber_email) {
+                    $message->from(env('MAIL_USERNAME'), 'Ehjez');
+                    $message->to($barber_email);
+                    $message->subject("Customer respond on your Appointment Proposal..");
+                }
+            );
+
+        }
+
+        if ($user_type == "customer-rating-to-barber") {
+
+            $booking_data = Booking::with('barber_detail', 'customer_detail', 'booking_service_detailss.main_service', 'booking_service_detailss.sub_service')->find($booking_id);
+            $barber_email = $booking_data->barber_detail->email;
+            $rating = BarberRating::where('booking_id', $booking_data->id)->where('user_id', $booking_data->user_id)->first();
+
+            //mail customer
+            if($rating != "") {
+                $data_email = Mail::send(
+                    ['html' => 'email.customer-rating-to-barber-to-barber-template'],
+                    array(
+                        'booking' => $booking_data,
+                        'rating' => $rating,
+                    ),
+                    function ($message) use ($barber_email) {
+                        $message->from(env('MAIL_USERNAME'), 'Ehjez');
+                        $message->to($barber_email);
+                        $message->subject("Rating Received..");
+                    }
+                );
+            }
+
+        }
+
+        //
+
+    }
+
+    if (!function_exists('finished_booking')) {
+        function finished_booking($booking_id)
+        {
+            $booking_data = Booking::with('barber_detail', 'customer_detail', 'booking_service_detailss.main_service', 'booking_service_detailss.sub_service')->find($booking_id);
+
+            $customer_email = $booking_data->customer_detail->email;
+            $barber_email = $booking_data->barber_detail->email;
+
+            //customer mail
+            $data_email = Mail::send(
+                ['html' => 'email.booking-finished-email-to-customer-templete'],
+                array(
+                    'booking_data' => $booking_data,
+                ),
+                function ($message) use ($customer_email) {
+                    $message->from(env('MAIL_USERNAME'), 'Ehjez');
+                    $message->to($customer_email);
+                    $message->subject("Your Appointment is finished..");
+                }
+            );
+
+            //barber mail
+            $data_email_barber = Mail::send(
+                ['html' => 'email.booking-finished-email-to-barber-templete'],
+                array(
+                    'booking_data' => $booking_data,
+                ),
+                function ($message) use ($barber_email) {
+                    $message->from(env('MAIL_USERNAME'), 'Ehjez');
+                    $message->to($barber_email);
+                    $message->subject("Your Appointment is finished..");
+                }
+            );
+
+        }
+    }
+
+
+    if (!function_exists('resechedule_booking')) {
+        function resechedule_booking($old_booking_id,$new_booking_id)
+        {
+
+            $old_booking_data = Booking::with('barber_detail', 'customer_detail')->find($old_booking_id);
+            $new_booking_data = Booking::find($new_booking_id);
+
+            $customer_email = $old_booking_data->customer_detail->email;
+            $barber_email = $old_booking_data->barber_detail->email;
+
+            //customer mail
+            $data_email = Mail::send(
+                ['html' => 'email.booking-reschedule-from-customer-info-to-customer-template'],
+                array(
+                    'old_booking_data' => $old_booking_data,
+                    'new_booking_data' => $new_booking_data,
+                ),
+                function ($message) use ($customer_email) {
+                    $message->from(env('MAIL_USERNAME'), 'Ehjez');
+                    $message->to($customer_email);
+                    $message->subject("Your Appointment Resechedule Succesfully..");
+                }
+            );
+
+            //barber mail
+            $data_email_barber = Mail::send(
+                ['html' => 'email.booking-reschedule-from-customer-info-to-barber-template'],
+                array(
+                    'old_booking_data' => $old_booking_data,
+                    'new_booking_data' => $new_booking_data,
+                ),
+                function ($message) use ($barber_email) {
+                    $message->from(env('MAIL_USERNAME'), 'Ehjez');
+                    $message->to($barber_email);
+                    $message->subject("Your Appointment Resechedule By Customer..");
+                }
+            );
+
+        }
+    }
+
+
+    if (!function_exists('cancel_booking')) {
+        function cancel_booking($booking_id)
+        {
+
+            $booking_data = Booking::with('customer_detail','barber_detail')->find($booking_id);
+
+            $customer_email = $booking_data->customer_detail->email;
+            if($customer_email)
+            {
+                   $data_email_barber = Mail::send(
+                    ['html' => 'email.cancel-booking-when-barber-not-respond-mail-to-customer-template'],
+                    array(
+                        'booking_data' => $booking_data,
+                    ),
+                    function ($message) use ($customer_email) {
+                        $message->from(env('MAIL_USERNAME'), 'Ehjez');
+                        $message->to($customer_email);
+                        $message->subject("Your Appointment Cancel due to a barber busy schedule..");
+                    }
+                );
+            }
+        }
+    }
 
 
 
+    if (!function_exists('chat_unique_key')) {
+        function chat_unique_key()
+        {
+            $str_result = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
+            return $referral_code = substr(str_shuffle($str_result), 0, 10);
+        }
+    }
 
-
-
+}

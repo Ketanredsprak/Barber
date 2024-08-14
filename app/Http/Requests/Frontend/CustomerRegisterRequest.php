@@ -14,10 +14,10 @@ class CustomerRegisterRequest extends FormRequest
     {
         return [
             //
-            'first_name' => ['required'],
-            'last_name' => ['required'],
+            'first_name' => ['required','max:10'],
+            'last_name' => ['required','max:10'],
             'phone' => ['required','numeric','digits_between:8,12','unique:users,phone'],
-            'email' => ['required','string', 'lowercase', 'email', 'max:255'],
+            'email' => ['required','string', 'lowercase', 'email', 'max:255','unique:users,email'],
             'gender' => ['required'],
             'password' => ['required'],
             'terms_and_conditions' => ['required'],
@@ -29,10 +29,13 @@ class CustomerRegisterRequest extends FormRequest
     {
         return [
             'first_name.required' => __('error.The first name field is required.'),
+            'first_name.max' => __('error.The first name must be at least 4 characters.'),
             'last_name.required' => __('error.The last name field is required.'),
+            'last_name.max' => __('error.The last name must be at least 4 characters.'),
             'gender.required' => __('error.The gender field is required.'),
             'email.required' => __('error.The email field is required.'),
             'email.string' => __('error.The field must be a string'),
+            'email.unique' => __('error.The email has already been taken.'),
             'email.email' => __('error.Please enter a valid email address.'),
             'phone.required' => __('error.This field is required'),
             'phone.numeric' => __('error.Please enter a valid phone number.'),

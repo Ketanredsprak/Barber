@@ -34,6 +34,7 @@ class User extends Authenticatable
         'store_registration',
         'health_license_expiration_date',
         'store_registration_expiration_date',
+        'iqama_no_expiration_date',
         'salon_name',
         'location',
         'country_name',
@@ -48,6 +49,8 @@ class User extends Authenticatable
         'is_approved',
         'password',
         'token',
+        'fcm_token',
+        'notification_status',
         'remember_token',
         'created_at',
         'updated_ats',
@@ -77,4 +80,31 @@ class User extends Authenticatable
     public function barber_service(){
         return $this->hasMany(BarberServices::class, 'barber_id', 'id');
     }
+
+
+    public function barber_schedule(){
+        return $this->hasOne(BarberSchedule::class, 'barber_id', 'id');
+    }
+
+    public function barber_rating(){
+        return $this->hasMany(BarberRating::class, 'barber_id', 'id');
+    }
+
+    public function averageRating()
+    {
+        $average = $this->barber_rating->avg('rating') ?? 0;
+        return round($average, 2); // Rounds the average to one decimal place
+    }
+
+    public function user_subscriptions(){
+        return $this->hasMany(UserSubscription::class, 'user_id', 'id');
+    }
+
+
+    public function barberRatings()
+    {
+        return $this->hasMany(BarberRating::class, 'barber_id');
+    }
+
+
 }

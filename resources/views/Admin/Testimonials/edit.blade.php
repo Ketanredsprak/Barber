@@ -12,7 +12,7 @@
                 <div class="row g-2">
 
                     <div class="mb-3 col-md-12">
-                        <label class="form-label" for="testimonial_image">{{ __('labels.Image') }} <span class="text-danger">*</span> </label>
+                        <label class="form-label" for="testimonial_image">{{ __('labels.Image') }}  ({{ __('labels.Accept:png,jpg,jpeg') }})<span class="text-danger">*</span> </label>
                         <input class="form-control" id="testimonial_image" name="testimonial_image" type="file" placeholder="{{ __('labels.Image') }}" accept=".png, .jpg, .jpeg">
                         <div id="testimonial_image_error" style="display: none;" class="text-danger custom-error">
                         </div>
@@ -36,7 +36,7 @@
                         <label class="col-form-label ">
                             <span class="required">{{ __('labels.Testimonial Content English') }}<span class="text-danger">*</span></span>
                         </label>
-                        <textarea class="form-control ckeditoredit" id="testimonial_content_en" name="testimonial_content_en" placeholder="{{ __('labels.Testimonial Content English') }}">{{ $data->testimonial_content_en }}</textarea>
+                        <textarea class="form-control" id="testimonial_content_en" name="testimonial_content_en" rows="5" placeholder="{{ __('labels.Testimonial Content English') }}">{{ $data->testimonial_content_en }}</textarea>
                     </div>
 
                     <div class="mb-3 col-md-6">
@@ -57,7 +57,7 @@
                         <label class="col-form-label ">
                             <span class="required">{{ __('labels.Testimonial Content Arabic') }}<span class="text-danger">*</span></span>
                         </label>
-                        <textarea class="form-control ckeditoredit" id="testimonial_content_ar" name="testimonial_content_ar" placeholder="{{ __('labels.Testimonial Content English') }}">{{ $data->testimonial_content_ar }}</textarea>
+                        <textarea class="form-control" id="testimonial_content_ar" rows="5" name="testimonial_content_ar" placeholder="{{ __('labels.Testimonial Content English') }}">{{ $data->testimonial_content_ar }}</textarea>
                     </div>
 
 
@@ -70,7 +70,7 @@
 
                     <div class="mb-3 col-md-6">
                         <label class="form-label" for="designation_ur">{{ __('labels.Designation Urdu') }} <span class="text-danger">*</span> </label>
-                        <input class="form-control" id="designation_ur" name="designation_ur" type="text" value="{{ $data->designation_ur }}"
+                        <input class="form-control" id="designation_ur" name="designation_ur"  type="text" value="{{ $data->designation_ur }}"
                             placeholder="{{ __('labels.Designation Urdu') }}">
                         <div id="designation_ur_error" style="display: none;" class="text-danger custom-error"></div>
                     </div>
@@ -79,12 +79,12 @@
                         <label class="col-form-label ">
                             <span class="required">{{ __('labels.Testimonial Content Urdu') }}<span class="text-danger">*</span></span>
                         </label>
-                        <textarea class="form-control ckeditoredit" id="testimonial_content_ur" name="testimonial_content_ur" placeholder="{{ __('labels.Testimonial Content Urdu') }}">{{ $data->testimonial_content_ur }}</textarea>
+                        <textarea class="form-control" id="testimonial_content_ur" name="testimonial_content_ur" rows="5" placeholder="{{ __('labels.Testimonial Content Urdu') }}">{{ $data->testimonial_content_ur }}</textarea>
                     </div>
 
                     <div class="mb-3 col-md-6">
                         <label class="form-label" for="name_tr">{{ __('labels.Name Turkish') }} <span class="text-danger">*</span> </label>
-                        <input class="form-control" id="name_tr" name="name_tr" type="text" placeholder="{{ __('labels.Name Turkish') }}" value="{{ $data->name_tr }}">
+                        <input class="form-control" id="name_tr" name="name_tr" type="text"  placeholder="{{ __('labels.Name Turkish') }}" value="{{ $data->name_tr }}">
                         <div id="name_tr_error" style="display: none;" class="text-danger custom-error">
                         </div>
                     </div>
@@ -100,7 +100,7 @@
                         <label class="col-form-label ">
                             <span class="required">{{ __('labels.Testimonial Content Turkish') }}<span class="text-danger">*</span></span>
                         </label>
-                        <textarea class="form-control ckeditoredit" id="testimonial_content_tr" name="testimonial_content_tr" placeholder="{{ __('labels.Testimonial Content Turkish') }}">{{ $data->testimonial_content_tr }}</textarea>
+                        <textarea class="form-control" id="testimonial_content_tr" name="testimonial_content_tr" rows="5" placeholder="{{ __('labels.Testimonial Content Turkish') }}">{{ $data->testimonial_content_tr }}</textarea>
                     </div>
 
 

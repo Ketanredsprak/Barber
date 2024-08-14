@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\URL;
 use App\Http\Controllers\Controller;
+use App\Models\UserSubscription;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Crypt;
@@ -31,7 +32,26 @@ class CustomerController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $data = User::where('is_delete',0)->where('user_type',4)->get();
+            // $data = User::where('is_delete',0)->orderBy('id', 'DESC')->where('user_type',4)->get();
+
+            $currentDate = (new \DateTime())->format('Y-m-d H:i:s');
+            $data = User::
+               where('is_delete', 0)
+            ->where('user_type', 4)
+            ->get();
+
+
+            // $data = User::with(['user_subscriptions.subscription:id,subscription_name_en,subscription_name_ar,subscription_name_ur,subscription_name_tr'])
+            // ->where('is_delete', 0)
+            // ->where('user_type', 4)
+            // ->whereHas('user_subscriptions', function ($query) use ($currentDate) {
+            //     $query->where('start_date_time', '<=', $currentDate)
+            //           ->where('end_date_time', '>=', $currentDate);
+            // })
+            // ->orderBy('id', 'DESC')
+            // ->get();
+
+
             return Datatables::of($data)->addIndexColumn()
                 ->addColumn('action', function ($row) {
                     $alert_delete = "return confirm('Are you sure want to delete !')";
@@ -62,7 +82,7 @@ class CustomerController extends Controller
                     //    $btn = $btn . '<a class="edit-data dropdown-item"  href="javascript:void(0)" title="' . __('labels.Edit') . '" data-url="'.route('customer.edit', $row->id).'">' . __('labels.Edit') . '</a>';
                        $btn = $btn . '<a href="" data-url="' . route('customer.destroy', $row->id) . '" class="dropdown-item destroy-data" title="' . __('labels.Delete') . '">' . __('labels.Delete') . '</a>';
 
-                        $btn = $btn . '<a href="' . route('customer.show', $encrypted_Id) . '"  class="dropdown-item show-data" title="' . __('labels.Show') . '">' . __('labels.Show') . '</a>';
+                        $btn = $btn . '<a href="' . route('customer.show', $encrypted_Id) . '"  class="dropdown-item show-data" title="' . __('labels.View') . '">' . __('labels.View') . '</a>';
 
                        $btn = $btn . '</div>
                       </div>
@@ -104,6 +124,48 @@ class CustomerController extends Controller
                     }
                 })
 
+            
+                ->addColumn('subscriptions_name', function($user) {
+                    // Check if user has any subscriptions
+                    if ($user->user_subscriptions->isEmpty()) {
+                        return '';
+                    }
+                
+                    // Get the latest subscription based on end_date_time
+                    $latestSubscription = $user->user_subscriptions->sortByDesc('end_date_time')->first();
+                
+                    // Determine the subscription name field based on the current locale
+                    $language = config('app.locale');
+                    $subscriptionNameField = 'subscription_name_' . $language;
+                
+                    // Return the subscription name for the latest subscription
+                    return $latestSubscription->subscription->$subscriptionNameField;
+                })
+                
+                ->addColumn('subscriptions_start_date', function($user) {
+                    // Check if user has any subscriptions
+                    if ($user->user_subscriptions->isEmpty()) {
+                        return '';
+                    }
+                
+                    // Get the latest subscription based on start_date_time
+                    $latestSubscription = $user->user_subscriptions->sortByDesc('start_date_time')->first();
+                    return date('Y-M-d h:i A', strtotime($latestSubscription->start_date_time));
+                })
+                ->addColumn('subscriptions_end_date', function($user) {
+                    // Check if user has any subscriptions
+                    if ($user->user_subscriptions->isEmpty()) {
+                        return '';
+                    }
+                
+                    // Get the latest subscription based on end_date_time
+                    $latestSubscription = $user->user_subscriptions->sortByDesc('end_date_time')->first();
+                    return date('Y-M-d h:i A', strtotime($latestSubscription->end_date_time));
+                })
+                
+                
+
+
                 ->addColumn('joing_date', function ($data) {
                     return date('Y-M-d h:i A', strtotime($data->created_at));
 
@@ -122,7 +184,7 @@ class CustomerController extends Controller
                 })
 
 
-                ->rawColumns(['action','user_details','joing_date','status'])
+                ->rawColumns(['action','user_details','subscriptions_name','subscriptions_start_date','subscriptions_end_date','joing_date','status'])
                 ->make(true);
         }
         return view('Admin.Customers.Index');
@@ -199,17 +261,45 @@ class CustomerController extends Controller
         }
     }
 
-    public function show($id)
-    {
+    // public function show($id)
+    // {
 
-        $Decrypt_id = Crypt::decryptString($id);
-        $data = User::find($Decrypt_id);
-        if($data)
-        {
-                return view('Admin.Customers.show', compact('data'));
-        }else
-        {
-            return route('errors.404');
+    //     $Decrypt_id = Crypt::decryptString($id);
+    //     $data = User::find($Decrypt_id);
+    //     if($data)
+    //     {
+    //             return view('Admin.Customers.show', compact('data'));
+    //     }else
+    //     {
+    //         return route('errors.404');
+    //     }
+    // }
+
+
+    public function show(Request $request, $id)
+    {
+        try {
+            // Decrypt ID if needed
+            $Decrypt_id = Crypt::decryptString($id);
+    
+            // Fetch user data
+            $data = User::find($Decrypt_id);
+    
+            if (!$data) {
+                return response()->json(['error' => 'User not found'], 404);
+            }
+    
+            // Fetch all user subscriptions using eager loading
+            $userSubscriptions = UserSubscription::with('subscription_detail')
+                ->where('user_id', $Decrypt_id)
+                ->get();
+    
+            // Pass the user and userSubscriptions data to the view
+            return view('Admin.Customers.show', compact('data', 'userSubscriptions'));
+    
+        } catch (\Exception $ex) {
+            // Handle exceptions, return JSON response with error message
+            return response()->json(['success' => false, 'message' => $ex->getMessage()]);
         }
     }
 
@@ -299,6 +389,7 @@ class CustomerController extends Controller
                 $data->is_approved = "2";
                 $message =  __('message.Customer Account Approved Successfully.');
                 $data->update();
+                sendEmail($data->id,'account-approved','');
                 DB::commit(); // Commit Transaction
                 return response()->json(['status' => '1', 'success' => $message]);
 
@@ -320,6 +411,7 @@ class CustomerController extends Controller
                 $data->is_approved = "3";
                 $message =  __('message.Customer Account Suspend Successfully.');
                 $data->update();
+                sendEmail($data->id,'account-suspend','');
                 DB::commit(); // Commit Transaction
                 return response()->json(['status' => '1', 'success' => $message]);
 

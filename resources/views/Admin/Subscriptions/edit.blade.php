@@ -23,6 +23,17 @@
                             @csrf
                             <div class="row g-2">
 
+
+                                <div class="col-md-12">
+                                    <label class="form-label" for="subscription_type">{{ __('labels.Subscription Type') }}
+                                        <span class="text-danger">*</span> </label>
+                                    <input class="form-control disabled" id="subscription_type" name="subscription_type"
+                                        type="text" placeholder="{{ __('labels.Subscription Type') }}"
+                                        aria-label="{{ __('labels.Subscription Type') }}"
+                                        value="{{ $data->subscription_type }}" readonly="">
+                                </div>
+
+
                                 <div class="col-md-6">
                                     <label class="form-label"
                                         for="subscription_name_en">{{ __('labels.Subscription English Name') }}
@@ -104,30 +115,41 @@
                                     <label class="form-label" for="price">{{ __('labels.Price') }} <span
                                             class="text-danger">*</span> </label>
                                     <input class="form-control" id="price" name="price" type="text"
+                                        pattern="[0-9]*" inputmode="numeric"
+                                        oninput="this.value = this.value.replace(/[^0-9]/g, '');"
                                         placeholder="{{ __('labels.Price') }}" aria-label="{{ __('labels.Price') }}"
                                         value="{{ $data->price }}">
+
                                     <div id="price_error" style="display: none;" class="text-danger"></div>
                                 </div>
 
+
+                                @if($data->subscription_type == "customer")
                                 <div class="col-md-6">
                                     <label class="form-label"
                                         for="number_of_booking">{{ __('labels.Number Of Booking') }} <span
                                             class="text-danger">*</span> </label>
                                     <input class="form-control" id="number_of_booking" name="number_of_booking"
-                                        type="text" placeholder="{{ __('labels.Number Of Booking') }}"
-                                        aria-label="{{ __('labels.Number Of Booking') }}"
+                                        type="text" pattern="[0-9]*" inputmode="numeric"
+                                        oninput="this.value = this.value.replace(/[^0-9]/g, '');"
+                                        placeholder="{{ __('labels.Duration (in-Months)') }}"
+                                        aria-label="{{ __('labels.Duration (in-Months)') }}"
                                         value="{{ $data->number_of_booking }}">
                                     <div id="number_of_booking_error" style="display: none;" class="text-danger"></div>
                                 </div>
+                                @endif
 
 
                                 <div class="col-md-6">
-                                    <label class="form-label" for="duration">{{ __('labels.Duration (in-Days)') }} <span
-                                            class="text-danger">*</span> </label>
-                                    <input class="form-control" id="duration_in_days" name="duration_in_days"
-                                        type="text" placeholder="{{ __('labels.Duration (in-Days)') }}"
-                                        aria-label="{{ __('labels.Duration (in-Days)') }}"
-                                        value="{{ $data->duration_in_days }}">
+                                    <label class="form-label" for="duration">{{ __('labels.Duration (in-Months)') }}
+                                        <span class="text-danger">*</span> </label>
+                                    <input class="form-control" id="duration_in_months" name="duration_in_months"
+                                        type="text" pattern="[0-9]*" inputmode="numeric"
+                                        oninput="this.value = this.value.replace(/[^0-9]/g, '');"
+                                        placeholder="{{ __('labels.Duration (in-Months)') }}"
+                                        aria-label="{{ __('labels.Duration (in-Months)') }}"
+                                        value="{{ $data->duration_in_months }}">
+
                                     <div id="duration_error" style="display: none;" class="text-danger"></div>
                                 </div>
 

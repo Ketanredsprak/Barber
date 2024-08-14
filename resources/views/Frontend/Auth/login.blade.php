@@ -7,6 +7,17 @@
         $content = 'content_' . $language;
         $name = 'page_name_' . $language;
     @endphp
+
+    <style>
+        .field-icon {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #888;
+        }
+    </style>
     <section class="heading_sec"
         style="background-image: url({{ static_asset('frontend/assets/images/banner.png') }});background-position: center;background-repeat: no-repeat;background-size: cover;">
         <div class="container">
@@ -30,7 +41,8 @@
                                 <div class="login_form">
                                     <h2>{{ $data->cms_content[0]->$title }}</h2>
                                     <p>{{ $data->cms_content[0]->$content }}</p>
-                                    <form method="POST" action="{{ route('customer-login') }}" class="theme-form" id="login_form">
+                                    <form method="POST" action="{{ route('customer-login') }}" class="theme-form"
+                                        id="login_form">
                                         @csrf
                                         <div class="row">
                                             <div class="col-sm-12">
@@ -38,7 +50,8 @@
                                                     <input type="text"
                                                         class="form-control  @error('email_or_phone') is-invalid @enderror"
                                                         id="email_or_phone" aria-describedby="emailHelp"
-                                                        placeholder="{{ __('labels.Enter Mobile Number or Email') }}" name="email_or_phone"  value="{{ old('email_or_phone') }}">
+                                                        placeholder="{{ __('labels.Enter Mobile Number or Email') }}"
+                                                        name="email_or_phone" value="{{ old('email_or_phone') }}">
                                                     @error('email_or_phone')
                                                         <span class="invalid-feedback" role="alert">
                                                             <strong>{{ $message }}</strong>
@@ -47,7 +60,7 @@
                                                 </div>
                                             </div>
                                             <div class="col-sm-12">
-                                                <div class="form-group">
+                                                {{-- <div class="form-group">
                                                     <input type="password"
                                                         class="form-control  @error('password') is-invalid @enderror"
                                                         placeholder="{{ __('labels.Password') }}" id="password" name="password"  value="{{ old('password') }}">
@@ -56,13 +69,32 @@
                                                             <strong>{{ $message }}</strong>
                                                         </span>
                                                     @enderror
+                                                </div> --}}
+
+                                                <div class="form-group position-relative">
+                                                    <input type="password"
+                                                        class="form-control @error('password') is-invalid @enderror"
+                                                        placeholder="{{ __('labels.Password') }}" id="password"
+                                                        name="password" value="{{ old('password') }}">
+                                                    <span toggle="#password"
+                                                        class="fa fa-fw fa-eye field-icon toggle-password"></span>
+                                                    @error('password')
+                                                        <span class="invalid-feedback" role="alert">
+                                                            <strong>{{ $message }}</strong>
+                                                        </span>
+                                                    @enderror
                                                 </div>
+
                                             </div>
 
                                             <div class="col-sm-12 text-center">
-                                                <button class="btn btn-success btn-block mb-3" type="submit">{{ __('labels.login') }}</button>
-                                                <a href="{{ route('forgot-password') }}" class="text-warning">{{ __('labels.Forgot Password?') }}</a>
-                                                <p> {{ __('labels.Don’t have an account?') }} <a href="{{ route('register') }}" class="text-warning">{{ __('labels.Register') }}</a>
+                                                <button class="btn btn-success btn-block mb-3"
+                                                    type="submit">{{ __('labels.Sign In') }}</button>
+                                                <a href="{{ route('forgot-password') }}"
+                                                    class="text-warning">{{ __('labels.Forgot Password?') }}</a>
+                                                <p> {{ __('labels.Don’t have an account?') }} <a
+                                                        href="{{ route('register') }}"
+                                                        class="text-warning">{{ __('labels.Register') }}</a>
                                                 </p>
 
                                             </div>
@@ -70,6 +102,7 @@
                                             <div class="line"></div>
                                             <div class="text">{{ __('labels.or') }}</div>
                                             <div class="line"></div>
+
                                             <div class="col-sm-12 text-center">
                                                 <div class="text-center py-3">
                                                     <a href="#" target="_blank" class="px-2"> <img
@@ -77,12 +110,14 @@
                                                             alt="Gmail-Login"> </a>
                                                     <a href="#" target="_blank" class="px-2"> <img
                                                             src="{{ static_asset('frontend/assets/images/fb-icon.png') }}"
-                                                            alt="Facebook-Login"> </a>
+                                                            alt="FaceBook-Login"> </a>
                                                     <a href="#" target="_blank" class="px-2"> <img
                                                             src="{{ static_asset('frontend/assets/images/apple-icon.png') }}"
                                                             alt="Apple-Login"> </a>
                                                 </div>
                                             </div>
+
+
                                         </div>
                                     </form>
                                 </div>
@@ -144,6 +179,21 @@
                 return false;
 
             });
+
+
+            $(".toggle-password").click(function() {
+                $(this).toggleClass("fa-eye fa-eye-slash");
+                var input = $($(this).attr("toggle"));
+                if (input.attr("type") == "password") {
+                    input.attr("type", "text");
+                } else {
+                    input.attr("type", "password");
+                }
+            });
+
         })
+
+
+
     </script>
 @endsection

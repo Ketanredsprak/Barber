@@ -81,7 +81,15 @@
                             </div>
                             <div class="col-sm-12">
                                 <div class="mb-3">
-                                    <label for="validationCustom01">{{ __('labels.Subject') }} :: {{ $data->subject }}
+                                    <label for="validationCustom01">{{ __('labels.Subject') }} ::
+
+                                        @php
+
+                                            $language = config('app.locale');
+
+                                            $subjectNameField = 'name_' . $language;
+                                            echo $subject->$subjectNameField;
+                                        @endphp
                                     </label>
                                 </div>
                             </div>

@@ -11,9 +11,12 @@ use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\URL;
 use App\Http\Controllers\Controller;
+use App\Models\Booking;
+use App\Models\UserSubscription;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Auth;
 
 class BarberController extends Controller
 {
@@ -31,41 +34,36 @@ class BarberController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $data = User::where('is_delete',0)->where('user_type',3)->get();
+            $data = User::with(['user_subscriptions.subscription:id,subscription_name_en,subscription_name_ar,subscription_name_ur,subscription_name_tr'])
+                ->where('is_delete', 0)->where('user_type', 3)->orderBy('id', 'DESC')->get();
             return Datatables::of($data)->addIndexColumn()
                 ->addColumn('action', function ($row) {
                     $alert_delete = "return confirm('Are you sure want to delete !')";
-                    $btn ="";
+                    $btn = "";
                     $btn = $btn . '
                     <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
                       <div class="btn-group" role="group">
                         <button class="btn btn-light dropdown-toggle text-primary" id="btnGroupDrop1" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-ellipsis-h"></i></button>
                         <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">';
 
-                        $encrypted_Id = Crypt::encryptString($row->id);
-                          if ($row->is_approved == 1) {
-                                $btn = $btn . '<a    href="' . route('barber.approved', $row->id) . '" title="' . __('labels.Approved') . '" class="dropdown-item status-change" data-url="' . route('barber.approved', $row->id) . '">' . __('labels.Approved') . '</a>';
-                          }
+                    $encrypted_Id = Crypt::encryptString($row->id);
+                    if ($row->is_approved == 1) {
+                        $btn = $btn . '<a    href="' . route('barber.approved', $row->id) . '" title="' . __('labels.Approved') . '" class="dropdown-item status-change" data-url="' . route('barber.approved', $row->id) . '">' . __('labels.Approved') . '</a>';
+                    } else if ($row->is_approved == 2) {
+                        $btn = $btn . '<a    href="' . route('barber.suspend', $row->id) . '" title="' . __('labels.Suspend') . '" class="dropdown-item status-change" data-url="' . route('barber.suspend', $row->id) . '">' . __('labels.Suspend') . '</a>';
+                    } else {
+                        $btn = $btn . '<a    href="' . route('barber.approved', $row->id) . '" title="' . __('labels.Approved') . '" class="dropdown-item status-change" data-url="' . route('barber.approved', $row->id) . '">' . __('labels.Approved') . '</a>';
+                    }
 
 
-                          else if ($row->is_approved == 2) {
-                            $btn = $btn . '<a    href="' . route('barber.suspend', $row->id) . '" title="' . __('labels.Suspend') . '" class="dropdown-item status-change" data-url="' . route('barber.suspend', $row->id) . '">' . __('labels.Suspend') . '</a>';
-                          }
+                    $btn = $btn . '<a href="" data-url="' . route('barber.destroy', $row->id) . '" class="dropdown-item destroy-data" title="' . __('labels.Delete') . '">' . __('labels.Delete') . '</a>';
 
-                          else
-                          {
-                            $btn = $btn . '<a    href="' . route('barber.approved', $row->id) . '" title="' . __('labels.Approved') . '" class="dropdown-item status-change" data-url="' . route('barber.approved', $row->id) . '">' . __('labels.Approved') . '</a>';
-                          }
+                    $btn = $btn . '<a href="' . route('barber.show', $encrypted_Id) . '"  class="dropdown-item show-data" title="' . __('labels.View') . '">' . __('labels.View') . '</a>';
 
-
-                       $btn = $btn . '<a href="" data-url="' . route('barber.destroy', $row->id) . '" class="dropdown-item destroy-data" title="' . __('labels.Delete') . '">' . __('labels.Delete') . '</a>';
-
-                       $btn = $btn . '<a href="' . route('barber.show', $encrypted_Id) . '"  class="dropdown-item show-data" title="' . __('labels.Show') . '">' . __('labels.Show') . '</a>';
-
-                       $btn = $btn . '</div>
+                    $btn = $btn . '</div>
                       </div>
                     </div>';
-                   return $btn;
+                    return $btn;
                 })
 
 
@@ -76,7 +74,7 @@ class BarberController extends Controller
                           <div class="media"><img class="b-r-8 img-40" src=' . URL::to('/public') . '/admin/assets/images/user/user.png' . '  alt="Generic placeholder image"> <div class="media-body">
                           <div class="row">
                             <div class="col-xl-12">
-                            <h6 class="mt-0">&nbsp;&nbsp; ' . $data->first_name . ' ' . $data->last_name .'</span></h6>
+                            <h6 class="mt-0">&nbsp;&nbsp; ' . $data->first_name . ' ' . $data->last_name . '</span></h6>
                             </div>
                           </div>
                           <p>&nbsp;&nbsp; ' . $data->email . '</p>
@@ -91,7 +89,7 @@ class BarberController extends Controller
                             <div class="media-body">
                               <div class="row">
                                 <div class="col-xl-12">
-                                <h6 class="mt-0">&nbsp;&nbsp; ' . $data->name .' ' . $data->last_name . '</span></h6>
+                                <h6 class="mt-0">&nbsp;&nbsp; ' . $data->name . ' ' . $data->last_name . '</span></h6>
                                 </div>
                               </div>
                               <p>&nbsp;&nbsp; ' . $data->email . '</p>
@@ -104,7 +102,6 @@ class BarberController extends Controller
 
                 ->addColumn('joing_date', function ($data) {
                     return date('Y-M-d h:i A', strtotime($data->created_at));
-
                 })
 
                 ->addColumn('status', function ($data) {
@@ -112,16 +109,58 @@ class BarberController extends Controller
                         return '<span class="badge bg-dark">' . __('labels.Pending') . '</span>';
                     } elseif ($data->is_approved == 2) {
                         return '<span class="badge bg-success">' . __('labels.Approved') . '</span>';
-                    }
-                    elseif ($data->is_approved == 3) {
+                    } elseif ($data->is_approved == 3) {
                         return '<span class="badge bg-danger">' . __('labels.Suspend') . '</span>';
-                    }else{
+                    } else {
                         return '<span class="badge bg-dark">' . __('labels.Pending') . '</span>';
                     }
                 })
 
 
-                ->rawColumns(['action','user_details','joing_date','status'])
+                ->addColumn('subscriptions_name', function ($user) {
+                    // Check if user has any subscriptions
+                    if ($user->user_subscriptions->isEmpty()) {
+                        return '';
+                    }
+
+                    // Get the latest subscription based on end_date_time
+                    $latestSubscription = $user->user_subscriptions->sortByDesc('end_date_time')->first();
+
+                    // Determine the subscription name field based on the current locale
+                    $language = config('app.locale');
+                    $subscriptionNameField = 'subscription_name_' . $language;
+
+                    // Return the subscription name for the latest subscription
+                    return $latestSubscription->subscription->$subscriptionNameField;
+                })
+                ->addColumn('subscriptions_start_date', function ($user) {
+                    // Check if user has any subscriptions
+                    if ($user->user_subscriptions->isEmpty()) {
+                        return '';
+                    }
+
+                    // Get the latest subscription based on start_date_time
+                    $latestSubscription = $user->user_subscriptions->sortByDesc('start_date_time')->first();
+
+                    // Format the start date
+                    return date('Y-M-d h:i A', strtotime($latestSubscription->start_date_time));
+                })
+                ->addColumn('subscriptions_end_date', function ($user) {
+                    // Check if user has any subscriptions
+                    if ($user->user_subscriptions->isEmpty()) {
+                        return '';
+                    }
+
+                    // Get the latest subscription based on end_date_time
+                    $latestSubscription = $user->user_subscriptions->sortByDesc('end_date_time')->first();
+
+                    // Format the end date
+                    return date('Y-M-d h:i A', strtotime($latestSubscription->end_date_time));
+                })
+
+
+
+                ->rawColumns(['action', 'user_details', 'subscriptions_name', 'subscriptions_start_date', 'subscriptions_end_date', 'subscriptions', 'status'])
                 ->make(true);
         }
         return view('Admin.Barbers.Index');
@@ -129,7 +168,7 @@ class BarberController extends Controller
 
     public function create()
     {
-         return view('Admin.Barbers.create');
+        return view('Admin.Barbers.create');
     }
 
     public function store(Request $request)
@@ -156,7 +195,7 @@ class BarberController extends Controller
         ]);
 
 
-        try{
+        try {
 
             $email = $request['email'];
             $password = $request['password'];
@@ -186,14 +225,12 @@ class BarberController extends Controller
                     $profile_image = compressImage($source, $destination);
                     $data->profile_image = $filename;
                 }
-
             }
             $data->save();
 
             if (!empty($data)) {
                 return response()->json(['status' => '1', 'success' => __('message.Barber Account Added Successfully.')]);
             }
-
         } catch (Exception $ex) {
             return response()->json(
                 ['success' => false, 'message' => $ex->getMessage()]
@@ -201,19 +238,47 @@ class BarberController extends Controller
         }
     }
 
-    public function show($id)
-    {
-        $Decrypt_id = Crypt::decryptString($id);
-        $data = User::find($Decrypt_id);
-        if($data)
-        {
-                return view('Admin.Barbers.show', compact('data'));
-        }else
-        {
-            return route('errors.404');
-        }
 
+
+
+    public function show(Request $request, $id)
+    {
+        try {
+            // Decrypt ID if needed
+            $Decrypt_id = Crypt::decryptString($id);
+
+            // Fetch user data
+            $data = User::find($Decrypt_id);
+
+            if (!$data) {
+                return response()->json(['error' => 'User not found'], 404);
+            }
+
+            // Fetch all user subscriptions using eager loading
+            $userSubscriptions = UserSubscription::with('subscription_detail')
+                ->where('user_id', $Decrypt_id)
+                ->get();
+
+
+
+
+                $barber_bookings = Booking::where('barber_id', $Decrypt_id)
+                ->get();
+
+
+
+            // Pass the user and userSubscriptions data to the view
+            return view('Admin.Barbers.show', compact('data', 'userSubscriptions','barber_bookings'));
+
+        } catch (\Exception $ex) {
+            // Handle exceptions, return JSON response with error message
+            return response()->json(['success' => false, 'message' => $ex->getMessage()]);
+        }
     }
+
+
+
+
 
     public function edit($id)
     {
@@ -244,7 +309,7 @@ class BarberController extends Controller
         ]);
 
 
-        try{
+        try {
             $post = $request->all();
             $data = User::find($id);
             $data->first_name = $request['first_name'];
@@ -327,10 +392,11 @@ class BarberController extends Controller
     {
         try {
             DB::beginTransaction();
-            $data = User::find($id);
+                $data = User::find($id);
                 $data->is_approved = "2";
                 $message =  __('message.Barber Account Approved Successfully.');
                 $data->update();
+                sendEmail($data->id,'account-approved','');
                 DB::commit(); // Commit Transaction
                 return response()->json(['status' => '1', 'success' => $message]);
 
@@ -348,10 +414,11 @@ class BarberController extends Controller
     {
         try {
             DB::beginTransaction();
-            $data = User::find($id);
+                $data = User::find($id);
                 $data->is_approved = "3";
                 $message =  __('message.Barber Account Suspend Successfully.');
                 $data->update();
+                sendEmail($data->id,'account-suspend','');
                 DB::commit(); // Commit Transaction
                 return response()->json(['status' => '1', 'success' => $message]);
 
@@ -363,9 +430,5 @@ class BarberController extends Controller
             return redirect()->back()->withErrors(['error' => $e->getMessage()]);
         }
     }
-
-
-
-
 
 }

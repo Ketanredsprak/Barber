@@ -30,7 +30,7 @@
                             @csrf
 
                             <div class="col-10">
-                                <label class="form-label" for="header_logo">{{ __('labels.Header Logo') }} <span
+                                <label class="form-label" for="header_logo">{{ __('labels.Header Logo') }}  ({{ __('labels.Accept:png,jpg,jpeg') }})<span
                                         class="text-danger">*</span> </label>
                                 <input class="form-control @error('header_logo') is-invalid @enderror" id="header_logo"
                                     type="file" aria-label="header_logo" name="header_logo" accept=".png, .jpg, .jpeg">
@@ -158,6 +158,18 @@
                                 @enderror
                             </div>
 
+                            <div class="col-6">
+                                <label class="form-label" for="website_link">{{ __('labels.Website Link') }} <span
+                                        class="text-danger">*</span> </label>
+                                <input class="form-control @error('website_link') is-invalid @enderror" id="website_link"
+                                    type="text" aria-label="website_link" name="website_link"
+                                    value="{{ $data->website_link }}">
+                                @error('website_link')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
 
                             <div class="col-6">
                                 <label class="form-label" for="facebook_link">{{ __('labels.Facebook Link') }} <span
