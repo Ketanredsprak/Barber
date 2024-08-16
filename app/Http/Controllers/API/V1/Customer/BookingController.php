@@ -172,6 +172,160 @@ class BookingController extends Controller
 
     }
 
+
+    //old
+    // public function getAllCustomerAppointments(Request $request)
+    // {
+
+    //     $validated = $request->validate(
+    //         ['status' => 'required'],
+    //         ['status.required' => __('error.The status field is required.')]
+    //     );
+
+    //     try {
+    //         $currentDate = Carbon::now()->toDateString(); // Current date
+    //         $currentTime = Carbon::now()->toTimeString(); // Current time
+
+    //         $query = Booking::with('customer_detail', 'booking_service_detailss','barber_proposal')->where('user_id', Auth::user()->id)->orderBy('id', 'DESC');
+
+    //         if ($request->status == "appointment") {
+    //             $query->where(function ($q) use ($currentDate, $currentTime) {
+    //                 $q->where('booking_date', '>=', $currentDate)
+    //                     ->orWhere(function ($q) use ($currentDate, $currentTime) {
+    //                         $q->where('booking_date', '>=', $currentDate)
+    //                             ->where('start_time', '>=', $currentTime);
+    //                     });
+    //             });
+
+    //             $total = $query->count();
+    //             $data = $query->paginate(10);
+
+    //         } elseif ($request->status == "history") {
+    //             $query->where('status', 'finished');
+
+    //             $total = $query->count();
+    //             $data = $query->paginate(10);
+
+    //         }
+    //         else
+    //         {
+    //             $query->where('status', 'pending')->where('booking_type', 'waitlist')->whereNull('start_time')->whereNull('end_time');
+
+    //             $total = $query->count();
+    //             $data = $query->paginate(10);
+
+    //         }
+
+    //         foreach ($data as $record) {
+    //             $rating = BarberRating::where('barber_id', $record->barber_id)->avg('rating');
+    //             $record->average_rating = $rating ? number_format($rating, 1) : "0"; // Add average rating to each item
+    //         }
+
+
+    //         if ($data->isNotEmpty()) {
+    //             $results = CustomerBookingResource::collection($data);
+    //             return response()->json([
+    //                 'data' => $results,
+    //                 'total' => $total,
+    //                 'status' => 1,
+    //                 'message' => __('message.Data get successfully.'),
+    //             ], 200);
+    //         } else {
+    //             return response()->json([
+    //                 'data' => [],
+    //                 'total' => 0,
+    //                 'status' => 1,
+    //                 'message' => __('message.No data available.'),
+    //             ], 200);
+    //         }
+    //     } catch (Exception $ex) {
+    //         return response()->json(
+    //             ['success' => false, 'message' => $ex->getMessage()], 400
+    //         );
+    //     }
+    // }
+
+    // public function getCustomerAppointmentDetail($id)
+    // {
+    //     try {
+    //         $data = Booking::with('customer_detail', 'booking_service_detailss.main_service', 'booking_service_detailss.sub_service')->where('user_id', Auth::user()->id)->find($id);
+
+    //         if($data->status = "accept")
+    //         {
+    //               $chat_detail = Chats::where('user_id1',$data->user_id)->where('user_id2',$data->barber_id)->first();
+    //               $data['chat_unique_key'] = $chat_detail->chat_unique_key;
+    //         }
+
+    //         if (!$data) {
+    //             return response()->json([
+    //                 'status' => 0,
+    //                 'message' => __('message.Booking not found.'),
+    //             ], 404);
+    //         }
+
+    //         // Assume $data->booking_date, $data->start_time, and $data->end_time are provided
+    //         $bookingDate = $data->booking_date; // e.g., '2024-07-31'
+    //         $startTime = $data->start_time; // e.g., '11:30:00'
+    //         $endTime = $data->end_time; // e.g., '12:30:00'
+
+    //         // Get current date and time
+    //         $currentDateTime = Carbon::now();
+    //         $currentDate = $currentDateTime->toDateString(); // 'Y-m-d'
+
+    //         // Create Carbon instances for booking start and end times
+    //         $bookingStartDateTime = Carbon::createFromFormat('Y-m-d H:i:s', $bookingDate . ' ' . $startTime);
+    //         $bookingEndDateTime = Carbon::createFromFormat('Y-m-d H:i:s', $bookingDate . ' ' . $endTime);
+
+    //         // Determine process status based on the comparison
+    //         $minutesUntilStart = "";
+    //         if ($bookingStartDateTime->isToday()) {
+    //             // Booking is for today, check the time
+    //             if ($currentDateTime->lessThan($bookingStartDateTime)) {
+    //                 $processStatus = 'waiting'; // Current time is before the booking start time
+    //                 $minutesUntilStart = $currentDateTime->diffInMinutes($bookingStartDateTime);
+    //             } elseif ($currentDateTime->between($bookingStartDateTime, $bookingEndDateTime)) {
+    //                 $processStatus = 'in progress'; // Current time is between the booking start and end time
+    //                 $minutesUntilEnd = $currentDateTime->diffInMinutes($bookingEndDateTime);
+    //             } else {
+    //                 $processStatus = 'finished'; // Current time is after the booking end time
+    //             }
+    //         } elseif ($bookingStartDateTime->isFuture()) {
+    //             // Booking is for a future date
+    //             $processStatus = 'booked';
+    //         } else {
+    //             // Booking is for an old date
+    //             $processStatus = 'finished';
+    //         }
+
+    //         // Display or use the results
+    //         if (isset($minutesUntilStart)) {
+    //             $data->minute_start_and_end_minute_left = $minutesUntilStart;
+    //         } elseif (isset($minutesUntilEnd)) {
+    //             $data->minute_start_and_end_minute_left = $minutesUntilStart;
+    //         } else {
+
+    //             $data->minute_start_and_end_minute_left = $minutesUntilStart;
+
+    //         }
+
+    //         $data->process_status = $processStatus;
+
+    //         $results = new CustomerBookingDetailResource($data);
+    //         return response()->json([
+    //             'data' => $results,
+    //             'status' => 1,
+    //             'message' => __('message.Data get successfully.'),
+    //         ], 200);
+
+    //     } catch (Exception $ex) {
+    //         return response()->json(
+    //             ['success' => false, 'message' => $ex->getMessage()], 400
+    //         );
+    //     }
+
+    // }
+
+
     public function getAllCustomerAppointments(Request $request)
     {
 
@@ -184,11 +338,11 @@ class BookingController extends Controller
             $currentDate = Carbon::now()->toDateString(); // Current date
             $currentTime = Carbon::now()->toTimeString(); // Current time
 
-            $query = Booking::with('customer_detail', 'booking_service_detailss','barber_proposal')->where('user_id', Auth::user()->id)->orderBy('id', 'DESC');
+            $query = Booking::with('customer_detail', 'booking_service_detailss', 'barber_proposal')->where('user_id', Auth::user()->id)->orderBy('id', 'DESC');
 
             if ($request->status == "appointment") {
                 $query->where(function ($q) use ($currentDate, $currentTime) {
-                    $q->where('booking_date', '>=', $currentDate)
+                    $q->where('booking_type','booking')->where('booking_date', '>=', $currentDate)
                         ->orWhere(function ($q) use ($currentDate, $currentTime) {
                             $q->where('booking_date', '>=', $currentDate)
                                 ->where('start_time', '>=', $currentTime);
@@ -204,9 +358,7 @@ class BookingController extends Controller
                 $total = $query->count();
                 $data = $query->paginate(10);
 
-            }
-            else
-            {
+            } else {
                 $query->where('status', 'pending')->where('booking_type', 'waitlist')->whereNull('start_time')->whereNull('end_time');
 
                 $total = $query->count();
@@ -218,7 +370,6 @@ class BookingController extends Controller
                 $rating = BarberRating::where('barber_id', $record->barber_id)->avg('rating');
                 $record->average_rating = $rating ? number_format($rating, 1) : "0"; // Add average rating to each item
             }
-
 
             if ($data->isNotEmpty()) {
                 $results = CustomerBookingResource::collection($data);
@@ -248,10 +399,10 @@ class BookingController extends Controller
         try {
             $data = Booking::with('customer_detail', 'booking_service_detailss.main_service', 'booking_service_detailss.sub_service')->where('user_id', Auth::user()->id)->find($id);
 
-            if($data->status = "accept")
-            {
-                  $chat_detail = Chats::where('user_id1',$data->user_id)->where('user_id2',$data->barber_id)->first();
-                  $data['chat_unique_key'] = $chat_detail->chat_unique_key;
+
+            if ($data->status == "accept") {
+                $chat_detail = Chats::where('user_id1', $data->user_id)->where('user_id2', $data->barber_id)->first();
+                $data['chat_unique_key'] = $chat_detail->chat_unique_key;
             }
 
             if (!$data) {
@@ -274,26 +425,29 @@ class BookingController extends Controller
             $bookingStartDateTime = Carbon::createFromFormat('Y-m-d H:i:s', $bookingDate . ' ' . $startTime);
             $bookingEndDateTime = Carbon::createFromFormat('Y-m-d H:i:s', $bookingDate . ' ' . $endTime);
 
-            // Determine process status based on the comparison
-            $minutesUntilStart = "";
-            if ($bookingStartDateTime->isToday()) {
-                // Booking is for today, check the time
-                if ($currentDateTime->lessThan($bookingStartDateTime)) {
-                    $processStatus = 'waiting'; // Current time is before the booking start time
-                    $minutesUntilStart = $currentDateTime->diffInMinutes($bookingStartDateTime);
-                } elseif ($currentDateTime->between($bookingStartDateTime, $bookingEndDateTime)) {
-                    $processStatus = 'in progress'; // Current time is between the booking start and end time
-                    $minutesUntilEnd = $currentDateTime->diffInMinutes($bookingEndDateTime);
+
+            if ($data->status == "accept") {
+                // Determine process status based on the comparison
+                $minutesUntilStart = "";
+                if ($bookingStartDateTime->isToday()) {
+                    // Booking is for today, check the time
+                    if ($currentDateTime->lessThan($bookingStartDateTime)) {
+                        $processStatus = 'waiting'; // Current time is before the booking start time
+                        $minutesUntilStart = $currentDateTime->diffInMinutes($bookingStartDateTime);
+                    } elseif ($currentDateTime->between($bookingStartDateTime, $bookingEndDateTime)) {
+                        $processStatus = 'in progress'; // Current time is between the booking start and end time
+                        $minutesUntilEnd = $currentDateTime->diffInMinutes($bookingEndDateTime);
+                    } else {
+                        $processStatus = 'finished'; // Current time is after the booking end time
+                    }
+                } elseif ($bookingStartDateTime->isFuture()) {
+                    // Booking is for a future date
+                    $processStatus = 'booked';
                 } else {
-                    $processStatus = 'finished'; // Current time is after the booking end time
+                    // Booking is for an old date
+                    $processStatus = 'finished';
                 }
-            } elseif ($bookingStartDateTime->isFuture()) {
-                // Booking is for a future date
-                $processStatus = 'booked';
-            } else {
-                // Booking is for an old date
-                $processStatus = 'finished';
-            }
+
 
             // Display or use the results
             if (isset($minutesUntilStart)) {
@@ -307,6 +461,11 @@ class BookingController extends Controller
             }
 
             $data->process_status = $processStatus;
+
+            } else {
+                $data->process_status = $data->status;
+                $data->minute_start_and_end_minute_left = "";
+            }
 
             $results = new CustomerBookingDetailResource($data);
             return response()->json([
