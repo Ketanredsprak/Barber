@@ -50,6 +50,7 @@ Route::get('/barber-list', [HomeController::class,'barberList'])->name('barber-l
 Route::post('/barber-list-filter', [HomeController::class,'barberListFilter'])->name('barber-list-filter');
 Route::get('barber-detail/{id}', [HomeController::class,'barberDetail'])->name('barber-detail');
 Route::get('get-cms-content/{id}',[HomeController::class,'getCmsContent'])->name('get-cms-content');
+Route::post('save-user-location', [HomeController::class, 'saveUserLocation'])->name('save-user-location');
 
 
 
@@ -62,6 +63,7 @@ Route::get('my-package', [CustomerAccountController::class, 'myPackage'])->name(
 Route::post('edit-my-account', [CustomerAccountController::class, 'editMyAccount'])->name('edit-my-account');
 Route::get('change-password', [CustomerAccountController::class, 'changePassword'])->name('change-password');
 Route::post('change-password-submit', [CustomerAccountController::class, 'changePasswordSubmit'])->name('change-password-submit');
+Route::get('my-point', [CustomerAccountController::class, 'myPoint'])->name('my-point');
 Route::get('add-and-remove-favorite/{id}', [MyFavoriteController::class, 'addAndRemoveFavorite'])->name('add-and-remove-favorite');
 Route::get('my-favorite', [MyFavoriteController::class, 'myFavoriteList'])->name('my-favorite');
 Route::get('my-booking-appointment-today', [BookingController::class, 'myBookingAppointmentToday'])->name('my-booking-appointment-today');
@@ -70,7 +72,6 @@ Route::get('my-booking-appointment-detail/{id}', [BookingController::class, 'myB
 Route::get('my-booking-appointment-success/{id}', [BookingController::class, 'myBookingAppointmentSuccess'])->name('my-booking-appointment-success');
 Route::get('reject-barber-proposal/{id}', [BookingController::class, 'rejectBarberProposal'])->name('reject-barber-proposal');
 Route::get('accept-barber-proposal/{id}', [BookingController::class, 'acceptBarberProposal'])->name('accept-barber-proposal');
-Route::post('save-user-location', [HomeController::class, 'saveUserLocation'])->name('save-user-location');
 Route::get('services', [HomeController::class, 'services'])->name('services');
 
 //booking

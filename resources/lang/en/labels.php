@@ -658,5 +658,7 @@ return [
   'No Nofitications Found' => 'No Nofitications Found',
   'Barber Suggested Date and Time' => 'Barber Suggested Date and Time',
   'Barber Proposal Reject' => 'Barber Proposal Reject',
+  'Points' =>'Points',
+
 
 ];

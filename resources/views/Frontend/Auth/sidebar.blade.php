@@ -45,7 +45,7 @@
         </a>
     </li>
     <li class="nav-item d-block">
-        <a href="dashboard.html" class="nav-link">
+        <a href="{{ route('my-point') }}" class="nav-link @if($currentRouteName == "my-point") active @endif">
             <span class="dashboard_icon setting"></span>
             <span>{{ __('labels.Points') }}</span>
         </a>

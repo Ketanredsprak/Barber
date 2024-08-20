@@ -35,7 +35,7 @@ Route::post('/login', [AccountController::class, 'login']);
 Route::post('/forgot-password', [AccountController::class, 'forgotPassword']);
 Route::post('/verify-otp', [AccountController::class, 'verifyOTP']);
 Route::post('/reset-password', [AccountController::class, 'resetPassword']);
-Route::get('customer-dashboard', [CustomerAccountController::class, 'customerDashboard']);
+Route::post('customer-dashboard', [CustomerAccountController::class, 'customerDashboard']);
 Route::post('barber-dashboard', [BarberAccountController::class, 'barberDashboard']);
 
 //customer barber list and detail

@@ -7,6 +7,7 @@ use App\Models\Banners;
 use App\Models\Services;
 use Illuminate\Http\Request;
 use App\Models\UserSubscription;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\URL;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -14,6 +15,8 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Resources\Api\BannerResource;
 use App\Http\Resources\Api\ServiceResource;
+use App\Http\Resources\Api\NearetBarberResource;
+use App\Http\Resources\Api\TopRatingBarberResource;
 use App\Http\Resources\Api\Customer\CustomerAccount;
 
 class CustomerAccountController extends Controller
@@ -231,8 +234,57 @@ class CustomerAccountController extends Controller
 
             $banners = Banners::where('status', 1)->where('status', 1)->where('is_delete', 0)->get();
             $services = Services::where('is_special_service', 1)->where('status', 1)->where('is_delete', 0)->get();
+
+
+             // get top 3 barber based on rating
+            $topBarbers = User::with('barber_service','barber_schedule')->where([
+                ['user_type', 3],
+                ['is_approved', "2"],
+                ['is_delete', 0]
+            ])->select('id','first_name','last_name','gender','salon_name','location','country_name','state_name','city_name','profile_image','email','about_you','latitude','longitude')
+            ->withAvg('barberRatings', 'rating')
+            ->orderByDesc('barber_ratings_avg_rating')
+            ->take(5)
+            ->get();
+
+            // get top 5 barber based on rating
+
+
+
+            // get nearet barber
+            $userLatitude = $request->latitude;
+            $userLongitude = $request->longitude;
+
+            $topNearbyBarbers = User::with(['barber_service', 'barberRatings:barber_id,rating'])
+            ->where([
+                ['user_type', 3],
+                ['is_approved', "2"],
+                ['is_delete', 0]
+            ])
+            ->whereNotNull('users.latitude')
+            ->whereNotNull('users.longitude')
+            ->select('users.*', DB::raw("
+                ( 6371 * acos( cos( radians($userLatitude) )
+                * cos( radians( users.latitude ) )
+                * cos( radians( users.longitude ) - radians($userLongitude) )
+                + sin( radians($userLatitude) )
+                * sin( radians( users.latitude ) ) ) )
+                AS distance
+            "))
+            ->withAvg('barberRatings', 'rating') // Include average rating
+            ->orderBy('distance')
+            ->take(5)
+            ->get();
+
+
+
+
+
+            // get nearet barber
             $data['advertisement_detail'] =   BannerResource::collection($banners);
             $data['services_detail'] = ServiceResource::collection($services);
+            $data['top_barbers_based_on_rating'] = TopRatingBarberResource::collection($topBarbers);
+            $data['nearet_barbers_based_location'] = NearetBarberResource::collection($topNearbyBarbers);
 
             return response()->json(
                 [

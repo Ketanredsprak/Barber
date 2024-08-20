@@ -129,6 +129,8 @@ class BookingController extends Controller
 
             $booking_id = Crypt::encryptString($booking->id);
 
+
+
             sendEmail($booking->user_id,'booking',$booking->id);
 
             if (!empty($booking)) {
@@ -941,6 +943,7 @@ class BookingController extends Controller
                     }
 
            }
+           creditPoint('booking',$booking->user_id);
            sendEmail($data->user_id,'customer-chnage-status-for-barber-proposal',$data->booking_id);
 
            return response()->json([

@@ -556,6 +556,16 @@ class CustomerAccountController extends Controller
          return view('Frontend.Auth.notification-list',compact('data_list','data'));
     }
 
+    public function myPoint(Request $request)
+    {
+         $data = Pagies::with("meta_content", "cms_content")->find(22);
+         $data['total_points'] = get_user_point(Auth::user()->id);
+          return view('Frontend.Auth.my-points',compact('data'));
+    }
+
+
+
+
 
 
 

@@ -49,6 +49,11 @@ class Booking extends Model
         return $this->hasMany(WaitList::class, 'booking_id', 'id');
     }
 
+    public function barberRatings()
+    {
+        return $this->hasManyThrough(BarberRating::class, Barber::class, 'id', 'barber_id', 'barber_id', 'id');
+    }
+
 
 
 }

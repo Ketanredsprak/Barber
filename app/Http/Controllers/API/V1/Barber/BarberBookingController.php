@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers\API\V1\Barber;
 
-use Carbon\Carbon;
-use App\Models\Chats;
-use App\Models\Booking;
-use App\Models\WaitList;
-use Illuminate\Http\Request;
-use App\Models\BarberProposal;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
-use App\Http\Resources\Api\Barber\BarberBookingResource;
 use App\Http\Resources\Api\Barber\BarberBookingDetailResource;
+use App\Http\Resources\Api\Barber\BarberBookingResource;
+use App\Models\BarberProposal;
+use App\Models\Booking;
+use App\Models\Chats;
+use App\Models\WaitList;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class BarberBookingController extends Controller
 {
@@ -32,17 +32,16 @@ class BarberBookingController extends Controller
             if ($request->status == "all") {
                 // No additional conditions needed for "all"
             } elseif ($request->status == "upcoming") {
-                $query->where(function($q) use ($currentDate, $currentTime) {
+                $query->where(function ($q) use ($currentDate, $currentTime) {
                     $q->where('booking_type', 'booking')->where('booking_date', '>', $currentDate)
-                      ->orWhere(function($q) use ($currentDate, $currentTime) {
-                          $q->where('booking_date', '=', $currentDate)
-                            ->where('start_time', '>=', $currentTime);
-                      });
+                        ->orWhere(function ($q) use ($currentDate, $currentTime) {
+                            $q->where('booking_date', '=', $currentDate)
+                                ->where('start_time', '>=', $currentTime);
+                        });
                 });
             } elseif ($request->status == "finished") {
                 $query->where('status', 'finished')->where('booking_type', 'booking');
-            }
-            elseif ($request->status == "waitlist") {
+            } elseif ($request->status == "waitlist") {
                 $query->where('booking_type', 'waitlist');
             }
 
@@ -67,24 +66,19 @@ class BarberBookingController extends Controller
             }
         } catch (Exception $ex) {
             return response()->json(
-                ['success' => false, 'message' => $ex->getMessage()],400
+                ['success' => false, 'message' => $ex->getMessage()], 400
             );
         }
     }
 
-
-
-
-    public function getBarberAppointmentDetail($id,Request $request)
+    public function getBarberAppointmentDetail($id, Request $request)
     {
 
         try {
-            $data = Booking::with('customer_detail', 'booking_service_detailss.main_service','booking_service_detailss.sub_service','customer_prefrences')->where('barber_id', Auth::user()->id)->find($id);
+            $data = Booking::with('customer_detail', 'booking_service_detailss.main_service', 'booking_service_detailss.sub_service', 'customer_prefrences')->where('barber_id', Auth::user()->id)->find($id);
 
-
-             if($data->booking_type == "waitlist")
-            {
-                $data->waitlist = WaitList::where('booking_id',$data->id)->get();
+            if ($data->booking_type == "waitlist") {
+                $data->waitlist = WaitList::where('booking_id', $data->id)->get();
             }
 
             $results = new BarberBookingDetailResource($data);
@@ -94,50 +88,48 @@ class BarberBookingController extends Controller
                 'message' => __('message.Data get successfully.'),
             ], 200);
 
-
         } catch (Exception $ex) {
             return response()->json(
-                ['success' => false, 'message' => $ex->getMessage()],400
+                ['success' => false, 'message' => $ex->getMessage()], 400
             );
         }
     }
-
-
 
     public function acceptOrRejectCustomerAppointment(Request $request)
     {
         try {
-           $data = Booking::find($request->booking_id);
-           $data->status = $request->status;
-           $data->update();
+            $data = Booking::find($request->booking_id);
+            $data->status = $request->status;
+            $data->update();
 
-           $check = Chats::where('user_id1',$data->user_id)->where('user_id2',$data->barber_id)->exists();
-           if($check == Null) {
-            $create_chat = new Chats();
-            $create_chat->user_id1 = $data->user_id;
-            $create_chat->user_id2 = $data->barber_id;
-            $create_chat->chat_unique_key = chat_unique_key();
-            $create_chat->save();
-           }
+            $check = Chats::where('user_id1', $data->user_id)->where('user_id2', $data->barber_id)->exists();
+            if ($check == null) {
+                $create_chat = new Chats();
+                $create_chat->user_id1 = $data->user_id;
+                $create_chat->user_id2 = $data->barber_id;
+                $create_chat->chat_unique_key = chat_unique_key();
+                $create_chat->save();
 
+            }
 
-           sendEmail($data->user_id,'barber-booking-status-chnage',$data->id);
+            if ($request->status == "accept") {
+                creditPoint('booking', $data->user_id);
+            }
 
+            sendEmail($data->user_id, 'barber-booking-status-chnage', $data->id);
 
-           return response()->json([
-            'status' => 1,
-            'message' => __('message.Record Update Successfully'),
-        ], 200);
+            return response()->json([
+                'status' => 1,
+                'message' => __('message.Record Update Successfully'),
+            ], 200);
 
         } catch (Exception $ex) {
             return response()->json(
-                ['success' => false, 'message' => $ex->getMessage()],400
+                ['success' => false, 'message' => $ex->getMessage()], 400
             );
         }
 
     }
-
-
 
     public function acceptOrRejectCustomerWithJoinWaitlistAppointment(Request $request)
     {
@@ -158,15 +150,12 @@ class BarberBookingController extends Controller
             'barber_id.required' => __('error.The barber id field is required.'),
         ]);
 
-
         try {
 
-            if($request->status == "accept")
-            {
+            if ($request->status == "accept") {
                 // $data = Booking::find($request->booking_id);
                 // $data->status = $request->status;
                 // $data->update();
-
 
                 $BarberProposal = new BarberProposal();
                 $BarberProposal->booking_date = $request->booking_date;
@@ -177,38 +166,34 @@ class BarberBookingController extends Controller
                 $BarberProposal->status = "pending";
                 $BarberProposal->save();
 
-               $check = Chats::where('user_id1',$request->user_id)->where('user_id2',$request->barber_id)->exists();
-               if($check == Null) {
+                $check = Chats::where('user_id1', $request->user_id)->where('user_id2', $request->barber_id)->exists();
+                if ($check == null) {
                     $create_chat = new Chats();
                     $create_chat->user_id1 = $request->user_id;
                     $create_chat->user_id2 = $request->barber_id;
                     $create_chat->chat_unique_key = chat_unique_key();
                     $create_chat->save();
-               }
+                }
 
-               sendEmail($request->user_id,'barber-send-proposal-to-customer',$request->booking_id);
-
-
+                sendEmail($request->user_id, 'barber-send-proposal-to-customer', $request->booking_id);
 
                 return response()->json([
                     'status' => 1,
                     'message' => __('message.New Proposal send to customer for appointment.'),
                 ], 200);
 
-
-            }else
-            {
+            } else {
                 $data = Booking::find($request->booking_id);
                 $data->status = $request->status;
                 $data->update();
 
-                $check_chat_create = Chats::where('user_id1',$data->user_id)->where('user_id2',$data->barber_id)->first();
-                if($check_chat_create == Null) {
-                 $create_chat = new Chats();
-                 $create_chat->user_id1 = $data->user_id;
-                 $create_chat->user_id2 = $data->barber_id;
-                 $create_chat->chat_unique_key = chat_unique_key();
-                 $create_chat->save();
+                $check_chat_create = Chats::where('user_id1', $data->user_id)->where('user_id2', $data->barber_id)->first();
+                if ($check_chat_create == null) {
+                    $create_chat = new Chats();
+                    $create_chat->user_id1 = $data->user_id;
+                    $create_chat->user_id2 = $data->barber_id;
+                    $create_chat->chat_unique_key = chat_unique_key();
+                    $create_chat->save();
                 }
 
                 return response()->json([
@@ -217,30 +202,12 @@ class BarberBookingController extends Controller
                 ], 200);
             }
 
-
-
-
-
         } catch (Exception $ex) {
             return response()->json(
-                ['success' => false, 'message' => $ex->getMessage()],400
+                ['success' => false, 'message' => $ex->getMessage()], 400
             );
         }
 
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 }

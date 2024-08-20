@@ -677,6 +677,7 @@ return [
     'No Nofitications Found' => 'Hiçbir Bildirim Bulunamadı',
     'Barber Suggested Date and Time' => 'Berberin Tavsiye Ettiği Tarih ve Saat',
     'Barber Proposal Reject' => 'Berber Teklifini Reddet',
+    'Points' =>'Puanlar',
     '' => '',
     '' => '',
     '' => '',

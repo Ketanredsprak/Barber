@@ -274,4 +274,5 @@
 
     // Initialize the map
     initMap();
+
 </script>

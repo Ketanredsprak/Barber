@@ -673,6 +673,7 @@ return [
     'No Nofitications Found' => 'لم يتم العثور على إشعارات',
     'Barber Suggested Date and Time' => 'التاريخ والوقت المقترح من الحلاق',
     'Barber Proposal Reject' => 'رفض اقتراح الحلاق',
+    'Points' =>'نقاط',
     '' => '',
     '' => '',
     '' => '',

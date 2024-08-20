@@ -697,6 +697,7 @@ return [
     'No Nofitications Found' => 'کوئی اطلاع نہیں ملی',
     'Barber Suggested Date and Time' => 'حجام نے تجویز کردہ تاریخ اور وقت',
     'Barber Proposal Reject' => 'حجام کی تجویز مسترد',
+    'Points' =>'پوائنٹس',
     '' => '',
     '' => '',
     '' => '',

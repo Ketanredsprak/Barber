@@ -3,10 +3,12 @@
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Module;
+use App\Models\Wallet;
 use App\Models\Booking;
 use App\Models\Services;
 use App\Models\Countries;
 use App\Models\CountryCode;
+use App\Models\PointSystem;
 use App\Models\BarberRating;
 use App\Models\Subscription;
 use App\Models\WebsiteConfig;
@@ -670,5 +672,64 @@ if (!function_exists('sendEmail')) {
             return $referral_code = substr(str_shuffle($str_result), 0, 10);
         }
     }
+
+
+    if (!function_exists('creditPoint')) {
+        function creditPoint($credit_type,$user_id)
+        {
+            $lastDateOfMonth = Carbon::now()->endOfMonth()->toDateString();
+            $point = PointSystem::first();
+                if($credit_type == "booking"){
+                    $data = new  Wallet();
+                    $data->user_id = $user_id;
+                    $data->amount = $point->per_booking_points;
+                    $data->status = 0;
+                    $data->expiry_date = $lastDateOfMonth;
+                    $data->type = "credit";
+                    $data->save();
+                }
+
+                // barber active rafer to customer
+                if($credit_type == "active_referral"){
+                    $data = new  Wallet();
+                    $data->user_id = $user_id;
+                    $data->amount = $point->per_active_referral_points;
+                    $data->status = 0;
+                    $data->expiry_date = $lastDateOfMonth;
+                    $data->type = "credit";
+                    $data->save();
+                }
+
+               return true;
+        }
+    }
+
+
+
+
+
+    // get point point
+    if (!function_exists('get_user_point')) {
+        function get_user_point($user_id) {
+
+            $credits = Wallet::where('user_id', $user_id)
+            ->where('type', 'credit')
+            ->sum('amount');
+
+            $debits = Wallet::where('user_id', $user_id)
+                ->where('type', 'debit')
+                ->sum('amount');
+
+            $balance = $credits - $debits;
+            return $balance;
+
+        }
+    }
+
+
+
+
+
+
 
 }

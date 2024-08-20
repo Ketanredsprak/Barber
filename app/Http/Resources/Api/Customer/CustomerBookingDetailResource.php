@@ -44,6 +44,7 @@ class CustomerBookingDetailResource extends JsonResource
             'service_details' => BookingServiceDetailResorce::collection($this->booking_service_detailss),
             'appointment_status' => $appointment_status,
             'status' => $this->status,
+            'rating' => !empty($this->average_rating) ? number_format($this->average_rating, 1) : "0",
             'is_reschedule' => $this->is_reschedule,
             'process_status' => $this->process_status,
             'chat_unique_key' => $this->chat_unique_key ?? "",
