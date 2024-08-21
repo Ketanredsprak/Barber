@@ -20,6 +20,7 @@ class OneToOneChatResource extends JsonResource
             return [
                 'id' => $this->id,
                 'message_status' => $this->sender_id === Auth::id() ? 1 : 0,
+                'is_read' => $this->status,
                 'sender_id' => $this->sender_id,
                 'receiver_id' => $this->receiver_id,
                 'message_type' => $this->message_type,

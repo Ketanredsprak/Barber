@@ -2,28 +2,53 @@
 
 namespace App\Http\Controllers\API\V1\Customer;
 
-use Carbon\Carbon;
-use App\Models\User;
-use App\Models\MyFavorite;
-use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\Api\Customer\BarberDetailResource;
+use App\Http\Resources\Api\Customer\BarberListResource;
+use App\Http\Resources\Api\NearetBarberResource;
 use App\Models\BarberSchedule;
 use App\Models\BarberServices;
-use App\Http\Controllers\Controller;
+use App\Models\MyFavorite;
+use App\Models\User;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
-use App\Http\Resources\Api\Customer\BarberListResource;
-use App\Http\Resources\Api\Customer\BarberDetailResource;
+use Illuminate\Support\Facades\DB;
 
 class BarberController extends Controller
 {
     //
     public function getAllBarbers(Request $request)
     {
+
+        $validated = $request->validate([
+            'latitude' => 'required',
+            'longitude' => 'required',
+        ], [
+            'latitude.required' => __('error.The latitude field is required.'),
+            'longitude.required' => __('error.The longitude field is required.'),
+        ]);
+
         try {
-            $barber = User::with('barber_service','barber_rating')
+
+            $userLatitude = $request->latitude;
+            $userLongitude = $request->longitude;
+
+            $barber = User::with('barber_service', 'barber_rating')
                 ->where('user_type', 3)
                 ->where('is_approved', "2")
-                ->where('is_delete', 0);
+                ->where('is_delete', 0)
+                ->select('users.*', DB::raw("
+                ( 6371 * acos( cos( radians($userLatitude) )
+                * cos( radians( users.latitude ) )
+                * cos( radians( users.longitude ) - radians($userLongitude) )
+                + sin( radians($userLatitude) )
+                * sin( radians( users.latitude ) ) ) )
+                AS distance
+            "))
+            ->withAvg('barberRatings', 'rating')
+            ->orderBy('distance');;
 
             if ($request->gender) {
                 $barber->where('gender', $request->gender);
@@ -36,9 +61,9 @@ class BarberController extends Controller
 
                 $barber->where(function ($query) use ($search) {
 
-                        $query->orWhere('first_name', 'like', '%' . $search . '%')
-                            ->orWhere('last_name', 'like', '%' . $search . '%')
-                            ->orWhere('salon_name', 'like', '%' . $search . '%');
+                    $query->orWhere('first_name', 'like', '%' . $search . '%')
+                        ->orWhere('last_name', 'like', '%' . $search . '%')
+                        ->orWhere('salon_name', 'like', '%' . $search . '%');
 
                 });
             }
@@ -95,49 +120,128 @@ class BarberController extends Controller
             }
             $data['is_favorite'] = $is_favorite;
 
-            if($data['barber_schedule'] != "") {
-                    // Get the current day and time
-                    $currentDay = strtolower(Carbon::now()->format('l')); // e.g., 'monday'
-                    $currentTime = Carbon::now()->format('H:i:s'); // e.g., '14:00:00'
+            if ($data['barber_schedule'] != "") {
+                // Get the current day and time
+                $currentDay = strtolower(Carbon::now()->format('l')); // e.g., 'monday'
+                $currentTime = Carbon::now()->format('H:i:s'); // e.g., '14:00:00'
 
-                    // Check if today is a holiday
-                    $isHolidayField = "{$currentDay}_is_holiday";
+                // Check if today is a holiday
+                $isHolidayField = "{$currentDay}_is_holiday";
 
-                    if ($data['barber_schedule']->$isHolidayField) {
+                if ($data['barber_schedule']->$isHolidayField) {
+                    $data['salon_status'] = "closed";
+                } else {
+                    // Get today's start and end times
+                    $startTimeField = "{$currentDay}_start_time";
+                    $endTimeField = "{$currentDay}_end_time";
+                    $startTime = $data['barber_schedule']->$startTimeField;
+                    $endTime = $data['barber_schedule']->$endTimeField;
+
+                    // Check if current time is within the working hours
+                    if ($currentTime >= $startTime && $currentTime <= $endTime) {
+                        $data['salon_status'] = "open";
+                    } else {
                         $data['salon_status'] = "closed";
-                    }else{
-                        // Get today's start and end times
-                        $startTimeField = "{$currentDay}_start_time";
-                        $endTimeField = "{$currentDay}_end_time";
-                        $startTime = $data['barber_schedule']->$startTimeField;
-                        $endTime = $data['barber_schedule']->$endTimeField;
-
-                        // Check if current time is within the working hours
-                        if ($currentTime >= $startTime && $currentTime <= $endTime) {
-                            $data['salon_status'] = "open";
-                        } else {
-                            $data['salon_status'] = "closed";
-                        }
                     }
+                }
 
-
-
-            }else
-            {
+            } else {
                 $data['salon_status'] = "closed";
             }
 
-
             if (!empty($data)) {
-               $result = new BarberDetailResource($data);
+                $result = new BarberDetailResource($data);
                 return response()->json(
-                [
-                    'data' => $result,
-                    'status' => 1,
-                    'message' => __('message.Barber detail successfully'),
-                ], 200);
-        }
+                    [
+                        'data' => $result,
+                        'status' => 1,
+                        'message' => __('message.Barber detail successfully'),
+                    ], 200);
+            }
 
+        } catch (Exception $ex) {
+            return response()->json(
+                ['success' => 0, 'message' => $ex->getMessage()], 401
+            );
+        }
+    }
+
+    public function searchNearBarber(Request $request)
+    {
+
+        $validated = $request->validate([
+            'latitude' => 'required',
+            'longitude' => 'required',
+        ], [
+            'latitude.required' => __('error.The latitude field is required.'),
+            'longitude.required' => __('error.The longitude field is required.'),
+        ]);
+
+        try {
+
+            $userLatitude = $request->latitude;
+            $userLongitude = $request->longitude;
+
+            $topNearbyBarbers = User::with(['barber_service', 'barberRatings:barber_id,rating'])
+                ->where([
+                    ['user_type', 3],
+                    ['is_approved', "2"],
+                    ['is_delete', 0],
+                ])
+                ->whereNotNull('users.latitude')
+                ->whereNotNull('users.longitude')
+                ->select('users.*', DB::raw("
+                    ( 6371 * acos( cos( radians($userLatitude) )
+                    * cos( radians( users.latitude ) )
+                    * cos( radians( users.longitude ) - radians($userLongitude) )
+                    + sin( radians($userLatitude) )
+                    * sin( radians( users.latitude ) ) ) )
+                    AS distance
+                "))
+                ->withAvg('barberRatings', 'rating')
+                ->orderBy('distance');
+
+            if ($request->search) {
+                    $searchTerm = $request->search;
+
+                    $topNearbyBarbers->where(function ($query) use ($searchTerm) {
+                        $query->where('users.location', 'LIKE', '%' . $searchTerm . '%')
+                            ->orWhere('users.salon_name', 'LIKE', '%' . $searchTerm . '%')
+                            ->orWhere(function ($q) use ($searchTerm) {
+                                $nameParts = explode(' ', $searchTerm, 2);
+                                $firstName = $nameParts[0] ?? null;
+                                $lastName = $nameParts[1] ?? null;
+
+                                if ($firstName && $lastName) {
+                                    // Search by both first and last names in the 'users' table
+                                    $q->where('users.first_name', 'LIKE', '%' . $firstName . '%')
+                                      ->where('users.last_name', 'LIKE', '%' . $lastName . '%');
+                                } elseif ($firstName) {
+                                    // Search by first name only or last name only
+                                    $q->where('users.first_name', 'LIKE', '%' . $firstName . '%')
+                                      ->orWhere('users.last_name', 'LIKE', '%' . $firstName . '%');
+                                }
+                            });
+                    });
+            }
+
+
+            $topNearbyBarbers = $topNearbyBarbers->take(20)->get();
+
+            $topNearbyBarbers->each(function ($barber) {
+                $barber['average_rating'] = $barber->barberRatings_avg_rating;
+            });
+
+
+            if (!empty($topNearbyBarbers)) {
+                $result = NearetBarberResource::collection($topNearbyBarbers);
+                return response()->json(
+                    [
+                        'data' => $result,
+                        'status' => 1,
+                        'message' => __('message.Barber list get successfully'),
+                    ], 200);
+            }
 
         } catch (Exception $ex) {
             return response()->json(

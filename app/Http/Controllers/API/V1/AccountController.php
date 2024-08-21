@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Models\User;
+use App\Models\Wallet;
 use App\Models\ContactUS;
 use Illuminate\Http\Request;
 use App\Models\WebsiteConfig;
@@ -15,6 +16,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Crypt;
 use App\Http\Resources\Api\AccountResource;
+use App\Http\Resources\Api\MyPointResource;
 use App\Http\Resources\Api\Barber\BarberAccount;
 use App\Http\Resources\Api\Customer\CustomerAccount;
 
@@ -573,5 +575,44 @@ class AccountController extends Controller
                 );
             }
      }
+
+
+
+     public function myPoints()
+     {
+            try {
+
+                $id = Auth::user()->id;
+                $total_point = get_user_point($id);
+                $query = Wallet::where("status",0)->where("user_id",$id);
+                $total = $query->count();
+                $data = $query->paginate(10);
+
+                if($data)
+                {
+                    $result = MyPointResource::collection($data);
+                    return response()->json(
+                        [
+                            'data' => $result,
+                            'total' => $total,
+                            'total_point' => $total_point,
+                            'status' => 1,
+                            'message' => __('message.Data get successfully.'),
+                        ], 200);
+                }
+
+
+
+            } catch (Exception $ex) {
+                return response()->json(
+                    ['success' => 0, 'message' => $ex->getMessage()], 401
+                );
+            }
+    }
+
+
+
+
+
 
 }

@@ -21,6 +21,7 @@ return new class extends Migration
             )->default('credit');
             $table->date('expiry_date');
             $table->integer('status')->default('0')->comment('0 point avalible,1 point expiry');
+            $table->string('credit_type')->default('booking')->comment('booking,refarral');
             $table->timestamps();
         });
     }

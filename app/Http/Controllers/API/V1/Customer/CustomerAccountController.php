@@ -75,6 +75,7 @@ class CustomerAccountController extends Controller
                 'register_method' => 1,
                 'password' => Hash::make($request->password),
                 'referral_code' => $referral_code ?? '',
+                'submit_referral_code' => $request->referral_code ?? '',
                 'fcm_token' => $request->fcm_token,
                 'token' => '',
             ]);

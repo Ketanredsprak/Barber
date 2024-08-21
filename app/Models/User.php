@@ -23,6 +23,7 @@ class User extends Authenticatable
         'last_name',
         'gender',
         'referral_code',
+        'submit_referral_code',
         'email',
         'profile_image',
         'country_code',

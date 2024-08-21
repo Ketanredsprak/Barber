@@ -94,6 +94,7 @@ Route::post('rating-submit', [BookingController::class, 'ratingSubmit'])->name('
 //cron job
 Route::get('/booking-finished', [BookingCronController::class,'bookingFinished']);
 Route::get('/cancel-pending-booking', [BookingCronController::class,'cancelPendingBooking']);
+Route::get('/notification-demo', [BookingCronController::class,'notificationDemo']);
 
 
 

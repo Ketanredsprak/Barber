@@ -16,6 +16,7 @@ class Wallet extends Model
        'amount',
        'type',
        'status',
+       'credit_type',
        'expiry_date',
    ];
 

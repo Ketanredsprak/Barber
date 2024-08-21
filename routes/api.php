@@ -1,19 +1,20 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\API\V1\GenralController;
 use App\Http\Controllers\API\V1\AccountController;
+use App\Http\Controllers\API\V1\ChatModuleController;
+use App\Http\Controllers\API\V1\NotificationController;
+use App\Http\Controllers\API\V1\SubscriptionController;
+use App\Http\Controllers\API\V1\Barber\ServiceController;
+use App\Http\Controllers\API\V1\Customer\BarberController;
+use App\Http\Controllers\API\V1\Customer\BookingController;
+use App\Http\Controllers\Api\V1\Barber\LoyalClientController;
+use App\Http\Controllers\API\V1\Customer\MyFavoriteController;
 use App\Http\Controllers\API\V1\Barber\BarberAccountController;
 use App\Http\Controllers\API\V1\Barber\BarberBookingController;
 use App\Http\Controllers\API\V1\Barber\BarberScheduleController;
-use App\Http\Controllers\API\V1\Barber\ServiceController;
-use App\Http\Controllers\API\V1\ChatModuleController;
-use App\Http\Controllers\API\V1\Customer\BarberController;
-use App\Http\Controllers\API\V1\Customer\BookingController;
 use App\Http\Controllers\API\V1\Customer\CustomerAccountController;
-use App\Http\Controllers\API\V1\Customer\MyFavoriteController;
-use App\Http\Controllers\API\V1\GenralController;
-use App\Http\Controllers\API\V1\NotificationController;
-use App\Http\Controllers\API\V1\SubscriptionController;
-use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,6 +42,7 @@ Route::post('barber-dashboard', [BarberAccountController::class, 'barberDashboar
 //customer barber list and detail
 Route::post('get-all-barbers', [BarberController::class, 'getAllBarbers']);
 Route::get('get-barber-detail/{id}', [BarberController::class, 'getBarberDetail']);
+Route::post('search-near-barber', [BarberController::class, 'searchNearBarber']);
 
 // contact us detail
 Route::get('contact-us-detail', [AccountController::class, 'contactUsDetail']);
@@ -96,6 +98,8 @@ Route::middleware('auth:api')->group(function () {
     Route::post('accept-or-reject-customer-appointment', [BarberBookingController::class, 'acceptOrRejectCustomerAppointment']);
     Route::post('accept-or-reject-customer-with-join-waitlist-appointment', [BarberBookingController::class, 'acceptOrRejectCustomerWithJoinWaitlistAppointment']);
     Route::post('barber-booking-list', [BookingController::class, 'barberBookingList']);
+    Route::get('get-barber-all-loyal-client-list', [LoyalClientController::class, 'getBarberAllLoyalClientList']);
+    Route::post('barber-send-notification-to-loyal-client', [LoyalClientController::class, 'barberSendNotificationToLoyalClient']);
 
     //customer
     Route::post('get-all-customer-appointments', [BookingController::class, 'getAllCustomerAppointments']);
@@ -104,7 +108,9 @@ Route::middleware('auth:api')->group(function () {
     Route::post('rating-barber', [BookingController::class, 'ratingBarber']);
 
 
+    //both
     Route::post('notification-on-or-off', [NotificationController::class, 'notificationOnOrOff']);
+    Route::get('my-point', [AccountController::class, 'myPoints']);
 
 
 });

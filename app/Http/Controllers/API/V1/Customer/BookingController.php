@@ -714,6 +714,11 @@ class BookingController extends Controller
             }
             sendEmail($data->user_id, 'customer-chnage-status-for-barber-proposal', $request->booking_id);
 
+            if ($request->status == "accept") {
+                creditPoint('booking', $booking->user_id);
+                creditPoint('active_referral', $booking->user_id);
+            }
+
             return response()->json([
                 'status' => 1,
                 'message' => __('message.Barber Proposal status update successfully'),

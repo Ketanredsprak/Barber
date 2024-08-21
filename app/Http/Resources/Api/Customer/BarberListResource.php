@@ -30,6 +30,7 @@ class BarberListResource extends JsonResource
             'latitude' =>  $this->latitude ?? "",
             'longitude' =>  $this->longitude ?? "",
             'rating' => !empty($this->average_rating) ? number_format($this->average_rating, 1) : "0",
+            'distance_km' => !empty($this->distance) ? number_format($this->distance, 1) : "0",
             'profile_image' => URL::to('/public/profile_image/' . ($this->profile_image ?: 'user.jpg')),
             'created_at' =>  date('Y-M-d h:i A', strtotime($this->created_at)),
             'updated_at' => date('Y-M-d h:i A', strtotime($this->updated_at)),

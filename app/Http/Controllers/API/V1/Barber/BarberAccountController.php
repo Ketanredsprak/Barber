@@ -2,18 +2,19 @@
 
 namespace App\Http\Controllers\API\V1\Barber;
 
-use App\Http\Controllers\Controller;
-use App\Http\Resources\Api\Barber\BarberAccount;
-use App\Http\Resources\Api\Barber\BarberBookingDashboardResource;
-use App\Models\Booking;
-use App\Models\User;
-use App\Models\UserSubscription;
 use Carbon\Carbon;
+use App\Models\User;
+use App\Models\Booking;
+use App\Models\LoyalClient;
 use Illuminate\Http\Request;
+use App\Models\UserSubscription;
+use Illuminate\Support\Facades\URL;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\URL;
+use App\Http\Resources\Api\Barber\BarberAccount;
+use App\Http\Resources\Api\Barber\BarberBookingDashboardResource;
 
 class BarberAccountController extends Controller
 {
@@ -382,11 +383,11 @@ class BarberAccountController extends Controller
                     ->whereIn('status', ['accept','finished'])->count();
 
                 // Start building the query
-                $query = Booking::with('customer_detail')
+                $query = Booking::with('customer_detail','booking_service_detailss')
                     ->where('barber_id', $user->id)
                     ->where('booking_type', 'booking')
                     ->where('status', 'accept')
-                    ->orderBy('id', 'DESC');
+                    ->orderBy('booking_date', 'ASC')->orderBy('start_time', 'ASC');
 
                 if ($request->search) {
                     $nameParts = explode(' ', $request->search, 2);
@@ -411,10 +412,18 @@ class BarberAccountController extends Controller
                 $total_upcoming_booking = $query->count();
                 $bookings = $query->get();
 
+                // total_points
+                $total_points = get_user_point($user->id);
+
+                // total_loyal_client
+                $total_loyal_client = LoyalClient::where('barber_id',$user->id)->count();
+
+
+
                 // get nearet barber
-                $data['total_points'] = 0;
-                $data['total_loyal_client '] = 0;
-                $data['total_upcoming_booking '] = $total_upcoming_booking;
+                $data['total_points'] = $total_points ?? 0;
+                $data['total_loyal_client'] = $total_loyal_client  ?? 0;
+                $data['total_upcoming_booking'] = $total_upcoming_booking;
                 $data['total_booking'] = $total_booking;
                 $data['bookings'] = BarberBookingDashboardResource::collection($bookings);
 

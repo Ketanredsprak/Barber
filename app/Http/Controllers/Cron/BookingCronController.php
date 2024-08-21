@@ -94,6 +94,13 @@ class BookingCronController extends Controller
     }
 
 
+    public function notificationDemo(Request $request)
+    {
+                 sendPushNotification(33, "notification_type_demo", "title", "message");
+    }
+
+
+
 
 
 

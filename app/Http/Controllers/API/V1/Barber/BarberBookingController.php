@@ -114,6 +114,8 @@ class BarberBookingController extends Controller
 
             if ($request->status == "accept") {
                 creditPoint('booking', $data->user_id);
+                creditPoint('active_referral', $data->user_id);
+                loyalClient($data->user_id,$data->barber_id);
             }
 
             sendEmail($data->user_id, 'barber-booking-status-chnage', $data->id);
@@ -195,6 +197,9 @@ class BarberBookingController extends Controller
                     $create_chat->chat_unique_key = chat_unique_key();
                     $create_chat->save();
                 }
+
+                loyalClient($data->user_id,$data->barber_id);
+
 
                 return response()->json([
                     'status' => 1,

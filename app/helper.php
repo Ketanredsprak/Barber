@@ -4,10 +4,12 @@ use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Module;
 use App\Models\Wallet;
+use GuzzleHttp\Client;
 use App\Models\Booking;
 use App\Models\Services;
 use App\Models\Countries;
 use App\Models\CountryCode;
+use App\Models\LoyalClient;
 use App\Models\PointSystem;
 use App\Models\BarberRating;
 use App\Models\Subscription;
@@ -39,8 +41,8 @@ if (!function_exists('getuser')) {
     {
         $User = User::where("id", $id)->get();
         return $User;
-    }}
-
+    }
+}
 
 if (!function_exists('getcountries')) {
     function getcountries()
@@ -470,12 +472,10 @@ if (!function_exists('sendEmail')) {
 
             $booking_data = Booking::with('barber_detail', 'customer_detail', 'barber_proposal')->find($booking_id);
 
-
             $customer_email = $booking_data->customer_detail->email;
 
             if ($booking_data->barber_proposal->slots) {
                 // Loop through the array
-
 
                 foreach ($booking_data->barber_proposal->slots as $index => $slot) {
                     // Split the time range by " - "
@@ -493,8 +493,6 @@ if (!function_exists('sendEmail')) {
                 $booking_data->barber_proposal->start_time = $startTime;
                 $booking_data->barber_proposal->end_time = $endTime;
             }
-
-
 
             //mail customer
             $data_email = Mail::send(
@@ -538,7 +536,7 @@ if (!function_exists('sendEmail')) {
             $rating = BarberRating::where('booking_id', $booking_data->id)->where('user_id', $booking_data->user_id)->first();
 
             //mail customer
-            if($rating != "") {
+            if ($rating != "") {
                 $data_email = Mail::send(
                     ['html' => 'email.customer-rating-to-barber-to-barber-template'],
                     array(
@@ -596,9 +594,8 @@ if (!function_exists('sendEmail')) {
         }
     }
 
-
     if (!function_exists('resechedule_booking')) {
-        function resechedule_booking($old_booking_id,$new_booking_id)
+        function resechedule_booking($old_booking_id, $new_booking_id)
         {
 
             $old_booking_data = Booking::with('barber_detail', 'customer_detail')->find($old_booking_id);
@@ -638,17 +635,15 @@ if (!function_exists('sendEmail')) {
         }
     }
 
-
     if (!function_exists('cancel_booking')) {
         function cancel_booking($booking_id)
         {
 
-            $booking_data = Booking::with('customer_detail','barber_detail')->find($booking_id);
+            $booking_data = Booking::with('customer_detail', 'barber_detail')->find($booking_id);
 
             $customer_email = $booking_data->customer_detail->email;
-            if($customer_email)
-            {
-                   $data_email_barber = Mail::send(
+            if ($customer_email) {
+                $data_email_barber = Mail::send(
                     ['html' => 'email.cancel-booking-when-barber-not-respond-mail-to-customer-template'],
                     array(
                         'booking_data' => $booking_data,
@@ -663,8 +658,6 @@ if (!function_exists('sendEmail')) {
         }
     }
 
-
-
     if (!function_exists('chat_unique_key')) {
         function chat_unique_key()
         {
@@ -673,51 +666,62 @@ if (!function_exists('sendEmail')) {
         }
     }
 
-
     if (!function_exists('creditPoint')) {
-        function creditPoint($credit_type,$user_id)
+        function creditPoint($credit_type, $user_id)
         {
             $lastDateOfMonth = Carbon::now()->endOfMonth()->toDateString();
             $point = PointSystem::first();
-                if($credit_type == "booking"){
-                    $data = new  Wallet();
-                    $data->user_id = $user_id;
-                    $data->amount = $point->per_booking_points;
-                    $data->status = 0;
-                    $data->expiry_date = $lastDateOfMonth;
-                    $data->type = "credit";
-                    $data->save();
+            if ($credit_type == "booking") {
+                $data = new Wallet();
+                $data->user_id = $user_id;
+                $data->amount = $point->per_booking_points;
+                $data->status = 0;
+                $data->expiry_date = $lastDateOfMonth;
+                $data->type = "credit";
+                $data->credit_type = "booking";
+                $data->save();
+            }
+
+            // barber active rafer to customer
+            if ($credit_type == "active_referral") {
+
+                $booking = Booking::where('user_id', $user_id)->count();
+                if ($booking == 1) {
+
+                    $user = User::find($user_id);
+                    $barber = User::where('referral_code', $user->submit_referral_code)->first();
+                    // booking first time
+                    if ($barber != "") {
+                        $data = new Wallet();
+                        $data->user_id = $barber->id;
+                        $data->amount = $point->per_active_referral_points;
+                        $data->status = 0;
+                        $data->expiry_date = $lastDateOfMonth;
+                        $data->type = "credit";
+                        $data->credit_type = "referral";
+                        $data->save();
+                    }
                 }
 
-                // barber active rafer to customer
-                if($credit_type == "active_referral"){
-                    $data = new  Wallet();
-                    $data->user_id = $user_id;
-                    $data->amount = $point->per_active_referral_points;
-                    $data->status = 0;
-                    $data->expiry_date = $lastDateOfMonth;
-                    $data->type = "credit";
-                    $data->save();
-                }
+            }
 
-               return true;
+            return true;
         }
     }
 
-
-
-
-
     // get point point
     if (!function_exists('get_user_point')) {
-        function get_user_point($user_id) {
+        function get_user_point($user_id)
+        {
 
             $credits = Wallet::where('user_id', $user_id)
-            ->where('type', 'credit')
-            ->sum('amount');
+                ->where('type', 'credit')
+                ->where('status', 0)
+                ->sum('amount');
 
             $debits = Wallet::where('user_id', $user_id)
                 ->where('type', 'debit')
+                ->where('status', 0)
                 ->sum('amount');
 
             $balance = $credits - $debits;
@@ -726,8 +730,112 @@ if (!function_exists('sendEmail')) {
         }
     }
 
+    if (!function_exists('loyalClient')) {
+        function loyalClient($user_id, $barber_id)
+        {
+            $data = LoyalClient::where('user_id', $user_id)->where('barber_id', $barber_id)->first();
+            if (empty($data)) {
+                //checking booking
+                $checking = Booking::where('user_id', $user_id)->where('barber_id', $barber_id)->count();
+                if ($checking >= 3) {
+                    $create_loyal_client = new LoyalClient();
+                    $create_loyal_client->user_id = $user_id;
+                    $create_loyal_client->barber_id = $barber_id;
+                    $create_loyal_client->save();
+                }
+            }
+
+            return true;
+        }
+    }
 
 
+// =====================================================
+
+
+
+// function getAccessToken()
+// {
+//     $serviceAccountPath = config_path('firebase_credentials.json');
+//     $scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+//     $credentials = CredentialsLoader::makeCredentials($scopes, json_decode(file_get_contents($serviceAccountPath), true));
+//     $httpHandler = HttpHandlerFactory::build(new Client());
+//     $credentials->fetchAuthToken($httpHandler);
+//     return $credentials->getLastReceivedToken()['access_token'];
+// }
+
+
+
+
+// function sendPushNotification($user_id, $notificationType, $title, $data)
+// {
+//     // Retrieve access token
+// $SERVER_API_KEY = getAccessToken();
+// dd($SERVER_API_KEY);
+//     if (!$SERVER_API_KEY) {
+//         throw new Exception('Failed to obtain access token.');
+//     }
+//     $PROJECT_KEY = env('FCM_PROJECT_KEY');
+//     try {
+//         $userInfo = User::find($user_id);
+//         $deviceType = $userInfo->device_type;
+//         $deviceToken = $userInfo->device_token;
+//         $notifications = new Notifications();
+//         $notifications->user_id = $user_id;
+//         $notifications->user_type = $userInfo->user_type;
+//         $notifications->type = $notificationType;
+//         $notifications->description_en = $data['description'];
+//         $notifications->description_cn = null;
+//         // if ($notifications->save()) {
+//         // Prepare the data for the notification
+//         $notificationData = [
+//             "message" => [
+//                 "token" =>$deviceToken,
+//                 "notification" => [
+//                     "title" => $title,
+//                     "body" => $data['description'],
+//                 ],
+//                 "data" => [
+//                     "user_type" => $data['user_type'],
+//                     "notification_type" => $notificationType,
+//                     "description" => $data['description'],
+//                 ],
+//             ]
+
+//         ];
+//         $dataString = json_encode($notificationData);
+
+//         $header = array('Content-Type: application/json', "Authorization: Bearer $SERVER_API_KEY");
+//         // Initialize cURL session
+//         $ch = curl_init("https://fcm.googleapis.com/v1/projects/" . $PROJECT_KEY . "/messages:send");
+//         curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+//         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+//         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+//         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+//         curl_setopt($ch, CURLOPT_POST, 0);
+//         curl_setopt($ch, CURLOPT_POSTFIELDS, $dataString);
+
+//         // Execute cURL request and get the response
+//         $response = curl_exec($ch);
+//         // Check for cURL errors
+//         if (curl_errno($ch)) {
+//             throw new \Exception(curl_error($ch));
+//         }
+
+//         // Close cURL session
+//         curl_close($ch);
+//         // Return success message
+//         return true;
+//         // } else {
+//         //     return false;
+//         // }
+//     } catch (\Exception $e) {
+//         // Return error message
+//         return $e->getMessage();
+//     }
+// }
+
+// =====================================================
 
 
 

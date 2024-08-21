@@ -143,25 +143,27 @@ class ChatModuleController extends Controller
 
         public function getOneToOneChat(Request $request)
         {
-
             $validated['chat_unique_key'] = "required";
-
-
             $customMessages = [
                 'chat_unique_key.required' => __('error.The chat unique key is required.'),
             ];
-
             $request->validate($validated, $customMessages);
 
-
             try {
-
                 $query = ChatList::where('chat_unique_key',$request->chat_unique_key)->orderBy('created_at', 'ASC');
                 $total = $query->count();
                 $data = $query->paginate(10);
-
+                foreach($data  as $chat)
+                {
+                    $authid = Auth::user()->id;
+                    if($authid == $chat->receiver_id)
+                    {
+                           $update_chat_flag = ChatList::find($chat->id);
+                           $update_chat_flag->status = 1;
+                           $update_chat_flag->update();
+                    }
+                }
                  $result = OneToOneChatResource::collection($data);
-
                    if ($result) {
                     return response()->json(
                         [
@@ -171,9 +173,6 @@ class ChatModuleController extends Controller
                             'message' => __('message.Data get successfully.'),
                         ], 200);
                 }
-
-
-
             } catch (Exception $ex) {
                 return response()->json(
                     ['success' => 0, 'message' => $ex->getMessage()], 401

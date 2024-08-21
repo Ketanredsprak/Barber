@@ -775,6 +775,33 @@ both
 
     }
 
+==============================================
+
+(39){{live}}search-near-barber
+    {
+            url : {{live}}search-near-barber
+                method : post
+                authorization : token
+                header : language(code)
+                input params {
+                               search : search first_name,last_name,salon_name and location
+                }
+
+    }
+
+
+=============================================
+
+both account
+(39){{live}}my-point
+    {
+            url : {{live}}my-point
+                method : get
+                authorization : token
+                pagination : yes
+                header : language(code)
+    }
+=====================================================
 
 
 
