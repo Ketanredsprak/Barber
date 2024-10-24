@@ -14,9 +14,11 @@
                 </div>
                 <div class="col-6">
                     <ol class="breadcrumb">
+                        @if (auth()->user()->can('subject-create'))
                         <li class="breadcrumb-item"><button class="btn btn-sm btn-primary" type="button" data-bs-toggle="modal"
                                 data-bs-target="#createsubjectmodel"><i class="fa fa-plus" aria-hidden="true"></i>
                                 {{ __('labels.Add New') }} </button></li>
+                        @endif
                     </ol>
                 </div>
             </div>
@@ -33,9 +35,9 @@
                                 <thead>
                                     <tr>
                                         <th>{{ __('labels.ID') }}</th>
-                                      
+
                                         <th>{{ __('labels.Subject Name') }}</th>
-                                      
+
                                         <th>{{ __('labels.Status') }}</th>
                                         <th>{{ __('labels.Action') }}</th>
                                     </tr>
@@ -106,17 +108,18 @@
                     processing: '<i></i><span class="text-primary spinner-border"></span> '
                 },
                 ajax: "{{ route('subject.index') }}",
-                columns: [
-                    {
+                order: [1],
+                columns: [{
                         data: 'DT_RowIndex',
                         name: 'DT_RowIndex',
+                        orderable: false,
+                        searchable: false
                     },
-                
                     {
                         data: 'subject_name',
                         name: 'subject_name'
                     },
-                
+
                     {
                         data: 'status',
                         name: 'status'

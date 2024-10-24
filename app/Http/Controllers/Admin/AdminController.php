@@ -156,7 +156,7 @@ class AdminController extends Controller
         $data->phone = $request['phone'];
         $data->save();
         if (!empty($data)) {
-            return redirect()->route('setting')->with('success', __('message.Profile edit Successfully'));
+            return redirect()->route('setting')->with('info', __('message.Profile edit Successfully'));
             // return redirect()->route('setting')->with('success',__('message.Profile edit Successfully'));
             // return response()->json(['status' => '1', 'success' => 'Profile edit Successfully']);
         }
@@ -201,9 +201,9 @@ class AdminController extends Controller
                 $request->session()->regenerateToken();
 
                 if ($user_type == 1) {
-                    return redirect('admin/login')->with('success', __('message.Password updated successfully.'));
+                    return redirect('admin/login')->with('info', __('message.Password updated successfully.'));
                 } else {
-                    return redirect('/')->with('success', __('message.Password updated successfully.'));
+                    return redirect('/')->with('info', __('message.Password updated successfully.'));
                 }
             }
         }

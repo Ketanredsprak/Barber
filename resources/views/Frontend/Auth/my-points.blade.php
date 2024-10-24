@@ -28,7 +28,7 @@
     <section class="dashboard_sec">
         <div class="container">
             <div class="row">
-                <div class="col-sm-3 col-lg-3">
+                <div class="col-lg-3 col-md-4">
                     <div class="profile_sidebar">
                         <div class="sidebar_profile">
                             <img src="{{ static_asset('profile_image/' . $profile_image) }}" class="img-fluid" alt="profile">
@@ -43,9 +43,9 @@
                     </div>
                 </div>
 
-                <div class="col-sm-9 col-lg-9">
+                <div class="col-lg-9 col-md-8">
                     <div class="dashboard_right">
-                        <div class="row mb-3 align-items-center">
+                        <div class="row align-items-center">
                             <div class="col-sm-12 col-md-12 col-lg-12">
                                 <div class="heading_dashboard">
                                     <h3>{{ __('labels.Points') }}</h3>
@@ -53,17 +53,15 @@
                             </div>
                         </div>
 
-                        <div class="explore_list">
+                        <div class="explore_list my-points-wrapper">
                             <div class="whitebox">
                                 <div class="points_head">
                                     <div class="point_title">
-                                                <h1> {{ $data->total_points }} <h1>
-                                                <h3>{{ $data->cms_content[0]->$title }}</h3>
-                                                <p>{!! $data->cms_content[0]->$content !!}</p>
-                                    </div>
-                                    <div class="claim mb-2">
-                                        <span><img src="{{ static_asset('frontend/assets/images/points-img.png') }}" class="img-fluid"></span>
-                                    </div>
+                                        <h2> {{ $data->total_points }}</h2>
+                                        <h3>{{ $data->cms_content[0]->$title }}</h3>
+                                        <p>{!! $data->cms_content[0]->$content !!}</p>
+                                        <span class='my-points-img-wrapper'><img src="{{ static_asset('frontend/assets/images/points-img.png') }}" class="img-fluid"></span>
+                                    </div>                                                                            
                                 </div>
 
                                 {{-- <div class="points_list">

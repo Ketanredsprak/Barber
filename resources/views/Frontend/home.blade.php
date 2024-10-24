@@ -15,6 +15,9 @@
         $service_name = 'service_name_' . $language;
         $designation = 'designation_' . $language;
 
+        $locale = config('app.locale');
+        $dir = in_array($locale, ['ar', 'ur']) ? 'rtl' : 'ltr';
+
     @endphp
     <section class="banner_slider">
         <div class="container-fluid">
@@ -27,20 +30,23 @@
                             <div class="item">
                                 <div class="slide_box"
                                     style="background-image: url({{ static_asset('banner_image/' . $banner->banner_image) }});">
-                                    <div class="banner_info">
-                                        <h1>{{ @$banner->$title }}</h1>
-                                        <p>{{ @$banner->$content }}</p>
-                                        <div class="info_btn">
-                                            {{-- <button class="btn btn-warning mr-2"
+                                    <div class="container content-main-wrapper">
+                                        <div class="banner_info">
+                                            <h1>{{ @$banner->$title }}</h1>
+                                            <p>{{ @$banner->$content }}</p>
+                                            <div class="info_btn">
+                                                {{-- <button class="btn btn-warning mr-2"
                                                 type="submit">{{ __('labels.Learn More') }}</button> --}}
-                                            {{-- <button class="btn btn-outline-light"
+                                                {{-- <button class="btn btn-outline-light"
                                                 type="submit">{{ __('labels.Book No') }}</button> --}}
 
-                                            @if (!empty($banner->barber_info->barber_service) && !empty($banner->barber_info->barber_schedule))
-                                                <a class="btn btn-outline-light" type="submit"
-                                                    href="{{ route('get-booking-page', $banner->encrypt_id) }}">{{ __('labels.Book Now') }}</a>
-                                            @endif
+                                                @if (!empty($banner->barber_info->barber_service) && !empty($banner->barber_info->barber_schedule))
+                                                    <a class="btn btn-outline-light" type="submit"
+                                                        href="{{ route('get-booking-page', $banner->encrypt_id) }}">{{ __('labels.Book Now') }}
+                                                    </a>
+                                                @endif
 
+                                            </div>
                                         </div>
                                     </div>
 
@@ -55,12 +61,15 @@
         </div>
     </section>
 
+    <input type="text" name="lat" id="lat" value="{{ @$lat }}">
+    <input type="text" name="long" id="long" value="{{ @$long }}">
+
 
     <section class="explore_sec pt-75 pb-75">
 
         <div class="container">
             <div class="row">
-                <div class="col-sm-12 text-center mb-4">
+                <div class="col-sm-12 text-center">
                     <div class="head">
                         <h3>{{ $data->cms_content[0]->$title }}</h3>
                     </div>
@@ -72,16 +81,16 @@
 
             <div class="row">
                 @foreach ($services as $service)
-                    <div class="col-sm-4">
-                        <div class="explore_box">
-                            <img src="{{ static_asset('service_image/' . $service->service_image) }}" class="img-fluid"
-                                alt="explore">
-                            <div class="info">
-                                <a href="">
+                    <div class="col-lg-4 col-sm-6">
+                        <a href="{{ route('barber-list') }}?service_id={{ $service->id }}">
+                            <div class="explore_box">
+                                <img src="{{ static_asset('service_image/' . $service->service_image) }}" class="img-fluid"
+                                    alt="explore">
+                                <div class="info">
                                     <h4 class="text-center">{{ $service->$service_name }}</h4>
-                                </a>
+                                </div>
                             </div>
-                        </div>
+                        </a>
                     </div>
                 @endforeach
 
@@ -91,7 +100,7 @@
 
             <div class="row">
                 <div class="col-sm-12 text-center">
-                    <a href="" class="btn btn-warning">View All Services</a>
+                    <a href="{{ route('services') }}" class="btn btn-warning">{{ __('labels.View All Services') }}</a>
                 </div>
             </div>
 
@@ -101,7 +110,7 @@
     <section class="explore_sec pt-75 pb-75" style="background-color: #fcc06015;">
         <div class="container">
             <div class="row">
-                <div class="col-sm-12 mb-4">
+                <div class="col-sm-12">
                     <div class="head">
                         <h3>{{ $data->cms_content[1]->$title }}</h3>
                     </div>
@@ -109,10 +118,8 @@
                         <h2>{{ $data->cms_content[1]->$sub_title }}</h2>
                     </div>
                 </div>
-                <div class="row" id="locationWiseBarberResponse">
-                </div>
-
-
+            </div>
+            <div class="row" id="locationWiseBarberResponse">
             </div>
         </div>
         </div>
@@ -121,7 +128,7 @@
     <section class="explore_sec pt-75 pb-75">
         <div class="container">
             <div class="row">
-                <div class="col-sm-12 mb-4">
+                <div class="col-sm-12">
                     <div class="head">
                         <h3>{{ $data->cms_content[2]->$title }}</h3>
                     </div>
@@ -129,53 +136,8 @@
                         <h2>{{ $data->cms_content[2]->$title }}</h2>
                     </div>
                 </div>
-
-                @foreach ($topBarbers as $barber)
-                    <div class="col-md-4">
-                        <div class="item">
-                            <div class="post_box">
-                                <div class="top">
-                                    <div class="post_img">
-                                        <div class="rating">
-                                            <p><i class="fa fa-star"></i>
-                                                {{ round($barber->barber_ratings_avg_rating, 2) }}</p>
-                                        </div>
-                                        @php
-                                            if (empty($barber->profile_image)) {
-                                                $profile_image = 'default.png';
-                                            } else {
-                                                $profile_image = $barber->profile_image;
-                                            }
-                                        @endphp
-                                        <a href="{{ route('get-booking-page', $barber->encrypt_id) }}">
-                                            <img src="{{ static_asset('profile_image/' . $profile_image) }}"
-                                                class="img-fluid" alt="post">
-                                        </a>
-                                    </div>
-                                    <div class="post_info">
-                                        <h5><a href="{{ route('get-booking-page', $barber->encrypt_id) }}">{{ $barber->first_name }}
-                                                - {{ $barber->last_name }}</a>
-                                        </h5>
-                                        <h4 class="shop_name">{{ $barber->salon_name }}</h4>
-                                    </div>
-                                </div>
-                                <div class="bottom">
-                                    <ul class="list-unstyled">
-                                        <li> <i class="fa fa-map-marker"></i> {{ $barber->location }} (1 km)</span></li>
-                                        @if (!empty($barber->barber_service) && !empty($barber->barber_schedule))
-                                            <a class="btn btn-success" type="submit"
-                                                href="{{ route('get-booking-page', $barber->encrypt_id) }}">{{ __('labels.Book Now') }}</a>
-                                        @endif
-
-
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                @endforeach
-
-
+            </div>
+            <div class="row" id="ratingWiseBarberResponse">
             </div>
         </div>
         </div>
@@ -187,7 +149,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-sm-12 col-lg-12 text-center">
-                    <div class="title">
+                    <div class="title mb-0">
                         <h2>{{ $data->cms_content[3]->$title }}</h2>
                     </div>
                     <p>{{ $data->cms_content[3]->$content }}</p>
@@ -229,33 +191,63 @@
 @endsection
 
 
+
+
 <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Make sure the DOM is fully loaded before calling initMap
+        initMap();
+    });
+
     function initMap() {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(function(position) {
-                var userLatitude = position.coords.latitude;
-                var userLongitude = position.coords.longitude;
+        // alert("hello"); // This should show when the function is called
 
-                // sendLocationToServer(userLatitude, userLongitude);
-                $('#userLatitude').val(userLatitude);
-                $('#userLongitude').val(userLongitude);
+        // Check if the DOM elements exist before accessing them
+        var userLatitudeElement = document.getElementById('lat');
+        var userLongitudeElement = document.getElementById('long');
 
-                // Send location to the server
-                sendLocationToServer(userLatitude, userLongitude);
+        if (!userLatitudeElement || !userLongitudeElement) {
+            // alert('Latitude or Longitude input elements not found');
+            return;
+        }
 
+        var userLatitude = userLatitudeElement.value;
+        var userLongitude = userLongitudeElement.value;
 
-            }, function(error) {
-                console.log("Error retrieving location: ", error);
-            });
+        // alert(userLatitude); // This should show the value from the 'lat' input field
+        // alert(userLongitude); // This should show the value from the 'long' input field
+
+        if (userLatitude && userLongitude) {
+            // If coordinates are found in cookies, send them to the server
+            sendLocationToServer(userLatitude, userLongitude);
+            sendLocationToServerForRating(userLatitude, userLongitude);
         } else {
-            console.log("Geolocation is not supported by this browser.");
+            // If cookies are not found, ask for location access
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    userLatitude = position.coords.latitude;
+                    userLongitude = position.coords.longitude;
+
+                    // Store the coordinates in hidden fields
+                    document.getElementById('lat').value = userLatitude;
+                    document.getElementById('long').value = userLongitude;
+
+                    // Send the location to the server
+                    sendLocationToServer(userLatitude, userLongitude);
+                    sendLocationToServerForRating(userLatitude, userLongitude);
+
+                }, function(error) {
+                    console.log("Error retrieving location: ", error);
+                });
+            } else {
+                console.log("Geolocation is not supported by this browser.");
+            }
         }
     }
 
-
     function sendLocationToServer(lat, lng) {
         $.ajax({
-            url: "{{ route('save-user-location') }}", // Adjust this route as needed
+            url: "{{ route('nearest-barber-list') }}", // Adjust this route as needed
             method: "post",
             data: {
                 _token: "{{ csrf_token() }}",
@@ -265,14 +257,24 @@
             success: function(response) {
                 $("#locationWiseBarberResponse").html('');
                 $("#locationWiseBarberResponse").append(response);
-            },
-            error: function(xhr, status, error) {
-                alert("Error sending location: ");
             }
         });
     }
 
-    // Initialize the map
-    initMap();
 
+    function sendLocationToServerForRating(lat, lng) {
+        $.ajax({
+            url: "{{ route('rating-barber-list') }}", // Adjust this route as needed
+            method: "post",
+            data: {
+                _token: "{{ csrf_token() }}",
+                latitude: lat,
+                longitude: lng
+            },
+            success: function(response) {
+                $("#ratingWiseBarberResponse").html('');
+                $("#ratingWiseBarberResponse").append(response);
+            }
+        });
+    }
 </script>

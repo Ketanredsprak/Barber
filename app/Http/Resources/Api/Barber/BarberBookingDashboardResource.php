@@ -26,7 +26,7 @@ class BarberBookingDashboardResource extends JsonResource
             'customer_first_name' => $this->customer_detail->first_name ?? "",
             'customer_last_name' => $this->customer_detail->last_name ?? "",
             'customer_gender' => $this->customer_detail->gender ?? "",
-            'customer_profile_image' => URL::to('/public') . '/profile_image/' . ($this->profile_image ?? 'user.png'),
+            'customer_profile_image' => URL::to('/public') . '/profile_image/' . ($this->customer_detail->profile_image ?? 'user.png'),
             'booked_services' => $this->booking_service_detailss
             ->pluck($service_name)
             ->implode(', '),

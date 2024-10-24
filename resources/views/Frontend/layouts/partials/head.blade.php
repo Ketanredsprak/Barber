@@ -1,17 +1,28 @@
 @php
-      $currentRouteName = Route::currentRouteName();
-      $locale = config('app.locale');
-      $meta_keyword = "meta_title_".$locale;
-      $meta_description = "meta_content_".$locale;
+    $currentRouteName = Route::currentRouteName();
+    $locale = config('app.locale');
+    $meta_keyword = 'meta_title_' . $locale;
+    $meta_description = 'meta_content_' . $locale;
 @endphp
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-<meta name="description" content="{{ $data->meta_content->$meta_keyword  ?? "" }}">
-<meta name="keywords" content="{{ $data->meta_content->$meta_description  ?? "" }}">
+<meta name="description" content="{{ $data->meta_content->$meta_keyword ?? '' }}">
+<meta name="keywords" content="{{ $data->meta_content->$meta_description ?? '' }}">
 <meta name="csrf-token" content="{{ csrf_token() }}" />
-<title>{{ config('app.name') }} - {{ $currentRouteName }}</title>
+@php
+    use Illuminate\Support\Str;
+    // Get the current route name and format it
+    $formattedRouteName = Str::title(str_replace('-', ' ', $currentRouteName));
+    if ($formattedRouteName == 'Index') {
+        $page_name = 'Home';
+    } else {
+        $page_name = $formattedRouteName;
+    }
+
+@endphp
+<title>{{ config('app.name') }} - {{ $page_name }}</title>
 
 
 
@@ -43,7 +54,7 @@ CSS
 <link rel="stylesheet" type="text/css" href="{{ static_asset('frontend/assets/styles/custom.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ static_asset('frontend/assets/styles/layout.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ static_asset('frontend/assets/styles/fonts.css') }}">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
 <link rel="stylesheet" type="text/css" href="{{ static_asset('frontend/assets/styles/font-awesome.min.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ static_asset('frontend/assets/styles/line-awesome.min.css') }}">
 

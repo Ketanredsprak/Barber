@@ -86,7 +86,7 @@ return [
     'The Number of Booking field must be a numeric' => 'The Number of Booking field must be a numeric',
     'The Subscription Type field is required' => 'The Subscription Type field is required',
     'The Slots and Number of Service must have the same number of items.' => 'The Slots and Number of Service must have the same number of items.',
-    'Contact to admin temrary yout account is block.' => 'Contact to admin temrary yout account is block.',
+    'Contact to admin temrary yout account is block.' => 'Contact to admin temporary yout account is block.',
     'The Subject Name English field is required.' => 'The Subject Name English field is required.',
     'The Subject Name English field must be a string.' => 'The Subject Name English field must be a string.',
     'The Subject Name Arabic field is required.' => 'The Subject Name Arabic field is required.',
@@ -155,6 +155,9 @@ return [
     'The message is required when message type is text.' => 'The message is required when message type is text.',
     'The file is required when message type is file.' => 'The file is required when message type is file.',
     'The receiver id is required.' => 'The receiver id is required.',
+    'The device type field is required.' => 'The device type field is required.',
+    'The slot field is required' => 'The slot field is required',
+    'The all slot field is required' => 'The all slot field is required',
 
 
 
@@ -195,4 +198,11 @@ return [
     'Not enough available slots. Please select another slot.' => 'Not enough available slots. Please select another slot.',
     'something went wrong' => 'something went wrong',
     'Only customers can sign in.' => 'Only customers can sign in.',
+    'The slot field is required' => 'The slot field is required',
+    'The all slot field is required' => 'The all slot field is required',
+    'The all slot field is required.' => 'The all slot field is required.',
+    'Customer appointment is booked for this date, so you cannot disable slot for this date.' => 'Customer appointment is booked for this date, so you cannot disable slot for this date.',
+    'The date field is required.' => 'The date field is required.',
+    'The booking id field is required.' => 'The booking id field is required.',
+    'Contact to admin temporarily your account is blocked' => 'Contact to admin temporarily your account is blocked',
 ];

@@ -13,6 +13,7 @@ class CountryCode extends Model
 
     protected $fillable = [
         "country_code",
+        "image",
         "short_name",
         "phonecode",
     ];

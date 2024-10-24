@@ -11,6 +11,8 @@
         } else {
             $profile_image = $auth->profile_image;
         }
+
+        // dd($booking->can_reschedule,$booking->can_cancel);
     @endphp
 
 
@@ -132,6 +134,9 @@
                                                 @elseif($booking->status == 'rescheduled')
                                                     {{ __('labels.Rescheduled') }}
                                                 @endif
+
+
+
                                             </h4>
                                             <p>{{ $booking->barber_detail->gender ?? '' }} </p>
 
@@ -142,34 +147,43 @@
                                                 <div class="row image_upload">
                                                     <div class="col-6 col-sm-12 col-md-6">
                                                         <div class="detail-icon">
-                                                            <img src="{{ static_asset('frontend/assets/images/map.png') }}"
+                                                            <img src="{{ static_asset('frontend/assets/images/loc-map.png') }}"
                                                                 alt="">
+                                                            <br>
                                                             <a href="https://www.google.com/maps?q={{ $booking->barber_detail->latitude }},{{ $booking->barber_detail->longitude }}"
                                                                 target="_blank">
-                                                                <p>{{ __('labels.Map') }}</p>
+                                                                {{ $booking->barber_detail->location ?? '' }}
+
                                                             </a>
                                                         </div>
                                                     </div>
                                                     <div class="col-6 col-sm-12 col-md-6">
                                                         <div class="detail-icon">
-                                                            <img src="{{ static_asset('frontend/assets/images/chat.png') }}"
-                                                                alt="">
-                                                            <p>{{ __('labels.Chat') }}</p>
+                                                            <a href="{{ route('my-chat') }}"><img
+                                                                    src="{{ static_asset('frontend/assets/images/chat.png') }}"
+                                                                    alt="">
+                                                                <p>{{ __('labels.Chat') }} </p>
+                                                            </a>
                                                         </div>
                                                     </div>
 
                                                 </div>
 
 
+
                                                 <div class="schedule_btn">
-                                                    @if($booking->is_reschedule == 0)
-                                                    <a class="btn btn-success text-white reschedule-booking"
-                                                        data-id="{{ $booking->booking_encrypt_id }}"
-                                                        href="javascript:void(0)">{{ __('labels.Reschedule') }}</a>
+                                                    @if ($booking->can_reschedule == 1)
+                                                        @if ($booking->is_reschedule == 0)
+                                                            <a class="btn btn-success text-white reschedule-booking mx-2"
+                                                                data-id="{{ $booking->booking_encrypt_id }}"
+                                                                href="javascript:void(0)">{{ __('labels.Reschedule') }}</a>
+                                                        @endif
                                                     @endif
-                                                    <a class="btn btn-success text-white cancel-booking"
-                                                        data-id="{{ $booking->booking_encrypt_id }}"
-                                                        href="javascript:void(0)">{{ __('labels.Cancel') }}</a>
+                                                    @if ($booking->can_cancel == 1)
+                                                        <a class="btn btn-success text-white cancel-booking"
+                                                            data-id="{{ $booking->booking_encrypt_id }}"
+                                                            href="javascript:void(0)">{{ __('labels.Cancel') }}</a>
+                                                    @endif
                                                 </div>
 
                                             </div>
@@ -183,7 +197,8 @@
                                                 </span></li>
                                         </ul>
                                         <p class="mt-0">{{ date('d-M-Y', strtotime($booking->booking_date)) }},
-                                            {{ date('h:i A', strtotime($booking->start_time)) }} -  {{ date('h:i A', strtotime($booking->end_time)) }}</p>
+                                            {{ date('h:i A', strtotime($booking->start_time)) }} -
+                                            {{ date('h:i A', strtotime($booking->end_time)) }}</p>
 
                                         <ul class="list-unstyled mybarber_info mt-3 p-0">
                                             <li> <i><img
@@ -206,15 +221,20 @@
                                             </div>
                                         @endif
 
+
                                         <div class="mybarber_head mt-3">
                                             <h6>{{ $booking->barber_detail->salon_name ?? '' }}</h6>
                                         </div>
+                                        <?php /*
                                         <p>
                                             <i><img src="{{ static_asset('frontend/assets/images/loc-map.png') }}"></i>
-                                            {{ $booking->barber_detail->location ?? '' }} (2 km)</span>
+                                            {{ $booking->barber_detail->location ?? '' }} </span>
+                                        </p>
+                                        */
+                                        ?>
                                         <div class="rating">
                                             <p><i><img src="{{ static_asset('frontend/assets/images/star-3.png') }}"></i>
-                                                4.5
+                                                {{ $barber_data->average_rating }}
                                             </p>
                                         </div>
                                     </div>
@@ -254,36 +274,39 @@
                                                         <div class="detail-icon">
                                                             <img src="{{ static_asset('frontend/assets/images/map.png') }}"
                                                                 alt="">
+                                                            <br>
                                                             <a href="https://www.google.com/maps?q={{ $booking->barber_detail->latitude }},{{ $booking->barber_detail->longitude }}"
                                                                 target="_blank">
-                                                                <p>{{ __('labels.Map') }}</p>
+                                                                {{ $booking->barber_detail->location ?? '' }}
                                                             </a>
                                                         </div>
                                                     </div>
                                                     <div class="col-6 col-sm-12 col-md-6">
                                                         <div class="detail-icon">
-                                                            <img src="{{ static_asset('frontend/assets/images/chat.png') }}"
-                                                                alt="">
-                                                            <p>{{ __('labels.Chat') }}</p>
+                                                            <a href="{{ route('my-chat') }}"><img
+                                                                    src="{{ static_asset('frontend/assets/images/chat.png') }}"
+                                                                    alt="">
+                                                                <p>{{ __('labels.Chat') }}</p>
+                                                            </a>
                                                         </div>
                                                     </div>
                                                 </div>
 
 
                                                 <div class="schedule_btn">
-
-
-                                                            <a class="btn btn-success text-white reschedule-booking"
+                                                    @if ($booking->can_reschedule == 1)
+                                                        @if ($booking->is_reschedule == 0)
+                                                            <a class="btn btn-success text-white reschedule-booking mx-2"
                                                                 data-id="{{ $booking->booking_encrypt_id }}"
                                                                 href="javascript:void(0)">{{ __('labels.Reschedule') }}</a>
-
-                                                            <a class="btn btn-success text-white cancel-booking"
-                                                                data-id="{{ $booking->booking_encrypt_id }}"
-                                                                href="javascript:void(0)">{{ __('labels.Cancel') }}</a>
-
-
+                                                        @endif
+                                                    @endif
+                                                    @if ($booking->can_cancel == 1)
+                                                        <a class="btn btn-success text-white cancel-booking"
+                                                            data-id="{{ $booking->booking_encrypt_id }}"
+                                                            href="javascript:void(0)">{{ __('labels.Cancel') }}</a>
+                                                    @endif
                                                 </div>
-
                                             </div>
                                         </div>
 
@@ -308,7 +331,8 @@
                                                 </span></li>
                                         </ul>
                                         <p class="mt-0"> {{ date('d-M-Y', strtotime($booking->booking_date)) }},
-                                            {{ date('h:i A', strtotime($booking->start_time)) }} -  {{ date('h:i A', strtotime($booking->end_time)) }} </p>
+                                            {{ date('h:i A', strtotime($booking->start_time)) }} -
+                                            {{ date('h:i A', strtotime($booking->end_time)) }} </p>
 
                                         <ul class="list-unstyled mybarber_info mt-3 p-0">
                                             <li> <i><img
@@ -334,14 +358,17 @@
                                         <div class="mybarber_head mt-3">
                                             <h6>{{ $service->barber_detail->salon_name ?? '' }}</h6>
                                         </div>
+                                        <?php /*
                                         <p>
                                             <i><img src="{{ static_asset('frontend/assets/images/loc-map.png') }}"
                                                     alt=""></i> {{ $service->barber_detail->salon_name ?? '' }} (2
                                             km)
                                         </p>
+                                        */
+                                        ?>
                                         <div class="rating">
                                             <p><i><img src="{{ static_asset('frontend/assets/images/star-3.png') }}"
-                                                        alt=""></i> 4.5</p>
+                                                        alt=""></i> {{ $barber_data->average_rating }}</p>
                                         </div>
                                     </div>
                                 @endif
@@ -383,17 +410,20 @@
                                                         <div class="detail-icon">
                                                             <img src="{{ static_asset('frontend/assets/images/map.png') }}"
                                                                 alt="">
+                                                            <br>
                                                             <a href="https://www.google.com/maps?q={{ $booking->barber_detail->latitude }},{{ $booking->barber_detail->longitude }}"
                                                                 target="_blank">
-                                                                <p>{{ __('labels.Map') }}</p>
+                                                                {{ $booking->barber_detail->location ?? '' }}
                                                             </a>
                                                         </div>
                                                     </div>
                                                     <div class="col-6 col-sm-12 col-md-6">
                                                         <div class="detail-icon">
-                                                            <img src="{{ static_asset('frontend/assets/images/chat.png') }}"
-                                                                alt="">
-                                                            <p>{{ __('labels.Chat') }}</p>
+                                                            <a href="{{ route('my-chat') }}"><img
+                                                                    src="{{ static_asset('frontend/assets/images/chat.png') }}"
+                                                                    alt="">
+                                                                <p>{{ __('labels.Chat') }}</p>
+                                                            </a>
                                                         </div>
                                                     </div>
 
@@ -424,7 +454,8 @@
                                                 </span></li>
                                         </ul>
                                         <p class="mt-0"> {{ date('d-M-Y', strtotime($booking->booking_date)) }},
-                                            {{ date('h:i A', strtotime($booking->start_time)) }} -  {{ date('h:i A', strtotime($booking->end_time)) }} </p>
+                                            {{ date('h:i A', strtotime($booking->start_time)) }} -
+                                            {{ date('h:i A', strtotime($booking->end_time)) }} </p>
 
                                         <ul class="list-unstyled mybarber_info mt-3 p-0">
                                             <li> <i><img
@@ -451,12 +482,16 @@
                                         <div class="mybarber_head mt-3">
                                             <h6>{{ $service->barber_detail->salon_name ?? '' }}</h6>
                                         </div>
+                                        <?php /*
                                         <p>
                                             <i><img src="{{ static_asset('frontend/assets/images/loc-map.png') }}"></i>
-                                            {{ $service->barber_detail->location ?? '' }} (2 km)</span>
+                                            {{ $service->barber_detail->location ?? '' }} </span>
+                                             </p>
+                                             */
+                                        ?>
                                         <div class="rating">
                                             <p><i><img src="{{ static_asset('frontend/assets/images/star-3.png') }}"></i>
-                                                4.5
+                                                {{ $barber_data->average_rating }}
                                             </p>
                                         </div>
                                     </div>
@@ -529,7 +564,7 @@
                                                                 value="5" type="radio">
                                                         </div>
                                                     </div>
-                                                    <button class="btn btn-success mx-2"
+                                                    <button class="btn btn-success mx-2" id="rating_submit_button"
                                                         type="submit">{{ __('labels.Submit') }}</button>
                                                     <a href="{{ route('contact-us') }}"
                                                         class="btn btn-success">{{ __('labels.Contact-Support') }}</a>
@@ -586,56 +621,118 @@
                                             <div class="detail-icon">
                                                 <img src="{{ static_asset('frontend/assets/images/map.png') }}"
                                                     alt="">
+                                                <br>
                                                 <a href="https://www.google.com/maps?q={{ $booking->barber_detail->latitude }},{{ $booking->barber_detail->longitude }}"
                                                     target="_blank">
-                                                    <p>{{ __('labels.Map') }}</p>
+                                                    {{ $booking->barber_detail->location ?? '' }}
                                                 </a>
                                             </div>
                                         </div>
                                         <div class="col-6 col-sm-12 col-md-6">
                                             <div class="detail-icon">
-                                                <img src="{{ static_asset('frontend/assets/images/chat.png') }}"
-                                                    alt="">
-                                                <p>{{ __('labels.Chat') }} </p>
+                                                <a href="{{ route('my-chat') }}"><img
+                                                        src="{{ static_asset('frontend/assets/images/chat.png') }}"
+                                                        alt="">
+                                                    <p>{{ __('labels.Chat') }} </p>
+                                                </a>
                                             </div>
                                         </div>
                                     </div>
 
 
-                                    @if ($booking->booking_type == 'waitlist')
-                                        @if ($booking->barber_proposal != '')
-                                            @if ($booking->barber_proposal->status != 'reject')
-                                                <div class="schedule_btn">
-                                                    <h4>{{ __('labels.Barber Suggested Date and Time') }}</h4>
-                                                    <p> {{ __('labels.Date') }} : {{ $booking->barber_proposal->booking_date }} </p>
-                                                    <p>{{ __('labels.Time') }} : {{ $booking->barber_proposal_start_time }} -
-                                                        {{ $booking->barber_proposal_end_time }}</p>
 
-                                                    <a href="javascript:void(0)"
-                                                        data-url="{{ route('accept-barber-proposal', $booking->barber_proposal->id) }}"
-                                                        class="btn text-white" id="accept_barber_proposal">
-                                                        <span class="button_label_completed">
-                                                            {{ __('labels.Accept') }}</span>
-                                                    </a>
-
-                                                    <a href="javascript:void(0)"
-                                                        data-url="{{ route('reject-barber-proposal', $booking->barber_proposal->id) }}"
-                                                        class="btn text-white" id="reject_barber_proposal">
-                                                        <span class="button_label_cancel_booking">
-                                                            {{ __('labels.Reject') }}</span>
-                                                    </a>
-                                                </div>
-                                            @else
-                                              <p>{{ __('labels.Barber Proposal Reject') }}</p>
-                                            @endif
-                                        @endif
-                                    @endif
 
 
 
                                 </div>
                             </div>
-                            <ul class="list-unstyled mybarber_info mt-3 p-0">
+
+                            @if ($booking->booking_type == 'waitlist')
+
+                                <ul class="list-unstyled mybarber_info mt-3 p-0">
+                                    <li> <i><img
+                                                src="{{ static_asset('frontend/assets/images/scissors.png') }}"></i><span>
+                                            <div class="mybarber_head">
+                                                <h6>{{ __('labels.My Preferences') }}</h6>
+                                            </div>
+                                        </span></li>
+                                </ul>
+
+                                <div class="info2">
+
+
+                                    @if ($booking->customer_prefrences)
+                                        @foreach ($booking->customer_prefrences as $prefrences)
+                                            <div class="mybarber_head">
+                                                @if ($prefrences->any_date == 1)
+                                                    <p> {{ __('labels.Any Date') }}</p>
+                                                @endif
+                                                @if ($prefrences->any_date == 0)
+                                                    <p> {{ $prefrences->selected_date }}</p>
+                                                @endif
+                                                @if ($prefrences->any_time == 1)
+                                                    <p> {{ __('labels.Any Time') }}</p>
+                                                @endif
+                                                @if ($prefrences->any_time == 0)
+                                                    <p> {{ $prefrences->from_time }} - {{ $prefrences->to_time }} </p>
+                                                @endif
+                                            </div>
+                                        @endforeach
+                                    @endif
+                                </div>
+
+
+                                <ul class="list-unstyled mybarber_info mt-3 p-0">
+                                    <li> <i><img
+                                                src="{{ static_asset('frontend/assets/images/scissors.png') }}"></i><span>
+                                            <div class="mybarber_head">
+                                                <h6>{{ __('labels.Barber Suggested Date and Time') }}</h6>
+                                            </div>
+                                        </span></li>
+                                </ul>
+                                <div class="info2">
+
+
+                                    @if ($booking->booking_type == 'waitlist')
+
+                                        @if ($booking->barber_proposal != '')
+                                            @if ($booking->barber_proposal->status != 'reject')
+                                                <div class="mybarber_head">
+                                                    <h4>{{ __('labels.Barber Suggested Date and Time') }}</h4>
+                                                    <p> {{ __('labels.Date') }} :
+                                                        {{ $booking->barber_proposal->booking_date }} </p>
+                                                    <p>{{ __('labels.Time') }} :
+                                                        @foreach ($booking->barber_proposal->slots as $slots)
+                                                            <p>{{ $slots }}</p>
+                                                        @endforeach
+                                                </div>
+
+                                                <hr>
+                                                <a href="javascript:void(0)"
+                                                    data-url="{{ route('accept-barber-proposal', $booking->barber_proposal->id) }}"
+                                                    class="btn text-white" id="accept_barber_proposal">
+                                                    <span class="button_label_completed">
+                                                        {{ __('labels.Accept') }}</span>
+                                                </a>
+
+                                                <a href="javascript:void(0)"
+                                                    data-url="{{ route('reject-barber-proposal', $booking->barber_proposal->id) }}"
+                                                    class="btn text-white" id="reject_barber_proposal">
+                                                    <span class="button_label_cancel_booking">
+                                                        {{ __('labels.Reject') }}</span>
+                                                </a>
+                                            @else
+                                                <p>{{ __('labels.Barber Proposal Reject') }}</p>
+                                            @endif
+                                        @else
+                                            <p>{{ __('labels.Wait for barber proposal') }}</p>
+                                        @endif
+                                    @endif
+                                </div>
+
+                            @endif
+
+                            {{-- <ul class="list-unstyled mybarber_info mt-3 p-0">
                                 <li> <i><img src="{{ static_asset('frontend/assets/images/calender.png') }}"></i><span>
                                         <div class="mybarber_head">
                                             <h6>{{ __('labels.Date & Time') }}</h6>
@@ -643,7 +740,7 @@
                                     </span></li>
                             </ul>
                             <p class="mt-0">{{ date('d-M-Y', strtotime($booking->booking_date)) }},
-                                {{ date('h:i A', strtotime($booking->start_time)) }} -  {{ date('h:i A', strtotime($booking->end_time)) }}</p>
+                                {{ date('h:i A', strtotime($booking->start_time)) }} -  {{ date('h:i A', strtotime($booking->end_time)) }}</p> --}}
 
                             <ul class="list-unstyled mybarber_info mt-3 p-0">
                                 <li> <i><img src="{{ static_asset('frontend/assets/images/scissors.png') }}"></i><span>
@@ -668,12 +765,16 @@
                             <div class="mybarber_head mt-3">
                                 <h6>{{ $booking->barber_detail->salon_name ?? '' }}</h6>
                             </div>
+                            <?php /*
                             <p>
                                 <i><img src="{{ static_asset('frontend/assets/images/loc-map.png') }}"></i>
-                                {{ $booking->barber_detail->location ?? '' }} (2 km)</span>
+                                {{ $booking->barber_detail->location ?? '' }} </span>
+                                 </p>
+                                 */
+                            ?>
                             <div class="rating">
                                 <p><i><img src="{{ static_asset('frontend/assets/images/star-3.png') }}"></i>
-                                    4.5
+                                    {{ $barber_data->average_rating }}
                                 </p>
                             </div>
                         </div>
@@ -719,7 +820,6 @@
         </div>
     </div>
     <!-- Custom Confirmation Modal -->
-
 @endsection
 @section('footer-script')
     <script>
@@ -755,13 +855,17 @@
 
 
             $("#rating_submit").submit(function(e) {
-
                 e.preventDefault();
 
                 var form_data = this;
                 var formData = new FormData(form_data);
                 var url = $(this).attr('action');
                 var type = "POST";
+                var submitButton = $(this).find("button[type='submit']");
+
+                // Disable the button and add loader
+                submitButton.prop('disabled', true).html(
+                    '<i class="fa fa-spinner fa-spin"></i> Loading...');
 
                 $.ajax({
                     type: type,
@@ -778,7 +882,6 @@
                         window.setTimeout(function() {
                             location.reload();
                         }, 1000);
-
                     },
                     error: function(response) {
                         var errors = response.responseJSON;
@@ -788,10 +891,13 @@
                             $(ele).addClass('error is-invalid');
                             toastr.error(value);
                         });
+                    },
+                    complete: function() {
+                        // Re-enable the button and remove loader
+                        submitButton.prop('disabled', false).html('Submit');
                     }
-                })
+                });
                 return false;
-
             });
 
 

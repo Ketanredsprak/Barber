@@ -5,6 +5,8 @@ namespace App\Http\Controllers\API\V1;
 use App\Models\User;
 use App\Models\Wallet;
 use App\Models\ContactUS;
+use App\Models\UserImage;
+use App\Models\PointSystem;
 use Illuminate\Http\Request;
 use App\Models\WebsiteConfig;
 use App\Models\BarberSchedule;
@@ -23,9 +25,106 @@ use App\Http\Resources\Api\Customer\CustomerAccount;
 class AccountController extends Controller
 {
 
+    // public function login(Request $request)
+    // {
+
+    //     $validated['email_or_phone'] = "required";
+    //     $validated['password'] = "required";
+    //     $validated['user_type'] = "required";
+    //     $validated['fcm_token'] = "required";
+
+    //     $customMessages = [
+    //         'email_or_phone.required' => __('error.The email or phone field is required'),
+    //         'password.required' => __('error.The password field is required.'),
+    //         'user_type.required' => __('error.The user type field is required.'),
+    //         'fcm_token.required' => __('error.The fcm token field is required.'),
+    //     ];
+
+    //     $request->validate($validated, $customMessages);
+
+    //     try {
+    //         // Determine if the input is an email or a phone number
+    //         $loginType = filter_var($request->email_or_phone, FILTER_VALIDATE_EMAIL) ? 'email' : 'phone';
+    //         $credentials = [
+    //             $loginType => $request->email_or_phone,
+    //             'password' => $request->password,
+    //         ];
+
+    //         // Attempt to authenticate the user
+    //         if (auth()->attempt($credentials)) {
+    //             $token = auth()->user()->createToken('Auth Login')->accessToken;
+    //             $array = Auth::user();
+    //             $array['token'] = $token;
+    //             $user = auth()->user();
+
+    //              // Check user type
+    //             if ($user->user_type != $request->user_type) {
+    //                 auth()->logout();
+    //                 return response()->json(
+    //                     [
+    //                         'message' => __('message.Unauthorized user type.'),
+    //                         'status' => 0,
+    //                     ], 401
+    //                 );
+    //             }
+
+    //             $user->token = $token;
+    //             $user->fcm_token = $request->fcm_token;
+    //             $user->save();
+
+    //             if (Auth::user()->user_type == 3) {
+    //                       $check_service = BarberServices::where('barber_id',Auth::user()->id)->first();
+    //                       if(!empty($check_service))
+    //                       {
+    //                               $array['service_added_or_not_added'] = '1';
+    //                       }
+    //                       else
+    //                       {
+    //                           $array['service_added_or_not_added'] = '0';
+
+    //                       }
+
+    //                       $check_schedule = BarberSchedule::where('barber_id',Auth::user()->id)->first();
+    //                       if(!empty($check_schedule))
+    //                       {
+    //                               $array['schedule_added_or_not_added'] = '1';
+    //                       }
+    //                       else
+    //                       {
+    //                           $array['schedule_added_or_not_added'] = '0';
+
+    //                       }
+
+    //             }
+
+    //             if (Auth::user()->user_type == 3) {
+    //                 $data = new BarberAccount($array);
+    //             } else {
+    //                 $data = new CustomerAccount($array);
+    //             }
+
+    //             return response()->json(
+    //                 [
+    //                     'data' => $data,
+    //                     'status' => 1,
+    //                     'message' => __('message.Login successfully'),
+    //                 ], 200);
+    //         } else {
+    //             return response()->json(
+    //                 [
+    //                     'message' => __('message.Incorrect Email/Phone Number and Password.'),
+    //                     'status' => 0,
+    //                 ], 200);
+    //         }
+    //     } catch (Exception $ex) {
+    //         return response()->json(
+    //             ['success' => 0, 'message' => $ex->getMessage()], 401
+    //         );
+    //     }
+    // }
+
     public function login(Request $request)
     {
-
         $validated['email_or_phone'] = "required";
         $validated['password'] = "required";
         $validated['user_type'] = "required";
@@ -50,75 +149,71 @@ class AccountController extends Controller
 
             // Attempt to authenticate the user
             if (auth()->attempt($credentials)) {
-                $token = auth()->user()->createToken('Auth Login')->accessToken;
-                $array = Auth::user();
-                $array['token'] = $token;
                 $user = auth()->user();
 
-                 // Check user type
+                // Check if user is approved
+                if ($user->is_delete != "0") {
+                    auth()->logout();
+                    return response()->json(
+                        [
+                            'message' => __('message.Invalid credentials'),
+                            'status' => 2,
+                        ], 200
+                    );
+                }
+
+                if ($user->is_approved != 2) {
+                    auth()->logout();
+                    return response()->json(
+                        [
+                            'message' => __('error.Contact to admin temporarily your account is blocked'),
+                            'status' => 2,
+                        ], 200
+                    );
+                }
+
+                $token = $user->createToken('Auth Login')->accessToken;
+                $array = $user;
+                $array['token'] = $token;
+
+                // Check user type
                 if ($user->user_type != $request->user_type) {
                     auth()->logout();
                     return response()->json(
                         [
                             'message' => __('message.Unauthorized user type.'),
-                            'status' => 0,
-                        ], 401
+                            'status' => 2,
+                        ], 200
                     );
                 }
 
-
-                $user->token = $token;
                 $user->fcm_token = $request->fcm_token;
                 $user->save();
 
-                if (Auth::user()->user_type == 3) {
-                          $check_service = BarberServices::where('barber_id',Auth::user()->id)->first();
-                          if(!empty($check_service))
-                          {
-                                  $array['service_added_or_not_added'] = '1';
-                          }
-                          else
-                          {
-                              $array['service_added_or_not_added'] = '0';
+                if ($user->user_type == 3) {
+                    $check_service = BarberServices::where('barber_id', $user->id)->first();
+                    $array['service_added_or_not_added'] = !empty($check_service) ? '1' : '0';
 
-                          }
-
-
-
-                          $check_schedule = BarberSchedule::where('barber_id',Auth::user()->id)->first();
-                          if(!empty($check_schedule))
-                          {
-                                  $array['schedule_added_or_not_added'] = '1';
-                          }
-                          else
-                          {
-                              $array['schedule_added_or_not_added'] = '0';
-
-                          }
-
-
-
+                    $check_schedule = BarberSchedule::where('barber_id', $user->id)->first();
+                    $array['schedule_added_or_not_added'] = !empty($check_schedule) ? '1' : '0';
                 }
 
-
-                if (Auth::user()->user_type == 3) {
-                    $data = new BarberAccount($array);
-                } else {
-                    $data = new CustomerAccount($array);
-                }
+                $data = $user->user_type == 3 ? new BarberAccount($array) : new CustomerAccount($array);
 
                 return response()->json(
                     [
                         'data' => $data,
                         'status' => 1,
                         'message' => __('message.Login successfully'),
-                    ], 200);
+                    ], 200
+                );
             } else {
                 return response()->json(
                     [
-                        'message' => __('message.Incorrect Email/Phone Number and Password.'),
-                        'status' => 0,
-                    ], 200);
+                        'message' => __('message.Invalid credentials'),
+                        'status' => 2,
+                    ], 200
+                );
             }
         } catch (Exception $ex) {
             return response()->json(
@@ -130,11 +225,24 @@ class AccountController extends Controller
     //get profile
     public function profile(Request $request)
     {
+
+           // account delete,suspend and wiating for approved
+           $response = checkUserStatus(Auth::user()->id);
+           if ($response['status'] == 1) {
+               return response()->json(
+                   [
+                       'status' => 2,
+                       'message' => $response['message'],
+                   ], 200);
+           }
+           // account delete,suspend and wiating for approved
+
         try {
             $language_code = $request->header('language');
 
-            $user = User::find(Auth::user()->id);
+            $user = User::with('barber_images')->find(Auth::user()->id);
             $user['barber_schedule'] = BarberSchedule::where('barber_id', $user->id)->first();
+            $user['point_system'] = PointSystem::select('per_booking_points', 'per_active_referral_points', 'how_many_point_equal_sr')->first();
             if (!empty($user)) {
                 if ($user->user_type == 4) {
                     $data = new CustomerAccount($user);
@@ -165,6 +273,18 @@ class AccountController extends Controller
 
     public function changePassword(Request $request)
     {
+
+         // account delete,suspend and wiating for approved
+         $response = checkUserStatus(Auth::user()->id);
+         if ($response['status'] == 1) {
+             return response()->json(
+                 [
+                     'status' => 2,
+                     'message' => $response['message'],
+                 ], 200);
+         }
+         // account delete,suspend and wiating for approved
+
 
         $language_code = $request->header('language');
 
@@ -224,6 +344,17 @@ class AccountController extends Controller
     public function logout(Request $request)
     {
 
+         // account delete,suspend and wiating for approved
+         $response = checkUserStatus(Auth::user()->id);
+         if ($response['status'] == 1) {
+             return response()->json(
+                 [
+                     'status' => 2,
+                     'message' => $response['message'],
+                 ], 200);
+         }
+         // account delete,suspend and wiating for approved
+
         $language_code = $request->header('language');
 
         if ($request->user()) {
@@ -259,12 +390,12 @@ class AccountController extends Controller
 
         try {
             $email = $request->email;
-            $user = User::where('email', $email)->first();
+            $user = User::where('email', $email)->where('is_delete', "0")->first();
             if ($user != null || $user != "") {
                 $name = $user->first_name . " " . $user->last_name;
 
-                $otp = mt_rand(1000, 9999);
-                // $otp = 123456;
+                // $otp = mt_rand(1000, 9999);
+                $otp = 1234;
                 $user->otp = $otp;
                 $user->update();
                 $userId = Crypt::encryptString($user->id);
@@ -507,6 +638,18 @@ class AccountController extends Controller
 
     public function contactUsSubmit(Request $request)
     {
+
+         // account delete,suspend and wiating for approved
+         $response = checkUserStatus(Auth::user()->id);
+         if ($response['status'] == 1) {
+             return response()->json(
+                 [
+                     'status' => 2,
+                     'message' => $response['message'],
+                 ], 200);
+         }
+         // account delete,suspend and wiating for approved
+
         $validated = [];
         $validated['subject'] = "required";
         $validated['message'] = "required";
@@ -521,7 +664,6 @@ class AccountController extends Controller
         try {
 
             $user = User::find(Auth::user()->id);
-
 
             // for Image
             if ($request->hasFile('contact_file')) {
@@ -554,13 +696,24 @@ class AccountController extends Controller
 
     }
 
+    public function contactUsDetail()
+    {
 
-     public function contactUsDetail()
-     {
+         // account delete,suspend and wiating for approved
+         $response = checkUserStatus(Auth::user()->id);
+         if ($response['status'] == 1) {
+             return response()->json(
+                 [
+                     'status' => 2,
+                     'message' => $response['message'],
+                 ], 200);
+         }
+         // account delete,suspend and wiating for approved
+
         try {
 
             $data = WebsiteConfig::find(1);
-             if ($data) {
+            if ($data) {
                 return response()->json(
                     [
                         'data' => $data,
@@ -569,50 +722,52 @@ class AccountController extends Controller
                     ], 200);
             }
 
-            } catch (Exception $ex) {
-                return response()->json(
-                    ['success' => 0, 'message' => $ex->getMessage()], 401
-                );
-            }
-     }
-
-
-
-     public function myPoints()
-     {
-            try {
-
-                $id = Auth::user()->id;
-                $total_point = get_user_point($id);
-                $query = Wallet::where("status",0)->where("user_id",$id);
-                $total = $query->count();
-                $data = $query->paginate(10);
-
-                if($data)
-                {
-                    $result = MyPointResource::collection($data);
-                    return response()->json(
-                        [
-                            'data' => $result,
-                            'total' => $total,
-                            'total_point' => $total_point,
-                            'status' => 1,
-                            'message' => __('message.Data get successfully.'),
-                        ], 200);
-                }
-
-
-
-            } catch (Exception $ex) {
-                return response()->json(
-                    ['success' => 0, 'message' => $ex->getMessage()], 401
-                );
-            }
+        } catch (Exception $ex) {
+            return response()->json(
+                ['success' => 0, 'message' => $ex->getMessage()], 401
+            );
+        }
     }
 
+    public function myPoints()
+    {
 
+         // account delete,suspend and wiating for approved
+         $response = checkUserStatus(Auth::user()->id);
+         if ($response['status'] == 1) {
+             return response()->json(
+                 [
+                     'status' => 2,
+                     'message' => $response['message'],
+                 ], 200);
+         }
+         // account delete,suspend and wiating for approved
 
+        try {
 
+            $id = Auth::user()->id;
+            $total_point = get_user_point($id);
+            $query = Wallet::where("status", 0)->where("user_id", $id);
+            $total = $query->count();
+            $data = $query->paginate(10);
 
+            if ($data) {
+                $result = MyPointResource::collection($data);
+                return response()->json(
+                    [
+                        'data' => $result,
+                        'total' => $total,
+                        'total_point' => $total_point,
+                        'status' => 1,
+                        'message' => __('message.Data get successfully.'),
+                    ], 200);
+            }
+
+        } catch (Exception $ex) {
+            return response()->json(
+                ['success' => 0, 'message' => $ex->getMessage()], 401
+            );
+        }
+    }
 
 }

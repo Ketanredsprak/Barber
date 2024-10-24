@@ -47,19 +47,23 @@ class BarberController extends Controller
                         <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">';
 
                     $encrypted_Id = Crypt::encryptString($row->id);
-                    if ($row->is_approved == 1) {
-                        $btn = $btn . '<a    href="' . route('barber.approved', $row->id) . '" title="' . __('labels.Approved') . '" class="dropdown-item status-change" data-url="' . route('barber.approved', $row->id) . '">' . __('labels.Approved') . '</a>';
-                    } else if ($row->is_approved == 2) {
-                        $btn = $btn . '<a    href="' . route('barber.suspend', $row->id) . '" title="' . __('labels.Suspend') . '" class="dropdown-item status-change" data-url="' . route('barber.suspend', $row->id) . '">' . __('labels.Suspend') . '</a>';
-                    } else {
-                        $btn = $btn . '<a    href="' . route('barber.approved', $row->id) . '" title="' . __('labels.Approved') . '" class="dropdown-item status-change" data-url="' . route('barber.approved', $row->id) . '">' . __('labels.Approved') . '</a>';
+
+                    if (auth()->user()->can('barber-status')) {
+                        if ($row->is_approved == 1) {
+                            $btn = $btn . '<a    href="' . route('barber.approved', $row->id) . '" title="' . __('labels.Approved') . '" class="dropdown-item status-change" data-url="' . route('barber.approved', $row->id) . '">' . __('labels.Approved') . '</a>';
+                        } else if ($row->is_approved == 2) {
+                            $btn = $btn . '<a    href="' . route('barber.suspend', $row->id) . '" title="' . __('labels.Suspend') . '" class="dropdown-item status-change" data-url="' . route('barber.suspend', $row->id) . '">' . __('labels.Suspend') . '</a>';
+                        } else {
+                            $btn = $btn . '<a    href="' . route('barber.approved', $row->id) . '" title="' . __('labels.Approved') . '" class="dropdown-item status-change" data-url="' . route('barber.approved', $row->id) . '">' . __('labels.Approved') . '</a>';
+                        }
                     }
 
-
-                    $btn = $btn . '<a href="" data-url="' . route('barber.destroy', $row->id) . '" class="dropdown-item destroy-data" title="' . __('labels.Delete') . '">' . __('labels.Delete') . '</a>';
-
-                    $btn = $btn . '<a href="' . route('barber.show', $encrypted_Id) . '"  class="dropdown-item show-data" title="' . __('labels.View') . '">' . __('labels.View') . '</a>';
-
+                    if (auth()->user()->can('barber-delete')) {
+                        $btn = $btn . '<a href="" data-url="' . route('barber.destroy', $row->id) . '" class="dropdown-item destroy-data" title="' . __('labels.Delete') . '">' . __('labels.Delete') . '</a>';
+                    }
+                    if (auth()->user()->can('barber-show')) {
+                        $btn = $btn . '<a href="' . route('barber.show', $encrypted_Id) . '"  class="dropdown-item show-data" title="' . __('labels.View') . '">' . __('labels.View') . '</a>';
+                    }
                     $btn = $btn . '</div>
                       </div>
                     </div>';

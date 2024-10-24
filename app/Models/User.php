@@ -25,6 +25,7 @@ class User extends Authenticatable
         'referral_code',
         'submit_referral_code',
         'email',
+        'google_id',
         'profile_image',
         'country_code',
         'otp',
@@ -48,11 +49,15 @@ class User extends Authenticatable
         'register_type',
         'register_method',
         'is_approved',
+        'is_verify_otp',
         'password',
         'token',
         'fcm_token',
+        'device_type',
         'notification_status',
         'remember_token',
+        'provider',
+        'provider_id',
         'created_at',
         'updated_ats',
         'is_delete',
@@ -105,6 +110,10 @@ class User extends Authenticatable
     public function barberRatings()
     {
         return $this->hasMany(BarberRating::class, 'barber_id');
+    }
+
+    public function barber_images(){
+        return $this->hasMany(UserImage::class, 'user_id', 'id');
     }
 
 

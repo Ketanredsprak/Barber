@@ -1,6 +1,9 @@
 <?php
 
+use Barryvdh\DomPDF\ServiceProvider;
 use Illuminate\Support\Facades\Facade;
+use Laravel\Socialite\Facades\Socialite;
+use Laravel\Socialite\SocialiteServiceProvider;
 use Yajra\DataTables\DataTablesServiceProvider;
 
 return [
@@ -186,6 +189,8 @@ return [
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
         DataTablesServiceProvider::class,
+        SocialiteServiceProvider::class,
+
 
         /*
          * Package Service Providers...
@@ -199,6 +204,8 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        ServiceProvider::class,
+
 
     ],
 
@@ -214,6 +221,7 @@ return [
     */
 
     'aliases' => Facade::defaultAliases()->merge([
+        'Socialite' => Socialite::class,
         // 'ExampleClass' => App\Example\ExampleClass::class,
     ])->toArray(),
 

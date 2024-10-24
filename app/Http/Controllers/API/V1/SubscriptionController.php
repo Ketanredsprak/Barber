@@ -6,6 +6,7 @@ use App\Models\Subscription;
 use Illuminate\Http\Request;
 use App\Models\UserSubscription;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\Api\SubscriptionResource;
 
 class SubscriptionController extends Controller
@@ -13,6 +14,18 @@ class SubscriptionController extends Controller
     //
     public function getAllSubscriptions(Request $request)
     {
+
+         // account delete,suspend and wiating for approved
+         $response = checkUserStatus(Auth::user()->id);
+         if ($response['status'] == 1) {
+             return response()->json(
+                 [
+                     'status' => 2,
+                     'message' => $response['message'],
+                 ], 200);
+         }
+         // account delete,suspend and wiating for approved
+
         $validated['user_type'] = "required";
 
         $customMessages = [
@@ -53,5 +66,46 @@ class SubscriptionController extends Controller
             );
         }
     }
+
+
+
+
+
+    public function updateSubscription($id)
+    {
+
+        try {
+
+            $user_subscription = setUserPermissionBaseOnSubscription(Auth::user()->id, $id);
+            if($user_subscription == "success")
+            {
+
+                return response()->json(
+                       [
+                           'status' => 1,
+                           'message' => __('message.Subscription update successfully'),
+                       ], 200);
+            }
+            else
+            {
+                return response()->json(
+                    [
+                        'status' => 0,
+                        'message' => __('message.Somthing went wrong'),
+                    ], 200);
+            }
+
+
+        } catch (Exception $ex) {
+            return response()->json(
+                ['success' => 0, 'message' => $ex->getMessage()], 401
+            );
+        }
+
+    }
+
+
+
+
 
 }

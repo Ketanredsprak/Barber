@@ -29,7 +29,10 @@ class BarberBookingDetailResource extends JsonResource
             'status' => $this->status,
             'total_price' => $this->total_price,
             'booking_type' => $this->booking_type,
+            'direct_accept' => $this->direct_accept,
             'booking_date_time' => date('M-d-Y', strtotime($this->booking_date)) .' - '. date('h:i A', strtotime($this->start_time)) ?? "",
+            'waitlist' => $this->waitlist ?? "",
+            'barber_proposal' => $this->barber_proposal ?? "",
         ];
     }
 }

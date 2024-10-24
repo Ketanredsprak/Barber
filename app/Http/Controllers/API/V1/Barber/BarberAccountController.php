@@ -2,19 +2,22 @@
 
 namespace App\Http\Controllers\API\V1\Barber;
 
-use Carbon\Carbon;
-use App\Models\User;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\Api\Barber\BarberAccount;
+use App\Http\Resources\Api\Barber\BarberBookingDashboardResource;
 use App\Models\Booking;
 use App\Models\LoyalClient;
-use Illuminate\Http\Request;
+use App\Models\Notification;
+use App\Models\PointSystem;
+use App\Models\User;
+use App\Models\UserImage;
 use App\Models\UserSubscription;
-use Illuminate\Support\Facades\URL;
-use App\Http\Controllers\Controller;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
-use App\Http\Resources\Api\Barber\BarberAccount;
-use App\Http\Resources\Api\Barber\BarberBookingDashboardResource;
+use Illuminate\Support\Facades\URL;
 
 class BarberAccountController extends Controller
 {
@@ -22,10 +25,10 @@ class BarberAccountController extends Controller
     public function barberRegister(Request $request)
     {
         $validated = [];
-        $validated['first_name'] = "required|min:4";
-        $validated['last_name'] = "required|min:4";
+        $validated['first_name'] = "required";
+        // $validated['last_name'] = "required";
         $validated['country_code'] = "required|numeric";
-        $validated['phone'] = "required|min:9|max:11|unique:users,phone";
+        $validated['phone'] = "required|min:9|max:9|unique:users,phone";
         $validated['gender'] = "required";
         $validated['email'] = "required|email|unique:users,email";
         $validated['nationality'] = "required";
@@ -50,9 +53,7 @@ class BarberAccountController extends Controller
 
         $customMessages = [
             'first_name.required' => __('error.The first name field is required.'),
-            'first_name.min' => __('error.The first name must be at least 4 characters.'),
-            'last_name.required' => __('error.The last name field is required.'),
-            'last_name.min' => __('error.The last name must be at least 4 characters.'),
+            // 'last_name.required' => __('error.The last name field is required.'),
             'country_code.required' => __('error.The country code field is required.'),
             'country_code.numeric' => __('error.The country code must be a number.'),
             'phone.required' => __('error.The phone number field is required.'),
@@ -89,6 +90,7 @@ class BarberAccountController extends Controller
             'confirm_password.same' => __('error.The confirm password must match the password.'),
             'confirm_password.required' => __('error.The confirm password field is required.'),
             'fcm_token.required' => __('error.The fcm token field is required.'),
+            'device_type.required' => __('error.The device type field is required.'),
         ];
 
         $request->validate($validated, $customMessages);
@@ -121,7 +123,7 @@ class BarberAccountController extends Controller
 
             $user = User::create([
                 'first_name' => $request->first_name,
-                'last_name' => $request->last_name,
+                'last_name' => $request->last_name ?? "",
                 'gender' => $request->gender,
                 'country_code' => $request->country_code,
                 'phone' => $request->phone,
@@ -143,14 +145,36 @@ class BarberAccountController extends Controller
                 'latitude' => $request->latitude,
                 'longitude' => $request->longitude,
                 'user_type' => 3,
-                'is_approved' => "1",
+                'is_approved' => "2",
                 'register_type' => 1,
                 'register_method' => 1,
                 'password' => Hash::make($request->password),
                 'referral_code' => $referral_code ?? '',
                 'fcm_token' => $request->fcm_token ?? '',
                 'token' => '',
+                'device_type' => $request->device_type,
             ]);
+
+            if ($request->has('barber_images')) {
+                foreach ($request->barber_images as $image) {
+                    if ($image) {
+                        // Generate a unique name for the image
+                        $uploaded = rand(000000, 9999999) . time() . '_profile_image.' . $image->getClientOriginalExtension();
+
+                        // Define the destination path
+                        $destinationPath = public_path('/barber_images');
+
+                        // Move the uploaded image to the destination folder
+                        $image->move($destinationPath, $uploaded);
+
+                        $user = UserImage::create([
+                            'user_id' => $user->id,
+                            'image' => $uploaded,
+                        ]);
+                    }
+                }
+            }
+
 
             $subscription_id = 5;
 
@@ -196,13 +220,25 @@ class BarberAccountController extends Controller
 
     public function barberEditProfile(Request $request)
     {
+
+        // account delete,suspend and wiating for approved
+        $response = checkUserStatus(Auth::user()->id);
+        if ($response['status'] == 1) {
+            return response()->json(
+                [
+                    'status' => 2,
+                    'message' => $response['message'],
+                ], 200);
+        }
+        // account delete,suspend and wiating for approved
+
         $id = Auth::user()->id;
         $validated = [];
         $validated['first_name'] = "required|min:4";
-        $validated['last_name'] = "required|min:4";
-        $validated['email'] = "required|email|unique:users,email," . $id;
+        // $validated['last_name'] = "required|min:4";
+        $validated['email'] = "nullable|email|unique:users,email," . $id;
         $validated['country_code'] = "required|numeric";
-        $validated['phone'] = "required|min:9|max:11|unique:users,phone," . $id;
+        $validated['phone'] = "required|min:9|max:9|unique:users,phone," . $id;
         $validated['gender'] = "required";
         // $validated['profile_image'] = "required|file|mimes:jpeg,png,jpg";
         $validated['salon_name'] = "required";
@@ -224,13 +260,13 @@ class BarberAccountController extends Controller
         $customMessages = [
             'first_name.required' => __('error.The first name field is required.'),
             'first_name.min' => __('error.The first name must be at least 4 characters.'),
-            'last_name.required' => __('error.The last name field is required.'),
-            'last_name.min' => __('error.The last name must be at least 4 characters.'),
+            // 'last_name.required' => __('error.The last name field is required.'),
+            // 'last_name.min' => __('error.The last name must be at least 4 characters.'),
             'country_code.required' => __('error.The country code field is required.'),
             'country_code.numeric' => __('error.The country code must be a number.'),
             'phone.required' => __('error.The phone number field is required.'),
             'phone.min' => __('error.The phone number must be at least 9 characters.'),
-            'phone.max' => __('error.The phone number may not be greater than 11 characters.'),
+            'phone.max' => __('error.The phone number may not be greater than 9 characters.'),
             'phone.unique' => __('error.The phone number has already been taken.'),
             'gender.required' => __('error.The gender field is required.'),
             'email.required' => __('error.The email field is required.'),
@@ -266,10 +302,9 @@ class BarberAccountController extends Controller
 
             $auth = User::find($id);
             $auth->first_name = $request->first_name;
-            $auth->last_name = $request->last_name;
+            $auth->last_name = $request->last_name ?? "";
             $auth->gender = $request->gender;
-            $auth->gender = $request->gender;
-            $auth->email = $request->email;
+            $auth->email = $request->email ?? "";
             $auth->country_code = $request->country_code;
             $auth->phone = $request->phone;
             $auth->salon_name = $request->salon_name;
@@ -323,6 +358,27 @@ class BarberAccountController extends Controller
             }
 
             $auth->save();
+
+            if ($request->has('barber_images')) {
+                foreach ($request->barber_images as $image) {
+                    if ($image) {
+                        // Generate a unique name for the image
+                        $uploaded = rand(000000, 9999999) . time() . '_profile_image.' . $image->getClientOriginalExtension();
+
+                        // Define the destination path
+                        $destinationPath = public_path('/barber_images');
+
+                        // Move the uploaded image to the destination folder
+                        $image->move($destinationPath, $uploaded);
+
+                        $user = UserImage::create([
+                            'user_id' => Auth::user()->id,
+                            'image' => $uploaded,
+                        ]);
+                    }
+                }
+            }
+
             if (!empty($auth)) {
                 $data = new BarberAccount($auth);
                 return response()->json(
@@ -341,6 +397,7 @@ class BarberAccountController extends Controller
 
     public function barberDashboard(Request $request)
     {
+
         {
             $language_code = $request->header('language');
             $subscript_name = "subscription_name_" . $language_code;
@@ -349,7 +406,22 @@ class BarberAccountController extends Controller
             try {
                 $user = "";
                 if (auth('api')->check()) {
+
                     $user = auth('api')->user();
+
+                    // account delete,suspend and wiating for approved
+                    $response = checkUserStatus($user->id);
+                    if ($response['status'] == 1) {
+                        return response()->json(
+                            [
+                                'status' => 2,
+                                'message' => $response['message'],
+                            ], 200);
+                    }
+                    // account delete,suspend and wiating for approved
+
+                    $user = User::with('barber_rating')->find($user->id);
+                    $user['average_rating'] = $user->averageRating();
                 }
 
                 if (!empty($user)) {
@@ -364,10 +436,13 @@ class BarberAccountController extends Controller
                         $data['barber_detail']['barber_current_subscription'] = __('message.Upgrad Subscription');
 
                     }
+                    $data['barber_detail']['rating'] = !empty($user['average_rating']) ? number_format($user['average_rating'], 1) : "0";
+
                 } else {
                     $data['barber_detail']['barber_name'] = __('message.Upgrad Subscription');
                     $data['barber_detail']['barber_profile_url'] = URL::to('/public') . '/profile_image/user.png';
                     $data['barber_detail']['barber_current_subscription'] = __('message.Guest User');
+                    $data['barber_detail']['rating'] = 0;
 
                 }
 
@@ -377,16 +452,18 @@ class BarberAccountController extends Controller
                 //barber uplcoming booking
                 // dd($user->id);
 
+                $notification_count = Notification::where('user_id', $user->id)->where('is_read', 0)->count();
+
                 $total_booking = Booking::with('customer_detail')
                     ->where('barber_id', $user->id)
                     ->where('booking_type', 'booking')
-                    ->whereIn('status', ['accept','finished'])->count();
+                    ->whereIn('status', ['accept', 'finished'])->count();
 
                 // Start building the query
-                $query = Booking::with('customer_detail','booking_service_detailss')
+                $query = Booking::with('customer_detail', 'booking_service_detailss')
                     ->where('barber_id', $user->id)
                     ->where('booking_type', 'booking')
-                    ->where('status', 'accept')
+                    ->whereIn('status', ['accept', 'finished'])
                     ->orderBy('booking_date', 'ASC')->orderBy('start_time', 'ASC');
 
                 if ($request->search) {
@@ -410,22 +487,47 @@ class BarberAccountController extends Controller
                 }
 
                 $total_upcoming_booking = $query->count();
-                $bookings = $query->get();
+                $bookings_list = $query->get();
 
                 // total_points
                 $total_points = get_user_point($user->id);
 
                 // total_loyal_client
-                $total_loyal_client = LoyalClient::where('barber_id',$user->id)->count();
+                $total_loyal_client = LoyalClient::where('barber_id', $user->id)->count();
 
+                $currentDate = Carbon::now();
+                // Calculate the date 6 months ago
+                $Months = $currentDate->subMonths(12);
 
+                // barber booking chart
+                $bookings = Booking::whereIn('status', ["accept", "finished"])->where('barber_id', $user->id)->where('created_at', '>=', $Months)
+                    ->selectRaw('COUNT(*) as count, MONTH(created_at) as month')
+                    ->groupBy('month')
+                    ->get();
+
+                // Prepare an array to store the counts for each month
+                $counts = [];
+                foreach ($bookings as $booking) {
+                    // Store the count for each month in the array
+                    $counts[$booking->month] = $booking->count;
+                }
+
+                // Fill in zero counts for missing months
+                for ($i = 1; $i <= 12; $i++) {
+                    if (!isset($counts[$i])) {
+                        $counts[$i] = 0;
+                    }
+                }
+                $data['monthly_bookings'] = $counts ?? [];
 
                 // get nearet barber
+                $data['unread_notification'] = $notification_count ?? 0;
                 $data['total_points'] = $total_points ?? 0;
-                $data['total_loyal_client'] = $total_loyal_client  ?? 0;
+                $data['total_loyal_client'] = $total_loyal_client ?? 0;
                 $data['total_upcoming_booking'] = $total_upcoming_booking;
                 $data['total_booking'] = $total_booking;
-                $data['bookings'] = BarberBookingDashboardResource::collection($bookings);
+                $data['bookings'] = BarberBookingDashboardResource::collection($bookings_list);
+                $data['point_system'] = PointSystem::select('per_booking_points', 'per_active_referral_points', 'how_many_point_equal_sr')->first();
 
                 return response()->json(
                     [
@@ -440,6 +542,48 @@ class BarberAccountController extends Controller
                 );
             }
 
+        }
+    }
+
+    public function removeImage($id)
+    {
+
+        // account delete,suspend and wiating for approved
+        $response = checkUserStatus(Auth::user()->id);
+        if ($response['status'] == 1) {
+            return response()->json(
+                [
+                    'status' => 2,
+                    'message' => $response['message'],
+                ], 200);
+        }
+        // account delete,suspend and wiating for approved
+
+        try {
+
+            // Find the user image record
+            $userImage = UserImage::find($id);
+            $userImage->is_delete = 1;
+            $userImage->update();
+
+            if ($userImage) {
+                return response()->json(
+                    [
+                        'status' => 1,
+                        'message' => __('message.Image Deleted Successfully.'),
+                    ], 200);
+            } else {
+                return response()->json(
+                    [
+                        'status' => 0,
+                        'message' => __('message.Record not found.'),
+                    ], 400);
+            }
+
+        } catch (Exception $ex) {
+            return response()->json(
+                ['success' => false, 'message' => $ex->getMessage()]
+            );
         }
     }
 

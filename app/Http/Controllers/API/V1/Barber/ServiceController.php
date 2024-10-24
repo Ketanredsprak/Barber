@@ -14,8 +14,113 @@ class ServiceController extends Controller
 {
     //
 
+
+    public function getAllSubServices(Request $request)
+    {
+
+         // account delete,suspend and wiating for approved
+         $response = checkUserStatus(Auth::user()->id);
+         if ($response['status'] == 1) {
+             return response()->json(
+                 [
+                     'status' => 2,
+                     'message' => $response['message'],
+                 ], 200);
+         }
+         // account delete,suspend and wiating for approved
+
+        try {
+            $id = Auth::user()->id;
+            $language_code = $request->header('language');
+
+            $service_name = "service_name_".$language_code;
+            $data = Services::select('id', $service_name, 'service_image')->whereNotNull('parent_id')->where('parent_id', '!=', 0)->paginate(10);
+              foreach($data  as $service)
+                {
+                    $service['service_name'] = $service->$service_name ?? "";
+                    // unset($service['service_image']);
+                    unset($service[$service_name]);
+                    $service['service_image'] = URL::to('/public') . '/service_image/' .$service['service_image'] ?? "";
+                }
+
+              return response()->json(
+                [
+                    'data' => $data,
+                    'message' => __('message.Data get successfully.'),
+                    'status' => 1,
+                ]
+                , 200);
+
+
+        } catch (Exception $ex) {
+            return response()->json(
+                ['success' => 0, 'message' => $ex->getMessage()], 401
+            );
+        }
+
+
+    }
+    public function getAllSubServicesWithoutPagination(Request $request)
+    {
+
+         // account delete,suspend and wiating for approved
+         $response = checkUserStatus(Auth::user()->id);
+         if ($response['status'] == 1) {
+             return response()->json(
+                 [
+                     'status' => 2,
+                     'message' => $response['message'],
+                 ], 200);
+         }
+         // account delete,suspend and wiating for approved
+
+        try {
+            $id = Auth::user()->id;
+            $language_code = $request->header('language');
+
+            $service_name = "service_name_".$language_code;
+            $data = Services::select('id', $service_name, 'service_image')->whereNotNull('parent_id')->where('parent_id', '!=', 0)->get();
+              foreach($data  as $service)
+                {
+                    $service['service_name'] = $service->$service_name ?? "";
+                    // unset($service['service_image']);
+                    unset($service[$service_name]);
+                    $service['service_image'] = URL::to('/public') . '/service_image/' .$service['service_image'] ?? "";
+                }
+
+              return response()->json(
+                [
+                    'data' => $data,
+                    'message' => __('message.Data get successfully.'),
+                    'status' => 1,
+                ]
+                , 200);
+
+
+        } catch (Exception $ex) {
+            return response()->json(
+                ['success' => 0, 'message' => $ex->getMessage()], 401
+            );
+        }
+
+
+    }
+
+
     public function getAllServices(Request $request)
     {
+
+         // account delete,suspend and wiating for approved
+         $response = checkUserStatus(Auth::user()->id);
+         if ($response['status'] == 1) {
+             return response()->json(
+                 [
+                     'status' => 2,
+                     'message' => $response['message'],
+                 ], 200);
+         }
+         // account delete,suspend and wiating for approved
+
         try {
             $id = Auth::user()->id;
             $language_code = $request->header('language');
@@ -52,7 +157,7 @@ class ServiceController extends Controller
               return response()->json(
                 [
                     'data' => $data,
-                    'message' => __('message.Data get Succesfully.'),
+                    'message' => __('message.Data get successfully.'),
                     'status' => 1,
                 ]
                 , 200);
@@ -73,6 +178,18 @@ class ServiceController extends Controller
     public function addAndUpdateServices(Request $request)
     {
 
+          // account delete,suspend and wiating for approved
+          $response = checkUserStatus(Auth::user()->id);
+          if ($response['status'] == 1) {
+              return response()->json(
+                  [
+                      'status' => 2,
+                      'message' => $response['message'],
+                  ], 200);
+          }
+          // account delete,suspend and wiating for approved
+
+
         $validated['parent_service_ids'] = "required";
         $validated['sub_service_ids'] = "required|array";
         $validated['prices'] = "required|array";
@@ -92,6 +209,18 @@ class ServiceController extends Controller
         $request->validate($validated, $customMessages);
 
         try {
+
+             // account delete,suspend and wiating for approved
+           $response = checkUserStatus(Auth::user()->id);
+           if ($response['status'] == 1) {
+               return response()->json(
+                   [
+                       'status' => 2,
+                       'message' => $response['message'],
+                   ], 200);
+           }
+           // account delete,suspend and wiating for approved
+
 
             if($request->parent_service_ids) {
 
@@ -142,6 +271,17 @@ class ServiceController extends Controller
 
     public function getBarberProvideServices(Request $request)
     {
+         // account delete,suspend and wiating for approved
+         $response = checkUserStatus(Auth::user()->id);
+         if ($response['status'] == 1) {
+             return response()->json(
+                 [
+                     'status' => 2,
+                     'message' => $response['message'],
+                 ], 200);
+         }
+         // account delete,suspend and wiating for approved
+
         try {
             $data_barber_services = BarberServices::where('barber_id', Auth::user()->id)->get();
             // Extract service_id into an array
@@ -187,7 +327,7 @@ class ServiceController extends Controller
                           [
                               'data' => $data,
                               'status' => 1,
-                              'message' => __('message.Data get Succesfully.'),
+                              'message' => __('message.Data get successfully.'),
                           ], 200);
                   }
 
@@ -202,6 +342,18 @@ class ServiceController extends Controller
 
     public function deleteServiceFromBarber($id)
     {
+
+         // account delete,suspend and wiating for approved
+         $response = checkUserStatus(Auth::user()->id);
+         if ($response['status'] == 1) {
+             return response()->json(
+                 [
+                     'status' => 2,
+                     'message' => $response['message'],
+                 ], 200);
+         }
+         // account delete,suspend and wiating for approved
+
         try {
                   $user = User::find(Auth::user()->id);
                   $data = BarberServices::where('service_id',$id)->where('barber_id',$user->id)->delete();

@@ -1,26 +1,31 @@
 @extends('Admin.layouts.app')
 @section('content')
+    @php
+        $locale = Illuminate\Support\Facades\App::getLocale();
+        $name = 'name_' . $locale;
+    @endphp
 
-@php
-   $locale = Illuminate\Support\Facades\App::getLocale();
-    $name = "name_".$locale;
-@endphp
-
-<div class="container-fluid">
+    <div class="container-fluid">
         <div class="page-title">
             <div class="row">
                 <div class="col-6">
                     <h4>{{ __('labels.System Notifications') }}</h4>
 
 
-                  
-                    
+
+
                 </div>
                 <div class="col-6">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><button class="btn btn-sm btn-primary" type="button" data-bs-toggle="modal"
-                                data-bs-target="#createservicemodel"><i class="fa fa-plus" aria-hidden="true"></i>
-                                {{ __('labels.Add New') }} </button></li>
+
+                        @if (auth()->user()->can('notification-create'))
+                            <li class="breadcrumb-item"><button class="btn btn-sm btn-primary" type="button"
+                                    data-bs-toggle="modal" data-bs-target="#createservicemodel"><i class="fa fa-plus"
+                                        aria-hidden="true"></i>
+                                    {{ __('labels.Add New') }} </button></li>
+                        @endif
+
+
                     </ol>
                 </div>
             </div>
@@ -41,6 +46,7 @@
                                         <th>{{ __('labels.Notification Type') }}</th>
                                         <th>{{ __('labels.Title') }}</th>
                                         <th>{{ __('labels.Description') }}</th>
+                                        <th>{{ __('labels.Created At') }}</th>
                                         <!-- <th>{{ __('labels.Action') }}</th> -->
                                     </tr>
                                 </thead>
@@ -69,7 +75,7 @@
 
 
     <!-- edit service model --->
-     <div class="modal fade" id="editservicemodel" tabindex="-1" role="dialog" aria-labelledby="editservicemodel"
+    <div class="modal fade" id="editservicemodel" tabindex="-1" role="dialog" aria-labelledby="editservicemodel"
         aria-hidden="true">
     </div>
     <!-- edit service model end --->
@@ -82,26 +88,26 @@
                 processing: true,
                 serverSide: true,
                 language: {
-                    "sProcessing":    "{{ __('labels.Processing') }}...",
-                    "sLengthMenu":    "{{ __('labels.Show') }} _MENU_ {{ __('labels.Entries') }}",
-                    "sZeroRecords":   "{{ __('labels.No matching records found') }}",
-                    "sEmptyTable":    "{{ __('labels.No records found') }}",
-                    "sInfo":          "{{ __('labels.Showing') }} _START_ {{ __('labels.To') }} _END_ {{ __('labels.Of')}} _TOTAL_ {{ __('labels.Entries') }}",
-                    "sInfoEmpty":     "{{ __('labels.Showing') }} 0 {{ __('labels.To') }} 0 {{ __('labels.Of')}} 0 {{ __('labels.Entries') }}",
-                    "sInfoFiltered":  "({{ __('labels.Filtered')}} {{ __('labels.Of')}} _MAX_ {{ __('labels.Entries') }})",
-                    "sInfoPostFix":   "",
-                    "sSearch":        "{{ __('labels.Search') }}",
-                    "sUrl":           "",
-                    "sInfoThousands":  ",",
+                    "sProcessing": "{{ __('labels.Processing') }}...",
+                    "sLengthMenu": "{{ __('labels.Show') }} _MENU_ {{ __('labels.Entries') }}",
+                    "sZeroRecords": "{{ __('labels.No matching records found') }}",
+                    "sEmptyTable": "{{ __('labels.No records found') }}",
+                    "sInfo": "{{ __('labels.Showing') }} _START_ {{ __('labels.To') }} _END_ {{ __('labels.Of') }} _TOTAL_ {{ __('labels.Entries') }}",
+                    "sInfoEmpty": "{{ __('labels.Showing') }} 0 {{ __('labels.To') }} 0 {{ __('labels.Of') }} 0 {{ __('labels.Entries') }}",
+                    "sInfoFiltered": "({{ __('labels.Filtered') }} {{ __('labels.Of') }} _MAX_ {{ __('labels.Entries') }})",
+                    "sInfoPostFix": "",
+                    "sSearch": "{{ __('labels.Search') }}",
+                    "sUrl": "",
+                    "sInfoThousands": ",",
                     "sLoadingRecords": "{{ __('labels.Processing') }}...",
                     "oPaginate": {
-                        "sFirst":    "{{ __('labels.First') }}",
-                        "sLast":    "{{ __('labels.Last') }}",
-                        "sNext":    "{{ __('labels.Next') }}",
+                        "sFirst": "{{ __('labels.First') }}",
+                        "sLast": "{{ __('labels.Last') }}",
+                        "sNext": "{{ __('labels.Next') }}",
                         "sPrevious": "{{ __('labels.Previous') }}"
                     },
                     "oAria": {
-                        "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
+                        "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
                         "sSortDescending": ": Activar para ordenar la columna de manera descendente"
                     }
                 },
@@ -110,16 +116,18 @@
                     processing: '<i></i><span class="text-primary spinner-border"></span> '
                 },
                 ajax: "{{ route('SystemNotification.index') }}",
-                columns: [
-                    {
+                order: [1],
+                columns: [{
                         data: 'DT_RowIndex',
                         name: 'DT_RowIndex',
+                        orderable: false,
+                        searchable: false
                     },
                     {
                         data: 'usertype',
                         name: 'usertype'
                     },
-               
+
                     {
                         data: 'notificationtype',
                         name: 'notificationtype'
@@ -132,6 +140,10 @@
                     {
                         data: 'description',
                         name: 'description'
+                    },
+                    {
+                        data: 'created_at',
+                        name: 'created_at'
                     },
 
                     // {
@@ -166,50 +178,43 @@
 
 
             //add service submit
-              $("#service-frm").submit(function(event) {
-                  event.preventDefault();
-                  var frm = this;
-                  create_record(frm, table);
-              });
+            $("#service-frm").submit(function(event) {
+                event.preventDefault();
+                var frm = this;
+                create_record(frm, table);
+            });
             //add service submit end
 
 
             //get service data for edit page
-              $(".service-data").on('click', '.edit-data', function(e) {
-                  $.ajax({
-                      method: "GET",
-                      url: $(this).data('url'),
-                      success: function(response) {
-                          $('#editservicemodel').html(response);
-                          $('#editservicemodel').modal('show');
-                      },
-                      error: function(response) {
-                          handleError(response);
-                      },
-                  });
-              });
+            $(".service-data").on('click', '.edit-data', function(e) {
+                $.ajax({
+                    method: "GET",
+                    url: $(this).data('url'),
+                    success: function(response) {
+                        $('#editservicemodel').html(response);
+                        $('#editservicemodel').modal('show');
+                    },
+                    error: function(response) {
+                        handleError(response);
+                    },
+                });
+            });
             //get service data for edit page end
 
 
             //edit service
-             $(document).on('submit', '#service-edit-form', function(e) {
-                 e.preventDefault();
-                 var frm = this;
-                 var url = $(this).attr('action');
-                 var formData = new FormData(frm);
-                 formData.append("_method", 'PUT');
-                 var model_name = "#editservicemodel";
-                 edit_record(frm, url, formData, model_name, table);
+            $(document).on('submit', '#service-edit-form', function(e) {
+                e.preventDefault();
+                var frm = this;
+                var url = $(this).attr('action');
+                var formData = new FormData(frm);
+                formData.append("_method", 'PUT');
+                var model_name = "#editservicemodel";
+                edit_record(frm, url, formData, model_name, table);
             });
 
 
         });
-
-
-
-
-
-
-        </script>
-
+    </script>
 @endsection

@@ -9,9 +9,11 @@
                 </div>
                 <div class="col-6">
                     <ol class="breadcrumb">
+                        @if (auth()->user()->can('testimonial-create'))
                         <li class="breadcrumb-item"><button class="btn btn-sm btn-primary" type="button" data-bs-toggle="modal"
                                 data-bs-target="#createtestimonialmodel"><i class="fa fa-plus" aria-hidden="true"></i>
                                 {{ __('labels.Add New') }} </button></li>
+                        @endif
                     </ol>
                 </div>
             </div>
@@ -101,10 +103,12 @@
                     processing: '<i></i><span class="text-primary spinner-border"></span> '
                 },
                 ajax: "{{ route('testimonial.index') }}",
-                columns: [
-                    {
+                order: [1],
+                columns: [{
                         data: 'DT_RowIndex',
                         name: 'DT_RowIndex',
+                        orderable: false,
+                        searchable: false
                     },
                     {
                         data: 'image',

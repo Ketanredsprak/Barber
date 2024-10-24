@@ -23,16 +23,21 @@
                 <div class="post_info">
                     <h5><a href="{{ route('get-booking-page', $barber->encrypt_id) }}">{{ $barber->first_name }} - {{ $barber->last_name }}</a>
                     </h5>
-                    <h4 class="shop_name">{{ $barber->salon_name }}</h4>
+                    <h4 class="shop_name">{{ $barber->salon_name }} ({{ round($barber->distance, 2) }} KM)</h4>
                 </div>
             </div>
             <div class="bottom">
                 <ul class="list-unstyled">
-                    <li> <i class="fa fa-map-marker"></i> {{ $barber->location }} ({{ round($barber->distance,2)}} km)</span></li>
-                @if(!empty($barber->barber_service) && !empty($barber->barber_schedule))
+                    <li> <i class="fa fa-map-marker"></i>
+
+                       <span>
+                        {{ $barber->location }} </span>
+
+                        <span>({{ round($barber->distance,2)}} km)</span></li>
+                {{-- @if(!empty($barber->barber_service) && !empty($barber->barber_schedule)) --}}
                     <a class="btn btn-success" type="submit"
                         href="{{ route('get-booking-page', $barber->encrypt_id) }}">{{ __('labels.Book Now') }}</a>
-                @endif
+                {{-- @endif --}}
 
 
                 </ul>

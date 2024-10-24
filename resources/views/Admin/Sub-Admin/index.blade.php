@@ -8,9 +8,12 @@
                 </div>
                 <div class="col-6">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><button class="btn btn-sm btn-primary" type="button" data-bs-toggle="modal"
-                                data-bs-target="#createsubadminmodel"><i class="fa fa-plus" aria-hidden="true"></i>
-                                {{ __('labels.Add New') }} </button></li>
+                        @if (auth()->user()->can('subadmin-create'))
+                            <li class="breadcrumb-item"><button class="btn btn-sm btn-primary" type="button"
+                                    data-bs-toggle="modal" data-bs-target="#createsubadminmodel"><i class="fa fa-plus"
+                                        aria-hidden="true"></i>
+                                    {{ __('labels.Add New') }} </button></li>
+                        @endif
                     </ol>
                 </div>
             </div>
@@ -51,7 +54,7 @@
 
 
     <!-- create subadmin model --->
-     <div class="modal fade" id="createsubadminmodel" tabindex="-1" role="dialog" aria-labelledby="createsubadminmodel"
+    <div class="modal fade" id="createsubadminmodel" tabindex="-1" role="dialog" aria-labelledby="createsubadminmodel"
         aria-hidden="true">
         @include('Admin.Sub-Admin.create')
     </div>
@@ -72,26 +75,26 @@
                 processing: true,
                 serverSide: true,
                 language: {
-                    "sProcessing":    "{{ __('labels.Processing') }}...",
-                    "sLengthMenu":    "{{ __('labels.Show') }} _MENU_ {{ __('labels.Entries') }}",
-                    "sZeroRecords":   "{{ __('labels.No matching records found') }}",
-                    "sEmptyTable":    "{{ __('labels.No records found') }}",
-                    "sInfo":          "{{ __('labels.Showing') }} _START_ {{ __('labels.To') }} _END_ {{ __('labels.Of')}} _TOTAL_ {{ __('labels.Entries') }}",
-                    "sInfoEmpty":     "{{ __('labels.Showing') }} 0 {{ __('labels.To') }} 0 {{ __('labels.Of')}} 0 {{ __('labels.Entries') }}",
-                    "sInfoFiltered":  "({{ __('labels.Filtered')}} {{ __('labels.Of')}} _MAX_ {{ __('labels.Entries') }})",
-                    "sInfoPostFix":   "",
-                    "sSearch":        "{{ __('labels.Search') }}",
-                    "sUrl":           "",
-                    "sInfoThousands":  ",",
+                    "sProcessing": "{{ __('labels.Processing') }}...",
+                    "sLengthMenu": "{{ __('labels.Show') }} _MENU_ {{ __('labels.Entries') }}",
+                    "sZeroRecords": "{{ __('labels.No matching records found') }}",
+                    "sEmptyTable": "{{ __('labels.No records found') }}",
+                    "sInfo": "{{ __('labels.Showing') }} _START_ {{ __('labels.To') }} _END_ {{ __('labels.Of') }} _TOTAL_ {{ __('labels.Entries') }}",
+                    "sInfoEmpty": "{{ __('labels.Showing') }} 0 {{ __('labels.To') }} 0 {{ __('labels.Of') }} 0 {{ __('labels.Entries') }}",
+                    "sInfoFiltered": "({{ __('labels.Filtered') }} {{ __('labels.Of') }} _MAX_ {{ __('labels.Entries') }})",
+                    "sInfoPostFix": "",
+                    "sSearch": "{{ __('labels.Search') }}",
+                    "sUrl": "",
+                    "sInfoThousands": ",",
                     "sLoadingRecords": "{{ __('labels.Processing') }}...",
                     "oPaginate": {
-                        "sFirst":    "{{ __('labels.First') }}",
-                        "sLast":    "{{ __('labels.Last') }}",
-                        "sNext":    "{{ __('labels.Next') }}",
+                        "sFirst": "{{ __('labels.First') }}",
+                        "sLast": "{{ __('labels.Last') }}",
+                        "sNext": "{{ __('labels.Next') }}",
                         "sPrevious": "{{ __('labels.Previous') }}"
                     },
                     "oAria": {
-                        "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
+                        "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
                         "sSortDescending": ": Activar para ordenar la columna de manera descendente"
                     }
                 },
@@ -100,10 +103,12 @@
                     processing: '<i></i><span class="text-primary spinner-border"></span> '
                 },
                 ajax: "{{ route('subadmin.index') }}",
-                columns: [
-                    {
+                order: [1],
+                columns: [{
                         data: 'DT_RowIndex',
                         name: 'DT_RowIndex',
+                        orderable: false,
+                        searchable: false
                     },
                     {
                         data: 'user_details',
@@ -183,11 +188,8 @@
                 formData.append("_method", 'PUT');
                 var model_name = "#editsubadminmodel";
                 edit_record(frm, url, formData, model_name, table);
-           });
+            });
 
         });
-
-
-
     </script>
 @endsection

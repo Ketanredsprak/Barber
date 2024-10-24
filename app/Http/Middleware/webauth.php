@@ -21,6 +21,10 @@ class webauth
             return redirect('login'); // Redirect to login if not authenticated
         }
 
+
+        checkingUserAccount(Auth::user()->id);
+
+
         // Get the authenticated user's type
         $user_type = Auth::user()->user_type;
 

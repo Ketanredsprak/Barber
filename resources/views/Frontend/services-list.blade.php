@@ -50,13 +50,14 @@
                     </div>
                 @else
                     @foreach ($services as $service)
-                        <div class="col-sm-4">
+                        <div class="col-lg-4 col-sm-6">
                             <div class="explore_box">
                                 <img src="{{ static_asset('service_image/' . $service->service_image) }}" class="img-fluid"
                                     alt="explore">
                                 <div class="info">
-                                    <a href="{{ route('barber-list')}}">
-                                        <h4 class="text-center">({{ $service->parent->$service_name }}){{ $service->$service_name }}</h4>
+                                    <a href="{{ url('/barber-list') }}?service_id={{ $service->id }}">
+                                        {{-- <h4 class="text-center">({{ $service->parent->$service_name }}){{ $service->$service_name }}</h4> --}}
+                                        <h4 class="text-center">{{ $service->$service_name }}</h4>
                                     </a>
                                 </div>
                             </div>

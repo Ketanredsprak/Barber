@@ -8,16 +8,6 @@
         $name = 'page_name_' . $language;
     @endphp
 
-    <style>
-        .field-icon {
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            cursor: pointer;
-            color: #888;
-        }
-    </style>
     <section class="heading_sec"
         style="background-image: url({{ static_asset('frontend/assets/images/banner.png') }});background-position: center;background-repeat: no-repeat;background-size: cover;">
         <div class="container">
@@ -88,7 +78,7 @@
                                             </div>
 
                                             <div class="col-sm-12 text-center">
-                                                <button class="btn btn-success btn-block mb-3"
+                                                <button class="btn btn-light sign-in-btn"
                                                     type="submit">{{ __('labels.Sign In') }}</button>
                                                 <a href="{{ route('forgot-password') }}"
                                                     class="text-warning">{{ __('labels.Forgot Password?') }}</a>
@@ -99,21 +89,21 @@
 
                                             </div>
 
-                                            <div class="line"></div>
-                                            <div class="text">{{ __('labels.or') }}</div>
-                                            <div class="line"></div>
 
-                                            <div class="col-sm-12 text-center">
+                                            <div class="text devider"><span>{{ __('labels.or') }}</span></div>
+
+
+                                            <div class="col-sm-12 text-center login-btns-wrapper">
                                                 <div class="text-center py-3">
-                                                    <a href="#" target="_blank" class="px-2"> <img
-                                                            src="{{ static_asset('frontend/assets/images/gmail-icon.png') }}"
-                                                            alt="Gmail-Login"> </a>
-                                                    <a href="#" target="_blank" class="px-2"> <img
-                                                            src="{{ static_asset('frontend/assets/images/fb-icon.png') }}"
-                                                            alt="FaceBook-Login"> </a>
-                                                    <a href="#" target="_blank" class="px-2"> <img
-                                                            src="{{ static_asset('frontend/assets/images/apple-icon.png') }}"
-                                                            alt="Apple-Login"> </a>
+                                                    <a href="{{ route('google') }}" target="_blank" class="btn">
+                                                        <img src="{{ static_asset('frontend/assets/images/google-icon.png') }}" alt="Gmail-Login">Continue with Google
+                                                    </a>
+                                                    {{-- <a href="#" target="_blank" class="btn">
+                                                        <img src="{{ static_asset('frontend/assets/images/fb-icon.png') }}" alt="FaceBook-Login">
+                                                    </a> --}}
+                                                    <a href="#" target="_blank" class="btn">
+                                                        <img src="{{ static_asset('frontend/assets/images/apple-icon.png') }}" alt="Apple-Login">Continue with Apple
+                                                    </a>
                                                 </div>
                                             </div>
 
@@ -158,6 +148,13 @@
                             window.setTimeout(function() {
                                 window.location.href = "{{ route('index') }}";
                             }, 1000);
+                        }
+
+                        if(response.status == 2)
+                        {
+                            window.setTimeout(function(){
+                                    window.location.href = "{{ route('verify', '') }}" + '/' + response.user_id;
+                               }, 1000);
                         }
 
                         if (response.status == 0) {

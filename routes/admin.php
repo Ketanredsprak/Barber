@@ -1,28 +1,29 @@
 <?php
+use App\Http\Controllers\Admin\CmsController;
+use App\Http\Controllers\Admin\CityController;
+use App\Http\Controllers\Admin\PageController;
+use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\StateController;
 use App\Http\Controllers\Admin\BannerController;
 use App\Http\Controllers\Admin\BarberController;
-use App\Http\Controllers\Admin\BookingController;
-use App\Http\Controllers\Admin\CityController;
-use App\Http\Controllers\Admin\CmsController;
-use App\Http\Controllers\Admin\ContactUsController;
-use App\Http\Controllers\Admin\CountryController;
-use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\ModuleController;
-use App\Http\Controllers\Admin\PageController;
-use App\Http\Controllers\Admin\PermissionController;
-use App\Http\Controllers\Admin\RoleController;
-use App\Http\Controllers\Admin\ServiceController;
-use App\Http\Controllers\Admin\StateController;
-use App\Http\Controllers\Admin\SubAdminController;
-use App\Http\Controllers\Admin\SubjectController;
-use App\Http\Controllers\Admin\SubscriptionController;
-use App\Http\Controllers\Admin\SubscriptionPermissionController;
-use App\Http\Controllers\Admin\SystemNotificationController;
-use App\Http\Controllers\Admin\TestimonialController;
-use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\Admin\WebsiteConfigController;
 use App\Http\Controllers\Admin\ReportController;
+use App\Http\Controllers\Admin\BookingController;
+use App\Http\Controllers\Admin\CountryController;
+use App\Http\Controllers\Admin\ServiceController;
+use App\Http\Controllers\Admin\SubjectController;
+use App\Http\Controllers\Admin\CustomerController;
+use App\Http\Controllers\Admin\SubAdminController;
+use App\Http\Controllers\Admin\ContactUsController;
+use App\Http\Controllers\Admin\PermissionController;
+use App\Http\Controllers\Admin\CountryCodeController;
+use App\Http\Controllers\Admin\TestimonialController;
+use App\Http\Controllers\Admin\SubscriptionController;
+use App\Http\Controllers\Admin\WebsiteConfigController;
+use App\Http\Controllers\Admin\SystemNotificationController;
+use App\Http\Controllers\Admin\SubscriptionPermissionController;
 
 Route::get('admin/login', [AdminController::class, 'adminLogin'])->name('admin/login');
 Route::post('admin-login', [AdminController::class, 'storeLogin'])->name('admin-login');
@@ -50,9 +51,14 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     // Route::get('customer-status/{id}', [CustomerController::class, 'customerStatus'])->name('customer.status');
     Route::get('customer-approved/{id}', [CustomerController::class, 'customerApprovedStatus'])->name('customer.approved');
     Route::get('customer-suspend/{id}', [CustomerController::class, 'customerSuspendStatus'])->name('customer.suspend');
+    Route::get('customer-booking-add/{id}', [CustomerController::class, 'customerBookingAdd'])->name('customer.booking.add');
+    Route::post('customer-booking-save', [CustomerController::class, 'customerBookingSave'])->name('customer.booking.save');
 
     //   Route::resource('category', CategoryController::class);
     //   Route::get('category-status/{id}', [CategoryController::class, 'categoryStatus'])->name('category.status');
+
+    Route::resource('country-code', CountryCodeController::class);
+    Route::get('country-code-status/{id}', [CountryCodeController::class, 'countryCodeStatus'])->name('country.code.status');
 
     Route::resource('country', CountryController::class);
     Route::get('country-status/{id}', [CountryController::class, 'countryStatus'])->name('country.status');
@@ -73,9 +79,9 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::resource('role', RoleController::class);
     Route::get('role-status/{id}', [RoleController::class, 'roleStatus'])->name('role.status');
 
-    Route::resource('cms', CmsController::class);
-    Route::get('cms-status/{id}', [CmsController::class, 'cmsStatus'])->name('cms.status');
-    Route::get('get-cms-content/{id}', [PermissionController::class, 'getCmsPageContent'])->name('cms.content');
+    // Route::resource('cms', CmsController::class);
+    // Route::get('cms-status/{id}', [CmsController::class, 'cmsStatus'])->name('cms.status');
+    // Route::get('get-cms-content/{id}', [PermissionController::class, 'getCmsPageContent'])->name('cms.content');
 
     Route::resource('testimonial', TestimonialController::class);
     Route::get('testimonial-status/{id}', [TestimonialController::class, 'testimonialStatus'])->name('testimonial.status');
@@ -95,6 +101,7 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::get('get-website-config', [WebsiteConfigController::class, 'getWebsiteConfig'])->name('get-website-config');
     Route::post('website-config-update', [WebsiteConfigController::class, 'websiteConfigUpdate'])->name('website-config-update');
     Route::post('point-system-update', [WebsiteConfigController::class, 'pointSystemUpdate'])->name('point-system-update');
+    Route::post('app-config-update', [WebsiteConfigController::class, 'appConfigUpdate'])->name('app-config-update');
 
     Route::resource('contact-us', ContactUsController::class);
     Route::resource('subscription-permission', SubscriptionPermissionController::class);
@@ -132,5 +139,6 @@ Route::prefix('admin')->middleware('auth')->group(function () {
 // revenue
     Route::get('/revenue-report', [ReportController::class, 'revenueReport'])->name('revenue.report');
     Route::get('/revenue-report-data', [ReportController::class, 'revenueReportData'])->name('revenue.report.data');
+    Route::get('admin-booking-invoice/{id}', [ReportController::class, 'bookingInvoice'])->name('admin-booking-invoice');
 
 });

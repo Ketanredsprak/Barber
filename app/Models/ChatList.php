@@ -21,4 +21,13 @@ class ChatList extends Model
         "status",
     ];
 
+
+    public function sender_detail(){
+        return $this->hasOne(User::class, 'id', 'sender_id');
+    }
+
+    public function receiver_detail(){
+        return $this->hasOne(User::class, 'id', 'receiver_id');
+    }
+
 }

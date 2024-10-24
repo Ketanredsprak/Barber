@@ -696,7 +696,7 @@ customer
 =====================================================
 
 both
-(39){{live}}get-my-chat-list
+(40){{live}}get-my-chat-list
     {
             url : {{live}}get-my-chat-list
                 method : post
@@ -711,7 +711,7 @@ both
 ====================================================
 
 both
-(39){{live}}send-message
+(41){{live}}send-message
     {
             url : {{live}}send-message
                 method : post
@@ -732,7 +732,7 @@ both
 ================================================
 
 both
-(39){{live}}get-one-to-one-chat
+(42){{live}}get-one-to-one-chat
     {
             url : {{live}}get-one-to-one-chat
                 method : post
@@ -747,7 +747,7 @@ both
 
 ==============================================
 
-(39){{live}}rating-barber
+(43){{live}}rating-barber
     {
             url : {{live}}rating-barber
                 method : post
@@ -763,7 +763,7 @@ both
 
 ==============================================
 
-(39){{live}}notification-on-or-off
+(44){{live}}notification-on-or-off
     {
             url : {{live}}notification-on-or-off
                 method : post
@@ -777,7 +777,7 @@ both
 
 ==============================================
 
-(39){{live}}search-near-barber
+(45){{live}}search-near-barber
     {
             url : {{live}}search-near-barber
                 method : post
@@ -793,7 +793,7 @@ both
 =============================================
 
 both account
-(39){{live}}my-point
+(46){{live}}my-point
     {
             url : {{live}}my-point
                 method : get
@@ -802,6 +802,163 @@ both account
                 header : language(code)
     }
 =====================================================
+
+
+barbar
+(47){{live}}enable-or-disable-barber-slot
+    {
+            url : {{live}}enable-or-disable-barber-slot
+                method : post
+                authorization : token
+                header : language(code)
+                input params {
+                               date:2024-09-06
+                               all_slot:1 then disable all slot for this date 0 then need to pass slot (12:00)
+                               slot:12:00
+                }
+
+    }
+
+====================================================
+
+barber
+(48){{live}}get-disable-slot-list
+    {
+            url : {{live}}get-disable-slot-list
+                 method : get
+                authorization : token
+                header : language(code)
+                input params {
+                               date:2024-09-06
+                }
+    }
+
+=====================================================
+
+(49){{live}}enable-or-disable-barber-slot-date-range
+    {
+            url : {{live}}enable-or-disable-barber-slot-date-range
+                method : post
+                authorization : token
+                header : language(code)
+                input params {
+                               start_date:2024-09-06
+                               end_date:2024-09-06
+                }
+
+    }
+
+====================================================
+
+
+(50){{live}}report
+    {
+            url : {{live}}report
+                method : post
+                authorization : token
+                header : language(code)
+                input params {
+                               start_date:2024-09-06
+                               end_date:2024-09-06
+                }
+
+    }
+
+
+==================================================
+
+(51){{live}}barber-dashboard
+    {
+            url : {{live}}barber-dashboard
+                method : post
+                authorization : token
+                header : language(code)
+                input params {
+                                search:
+                }
+
+    }
+
+==================================================
+
+(52){{live}}booking-invoice/360
+    {
+            url : {{live}}booking-invoice/360  <- booking id
+                method : get
+                authorization : token
+                header : language(code)
+    }
+
+
+===================================================
+
+
+(53){{live}}get-login-content
+    {
+            url : {{live}}get-login-content
+                method : post
+                authorization : token
+                header : language(code)
+
+
+    }
+
+==================================================
+
+(54){{live}}get-contact-us-subjects
+    {
+            url : {{live}}get-contact-us-subjects
+                method : get
+                authorization : no
+                header : language(code)
+
+
+    }
+
+====================================================
+
+(55){{live}} V1 => get-all-sub-services
+    {
+            url : {{live}}get-all-sub-services
+                method : get
+                authorization : {token}
+                header : language(code)
+
+    }
+===================================================
+
+(56){{live}}report-generate-excel
+    {
+            url : {{live}}report-generate-excel
+                method : post
+                authorization : token
+                header : language(code)
+                input params {
+                               start_date : 2024-10-01,
+                               end_date : 2024-10-25,
+                }
+
+    }
+
+================================================
+
+(56){{live}}update-subscription/1  subscription_id
+    {
+            url : {{live}}update-subscription/1
+                method : get
+                authorization : token
+                header : language(code)
+
+    }
+
+
+
+
+
+
+
+
+
 
 
 

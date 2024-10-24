@@ -33,6 +33,7 @@ class CustomerAccount extends JsonResource
             'latitude' => $this->latitude ?? "",
             'longitude' => $this->longitude ?? "",
             'notification_status' => $this->notification_status ?? "",
+            'point_system' => $this->point_system ?? "",
             'created_at' =>  date('Y-M-d h:i A', strtotime($this->created_at)),
             'updated_at' => date('Y-M-d h:i A', strtotime($this->updated_at)),
             'token' => $this->token ?? "",

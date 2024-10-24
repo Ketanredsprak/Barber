@@ -2,17 +2,20 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
+use Carbon\Carbon;
+use App\Models\User;
 use App\Models\Booking;
 use App\Models\Subscription;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\URL;
-use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\UserSubscription;
-use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 
 
+use Illuminate\Support\Facades\URL;
+use App\Http\Controllers\Controller;
+use App\Models\BookingServiceDetail;
 use Yajra\DataTables\Facades\DataTables;
 
 class ReportController extends Controller
@@ -62,7 +65,7 @@ class ReportController extends Controller
                 return null; // Will be replaced on client side
             })
             ->addColumn('status', function ($item) {
-                return $item->is_approved ? 'Approved' : 'Pending';
+                return $item->is_approved == 2 ? 'Approved' : ($item->is_approved == 3 ? 'Suspended' : 'Pending');
             })
             ->rawColumns(['status'])
             ->make(true);
@@ -71,7 +74,7 @@ class ReportController extends Controller
     public function customerReport(Request $request)
 {
 
-  
+
     $startDate = $request->input('start_date');
     $endDate = $request->input('end_date');
     $gender = $request->input('gender');
@@ -112,14 +115,14 @@ class ReportController extends Controller
                 $subQuery->whereIn('subscription_id', $subscriptionIds)
                 ->where('status', 'active');
 
-                
-                
+
+
             });
         }
 
 
-       
-    
+
+
 
         // Fetch users
         $users = $query->get();
@@ -135,6 +138,7 @@ class ReportController extends Controller
                 : 'No Subscription';
 
             $joining_date = $user->created_at->toDateTimeString(); // Format as needed
+            $status = $user->is_approved == 2 ? 'Approved' : ($user->is_approved == 3 ? 'Suspended' : 'Pending');
 
             return [
                 'first_name' => $user->first_name,
@@ -143,7 +147,7 @@ class ReportController extends Controller
                 'gender' => $user->gender,
                 'subscription_name_en' => $latestSubscriptionName,
                 'joining_date' => $joining_date,
-                'status' => $user->is_approved ? 'Approved' : 'Pending',
+                'status' => $status,
             ];
         });
 
@@ -200,7 +204,7 @@ class ReportController extends Controller
             }
 
             if ($subscriptionStatus) {
-                // Fetch user subscription data from the database 
+                // Fetch user subscription data from the database
                 $UserSubscriptionData = UserSubscription::where('subscription_id', $subscriptionStatus)->get();
 
                 // Initialize arrays for collecting user data and subscription names
@@ -237,13 +241,15 @@ class ReportController extends Controller
             $data = $users->map(function ($user) use ($subscriptionStatus) {
                 // Get subscription name from the map
                 // $subscriptionName = $subscriptionMap[$user->subscription_id] ?? $subscriptionStatus ??'No Subscription'; // Assuming user has a `subscription_id` field
+                $status = $user->is_approved == 2 ? 'Approved' : ($user->is_approved == 3 ? 'Suspended' : 'Pending');
+
                 return [
                     'first_name' => $user->first_name,
                     'email' => $user->email,
                     'phone' => $user->phone,
                     'gender' => $user->gender,
                     'subscription_name_en' => $subscriptionStatus,
-                    'status' => $user->is_approved ? 'Approved' : 'Pending'
+                    'status' => $status,
                 ];
             });
 
@@ -321,6 +327,7 @@ class ReportController extends Controller
                 $latestSubscriptionName = $latestSubscription ? $subscriptionNames[$latestSubscription->subscription_id] ?? 'No Subscription' : 'No Subscription';
                 $joining_date = $user->created_at->toDateTimeString(); // Format as needed
 
+                $status = $user->is_approved == 2 ? 'Approved' : ($user->is_approved == 3 ? 'Suspended' : 'Pending');
                 return [
                     'first_name' => $user->first_name,
                     'email' => $user->email,
@@ -329,7 +336,7 @@ class ReportController extends Controller
                     'subscription_name_en' => $latestSubscriptionName,
                     'joining_date' => $joining_date,
 
-                    'status' => $user->is_approved ? 'Approved' : 'Pending',
+                    'status' => $status,
                 ];
             });
 
@@ -405,6 +412,7 @@ class ReportController extends Controller
     public function barberReportData2(Request $request)
     {
 
+
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
         $gender = $request->input('gender');
@@ -451,7 +459,7 @@ class ReportController extends Controller
                 // Filter users based on the collected IDs
                 $query->whereIn('id', $usersWithSubscription);
             }
-       
+
 
             // Fetch users
             $users = $query->get();
@@ -465,6 +473,9 @@ class ReportController extends Controller
                 // Access the created_at attribute for each user
                 $joining_date = $user->created_at->toDateTimeString(); // Format as needed
 
+                $status = $user->is_approved == 2 ? 'Approved' : ($user->is_approved == 3 ? 'Suspended' : 'Pending');
+
+
                 return [
                     'first_name' => $user->first_name,
                     'email' => $user->email,
@@ -472,7 +483,7 @@ class ReportController extends Controller
                     'gender' => $user->gender,
                     'subscription_name_en' => $latestSubscriptionName,
                     'joining_date' => $joining_date, // Use the formatted created_at for each user
-                    'status' => $user->is_approved ? 'Approved' : 'Pending',
+                    'status' => $status,
                 ];
             });
 
@@ -530,12 +541,12 @@ class ReportController extends Controller
 
             // Filter users based on the collected IDs
             $query->whereHas('user_subscriptions', function($subQuery) use ($subscriptionIds) {
-              
+
                 $subQuery->whereIn('subscription_id', $subscriptionIds)
                 ->where('status', 'active');
             });
 
-            
+
         }
 
         // Fetch users
@@ -552,6 +563,7 @@ class ReportController extends Controller
                 : 'No Subscription';
 
             $joining_date = $user->created_at->toDateTimeString(); // Format as needed
+            $status = $user->is_approved == 2 ? 'Approved' : ($user->is_approved == 3 ? 'Suspended' : 'Pending');
 
             return [
                 'first_name' => $user->first_name,
@@ -560,7 +572,7 @@ class ReportController extends Controller
                 'gender' => $user->gender,
                 'subscription_name_en' => $latestSubscriptionName,
                 'joining_date' => $joining_date,
-                'status' => $user->is_approved ? 'Approved' : 'Pending',
+                'status' => $status,
             ];
         });
 
@@ -592,7 +604,7 @@ class ReportController extends Controller
 
         // return view('Admin.Report.BookingReport', compact('startDate', 'endDate', 'gender', 'subscription', 'subscriptions'));
         return view('Admin.Report.BookingReport', compact('startDate', 'endDate', 'customer_search_detail', 'barber_search_detail', 'status',));
-        // return view('Admin.Report.TestingReport');  
+        // return view('Admin.Report.TestingReport');
     }
 
 
@@ -644,27 +656,55 @@ class ReportController extends Controller
             }
 
             // Apply combined search filter
+            // Customer search with concatenation of first_name and last_name
             if ($customer_search_detail) {
                 $query->where(function ($q) use ($customer_search_detail) {
-                    $q->whereHas('customer_detail', function ($q) use ($customer_search_detail) {
-                        $q->where('first_name', 'LIKE', "%{$customer_search_detail}%")
-                            ->orWhere('last_name', 'LIKE', "%{$customer_search_detail}%")
-                            ->orWhere('email', 'LIKE', "%{$customer_search_detail}%")
-                            ->orWhere('phone', 'LIKE', "%{$customer_search_detail}%");
-                    });
+                $q->whereHas('customer_detail', function ($q) use ($customer_search_detail) {
+                    // Concatenate first_name and last_name for search
+                    $q->where(DB::raw('CONCAT(first_name, " ", last_name)'), 'LIKE', "%{$customer_search_detail}%")
+                        ->orWhere('first_name', 'LIKE', "%{$customer_search_detail}%")
+                        ->orWhere('last_name', 'LIKE', "%{$customer_search_detail}%")
+                        ->orWhere('email', 'LIKE', "%{$customer_search_detail}%")
+                        ->orWhere('phone', 'LIKE', "%{$customer_search_detail}%");
                 });
+            });
             }
 
+            // Barber search with concatenation of first_name and last_name
             if ($barber_search_detail) {
                 $query->where(function ($q) use ($barber_search_detail) {
-                    $q->WhereHas('barber_detail', function ($q) use ($barber_search_detail) {
-                        $q->where('first_name', 'LIKE', "%{$barber_search_detail}%")
-                            ->orWhere('last_name', 'LIKE', "%{$barber_search_detail}%")
-                            ->orWhere('email', 'LIKE', "%{$barber_search_detail}%")
-                            ->orWhere('phone', 'LIKE', "%{$barber_search_detail}%");
-                    });
+                $q->whereHas('barber_detail', function ($q) use ($barber_search_detail) {
+                    // Concatenate first_name and last_name for search
+                    $q->where(DB::raw('CONCAT(first_name, " ", last_name)'), 'LIKE', "%{$barber_search_detail}%")
+                        ->orWhere('first_name', 'LIKE', "%{$barber_search_detail}%")
+                        ->orWhere('last_name', 'LIKE', "%{$barber_search_detail}%")
+                        ->orWhere('email', 'LIKE', "%{$barber_search_detail}%")
+                        ->orWhere('phone', 'LIKE', "%{$barber_search_detail}%");
                 });
+            });
             }
+
+            // if ($customer_search_detail) {
+            //     $query->where(function ($q) use ($customer_search_detail) {
+            //         $q->whereHas('customer_detail', function ($q) use ($customer_search_detail) {
+            //             $q->where('first_name', 'LIKE', "%{$customer_search_detail}%")
+            //                 ->orWhere('last_name', 'LIKE', "%{$customer_search_detail}%")
+            //                 ->orWhere('email', 'LIKE', "%{$customer_search_detail}%")
+            //                 ->orWhere('phone', 'LIKE', "%{$customer_search_detail}%");
+            //         });
+            //     });
+            // }
+
+            // if ($barber_search_detail) {
+            //     $query->where(function ($q) use ($barber_search_detail) {
+            //         $q->WhereHas('barber_detail', function ($q) use ($barber_search_detail) {
+            //             $q->where('first_name', 'LIKE', "%{$barber_search_detail}%")
+            //                 ->orWhere('last_name', 'LIKE', "%{$barber_search_detail}%")
+            //                 ->orWhere('email', 'LIKE', "%{$barber_search_detail}%")
+            //                 ->orWhere('phone', 'LIKE', "%{$barber_search_detail}%");
+            //         });
+            //     });
+            // }
 
 
 
@@ -740,13 +780,13 @@ class ReportController extends Controller
                         $statusBadge = '<span class="badge bg-secondary">' . __('labels.Pending') . '</span>';
                         break;
                     case 'reject':
-                        $statusBadge = '<span class="badge bg-danger">' . __('labels.Reject') . '</span>';
+                        $statusBadge = '<span class="badge bg-danger">' . __('labels.Rejected') . '</span>';
                         break;
                     case 'cancel':
-                        $statusBadge = '<span class="badge bg-danger">' . __('labels.Cancel') . '</span>';
+                        $statusBadge = '<span class="badge bg-danger">' . __('labels.Cancelled') . '</span>';
                         break;
                     case 'accept':
-                        $statusBadge = '<span class="badge bg-success">' . __('labels.Accept') . '</span>';
+                        $statusBadge = '<span class="badge bg-success">' . __('labels.Accepted') . '</span>';
                         break;
                     case 'finished':
                         $statusBadge = '<span class="badge bg-primary">' . __('labels.Finished') . '</span>';
@@ -796,5 +836,33 @@ class ReportController extends Controller
     public function revenueReportData(Request $request)
     {
         return view('Admin.Report.RevenueReport');
+    }
+
+
+
+    public function bookingInvoice($id)
+    {
+        try {
+           // Fetch the booking data and service details
+            $bdata = Booking::where('id', $id)
+            ->with('booking_service_detailss','customer_detail','barber_detail')
+            ->first();
+
+            $serviceDetails = BookingServiceDetail::where('booking_id', $id)
+            ->get();
+
+            // Load the view and generate the PDF
+            $pdf = Pdf::loadView('PDF.invoice', compact('bdata', 'serviceDetails'));
+
+            // Automatically download the PDF
+            return $pdf->download('invoice.pdf');
+
+        }
+        catch (Exception $ex) {
+            return response()->json(
+                ['success' => false, 'message' => $ex->getMessage()], 400
+            );
+        }
+
     }
 }

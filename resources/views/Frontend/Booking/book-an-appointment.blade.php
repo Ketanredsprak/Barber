@@ -23,7 +23,7 @@
         </div>
     </section>
 
-    <section class="explore_sec pt-75 pb-75">
+    <section class="explore_sec colored-bg pt-75 pb-75">
         <div class="container">
 
 
@@ -33,54 +33,55 @@
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="dashboard_right1">
-                            <div class="whitebox2 mt-4">
-                                <div class="service_box">
-                                    <div class="service_info1">
+                            <div class="about_wrap service_info1">
 
-                                        <!---pass barber_id--->
-                                        <input type="hidden" class="form-control" id="barber_id" name="barber_id"
-                                            value="{{ $barber_data->id }}">
-                                        <!---pass barber_id--->
+                                <!---pass barber_id--->
+                                <input type="hidden" class="form-control" id="barber_id" name="barber_id"
+                                    value="{{ $barber_data->id }}">
+                                <!---pass barber_id--->
 
 
-                                        <h5>{{ $barber_data->first_name }} {{ $barber_data->last_name }}</h5>
-                                        <p>{{ $barber_data->salon_name }}</p>
-                                        <p>{{ $barber_data->about_you }}</p>
-
-                                        <span><i class="fa fa-map-marker"></i> {{ $barber_data->location }}. (2
-                                            km)</span>
-                                        <p><i class="fa fa-star"></i> {{ $barber_data->average_rating }}</p>
-                                    </div>
+                                <h3 class="name">{{ $barber_data->first_name }} {{ $barber_data->last_name }}</h3>
+                                <h5>{{ $barber_data->salon_name }}</h5>
+                                <p class="rating"><i class="fa fa-star"></i> {{ $barber_data->average_rating }}</p>
+                                <div>
+                                    <a class="location" href="https://www.google.com/maps?q={{ $barber_data->latitude }},{{ $barber_data->longitude }}"
+                                        target="_blank">
+                                        <i class="fa fa-map-marker"></i> {{ $barber_data->location }}. (2 km)
+                                    </a>
                                 </div>
+                                <p>{{ $barber_data->about_you }}</p>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="text-left">
+                
                     <div class="title">
-                        <h2>{{ __('labels.Barber Services') }}</h2>
+                        <h2>{{ __('labels.Select Services') }}</h2>
                     </div>
-                </div>
+                
 
                 <fieldset class="checkbox-group mt-3">
                     <div class="row">
 
 
                         @foreach ($barber_data['barber_services'] as $service)
-                            <div class="col-sm-6">
-                                <div class="checkbox">
-                                    <label class="checkbox-wrapper mb-3">
-                                        <input type="checkbox" class="checkbox-input service-checkbox" name="service_ids[]"
-                                            value="{{ $service->sub_service_detail->id }}" />
-                                        <span class="checkbox-tile">
-                                            <span class="checkbox-label">
-                                                <h5>{{ $service->service_detail->$service_name }}</h5>
-                                                <p>{{ $service->sub_service_detail->$service_name }}</p>
-                                                <p class="price">${{ $service->service_price }} - {{ __('labels.30 min')}}</p>
-                                            </span>
+                            <div class="col-lg-4">                                
+                                <label class="checkbox-wrapper">
+                                    <input type="checkbox" class="checkbox-input service-checkbox" name="service_ids[]"
+                                        value="{{ $service->sub_service_detail->id }}" />
+                                    <span class="checkbox-tile">
+                                        <span class="checkbox-label">
+                                            <h5>{{ $service->service_detail->$service_name }}</h5>
+                                            <p>{{ $service->sub_service_detail->$service_name }}</p>
+                                            <p class="price">${{ $service->service_price }} <b>FOR</b>
+                                                {{ __('labels.30 min') }}</p>
+                                            <div class="checked-img"><img
+                                                    src="{{ static_asset('frontend/assets/images/check_mark.webp') }}"
+                                                    alt="image"></div>
                                         </span>
-                                    </label>
-                                </div>
+                                    </span>
+                                </label>
                             </div>
                         @endforeach
 
@@ -93,32 +94,39 @@
                     <input type="hidden" class="form-control" id="booking_date" name="booking_date">
                 </div>
 
-                <div class="text-left">
+                <div class="select-date-time-wrapper">
                     <div class="title mt-4">
-                        <h2>{{ __('labels.Add more to your appointment?') }}</h2>
+                        <h2>{{ __('labels.Select Date') }}</h2>
                     </div>
-                </div>
+                
 
-                <div class="app">
-                    <div class="app__main">
-                        <div class="calendar">
-                            <div id="calendar"></div>
+                    <div class="app">
+                        <div class="app__main">
+                            <div class="calendar">
+                                <div id="calendar"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <hr>
-                <p>{{ __('labels.Select Time') }}</p>
+                
+                <div class="select-date-time-wrapper">
+                    <div class="title mt-4">
+                        <h2>{{ __('labels.Select Time') }}</h2>
+                    </div>
 
-                <div class="button-group-pills row" data-toggle="buttons" id="slotList"></div><br>
-
-                <button type="submit" class="btn btn-success btn-block mb-4 w-100">{{ __('labels.Book Now') }}</button>
-
-                <p>{{ __('labels.Don’t see your preference?') }}
-                <p>
-
-                    <a href="javascript:void(0)" data-url="{{ route('booking-join-waitlist') }}"
-                        class="btn btn-light btn-block mb-3 w-100 join_waitlist"
-                        id="join_waitlist">{{ __('labels.Join the waitlist') }}</a>
+                    <div class="button-group-pills row" data-toggle="buttons" id="slotList"></div>
+                </div>
+                <div class="book-appoinment-btns-wrapper">
+                    <div>
+                        <button type="submit" class="btn btn-warning">{{ __('labels.Book Now') }}</button>
+                    </div>
+                    <b>{{ __('labels.Don’t see your preference?') }}</b>
+                    <div>
+                        <a href="javascript:void(0)" data-url="{{ route('booking-join-waitlist') }}"
+                                class="btn btn-light join_waitlist"
+                                id="join_waitlist">{{ __('labels.Join the waitlist') }}</a>
+                    </div>
+                </div>
 
 
             </form>
@@ -969,23 +977,23 @@
                         .find('span').removeClass('active');
 
 
-                        //add by developer
-                         this.picker.find('.datepicker-days')
+                    //add by developer
+                    this.picker.find('.datepicker-days')
                         .find('.today')
 
 
 
-                        var self = this; // Save the context of 'this'
+                    var self = this; // Save the context of 'this'
 
-                        $.each(this.dates, function(i, d) {
-                            if (d.getUTCFullYear() === year) {
-                                months.eq(d.getUTCMonth()).addClass('active');
-                                // Add by developer
-                                self.picker.find('.datepicker-days')
-                                    .find('.today')
-                                    .removeClass('today');
-                            }
-                        });
+                    $.each(this.dates, function(i, d) {
+                        if (d.getUTCFullYear() === year) {
+                            months.eq(d.getUTCMonth()).addClass('active');
+                            // Add by developer
+                            self.picker.find('.datepicker-days')
+                                .find('.today')
+                                .removeClass('today');
+                        }
+                    });
 
                     if (year < startYear || year > endYear) {
                         months.addClass('disabled');
@@ -1590,13 +1598,30 @@
             $.fn.datepicker.Constructor = Datepicker;
             var dates = $.fn.datepicker.dates = {
                 en: {
-                    days: ["{{ __('labels.Sunday') }}", "{{ __('labels.Monday') }}') }}", "{{ __('labels.Tuesday') }}", "{{ __('labels.Wednesday') }}", "{{ __('labels.Thursday') }}", "{{ __('labels.Friday') }}", "{{ __('labels.Saturday') }}", "{{ __('labels.Sunday') }}"],
-                    daysShort: ["{{ __('labels.Sun') }}", "{{ __('labels.Mon') }}", "{{ __('labels.Tue') }}", "{{ __('labels.Wed') }}", "{{ __('labels.Thu') }}", "{{ __('labels.Fri') }}", "{{ __('labels.Sat') }}", "{{ __('labels.Sun') }}"],
-                    daysMin: ["{{ __('labels.Su') }}", "{{ __('labels.Mo') }}", "{{ __('labels.Tu') }}", "{{ __('labels.We') }}", "{{ __('labels.Th') }}", "{{ __('labels.Fr') }}", "{{ __('labels.Sa') }}", "{{ __('labels.Su') }}"],
-                    months: ["{{ __('labels.January') }}", "{{ __('labels.February') }}", "{{ __('labels.March') }}", "{{ __('labels.April') }}", "{{ __('labels.May') }}", "{{ __('labels.June') }}", "{{ __('labels.July') }}", "{{ __('labels.August') }}", "{{ __('labels.September') }}",
-                        "{{ __('labels.October') }}", "{{ __('labels.November') }}", "{{ __('labels.December') }}"
+                    days: ["{{ __('labels.Sunday') }}", "{{ __('labels.Monday') }}') }}",
+                        "{{ __('labels.Tuesday') }}", "{{ __('labels.Wednesday') }}",
+                        "{{ __('labels.Thursday') }}", "{{ __('labels.Friday') }}",
+                        "{{ __('labels.Saturday') }}", "{{ __('labels.Sunday') }}"
                     ],
-                    monthsShort: ["{{ __('labels.Jan') }}", "{{ __('labels.Feb') }}", "{{ __('labels.Mar') }}", "{{ __('labels.Apr') }}", "{{ __('labels.May') }}", "{{ __('labels.Jun') }}", "{{ __('labels.Jul') }}", "{{ __('labels.Aug') }}", "{{ __('labels.Sep') }}", "{{ __('labels.Oct') }}", "{{ __('labels.Nov') }}",
+                    daysShort: ["{{ __('labels.Sun') }}", "{{ __('labels.Mon') }}", "{{ __('labels.Tue') }}",
+                        "{{ __('labels.Wed') }}", "{{ __('labels.Thu') }}", "{{ __('labels.Fri') }}",
+                        "{{ __('labels.Sat') }}", "{{ __('labels.Sun') }}"
+                    ],
+                    daysMin: ["{{ __('labels.Su') }}", "{{ __('labels.Mo') }}", "{{ __('labels.Tu') }}",
+                        "{{ __('labels.We') }}", "{{ __('labels.Th') }}", "{{ __('labels.Fr') }}",
+                        "{{ __('labels.Sa') }}", "{{ __('labels.Su') }}"
+                    ],
+                    months: ["{{ __('labels.January') }}", "{{ __('labels.February') }}",
+                        "{{ __('labels.March') }}", "{{ __('labels.April') }}", "{{ __('labels.May') }}",
+                        "{{ __('labels.June') }}", "{{ __('labels.July') }}", "{{ __('labels.August') }}",
+                        "{{ __('labels.September') }}",
+                        "{{ __('labels.October') }}", "{{ __('labels.November') }}",
+                        "{{ __('labels.December') }}"
+                    ],
+                    monthsShort: ["{{ __('labels.Jan') }}", "{{ __('labels.Feb') }}", "{{ __('labels.Mar') }}",
+                        "{{ __('labels.Apr') }}", "{{ __('labels.May') }}", "{{ __('labels.Jun') }}",
+                        "{{ __('labels.Jul') }}", "{{ __('labels.Aug') }}", "{{ __('labels.Sep') }}",
+                        "{{ __('labels.Oct') }}", "{{ __('labels.Nov') }}",
                         "{{ __('labels.Dec') }}"
                     ],
                     today: "{{ __('labels.Today') }}",
@@ -1965,12 +1990,22 @@
     // Internationalization strings
     dateFormat.i18n = {
         dayNames: [
-            "{{ __('labels.Sunday') }}", "{{ __('labels.Monday') }}", "{{ __('labels.Tuesday') }}", "{{ __('labels.Wednesday') }}", "{{ __('labels.Thursday') }}", "{{ __('labels.Friday') }}", "{{ __('labels.Saturday') }}",
-            "{{ __('labels.Sunday') }}", "{{ __('labels.Monday') }}", "{{ __('labels.Tuesday') }}", "{{ __('labels.Wednesday') }}", "{{ __('labels.Thursday') }}", "{{ __('labels.Friday') }}", "{{ __('labels.Saturday') }}"
+            "{{ __('labels.Sunday') }}", "{{ __('labels.Monday') }}", "{{ __('labels.Tuesday') }}",
+            "{{ __('labels.Wednesday') }}", "{{ __('labels.Thursday') }}", "{{ __('labels.Friday') }}",
+            "{{ __('labels.Saturday') }}",
+            "{{ __('labels.Sunday') }}", "{{ __('labels.Monday') }}", "{{ __('labels.Tuesday') }}",
+            "{{ __('labels.Wednesday') }}", "{{ __('labels.Thursday') }}", "{{ __('labels.Friday') }}",
+            "{{ __('labels.Saturday') }}"
         ],
         monthNames: [
-            "{{ __('labels.Jan') }}", "{{ __('labels.Feb') }}", "{{ __('labels.Mar') }}", "{{ __('labels.Apr') }}", "{{ __('labels.May') }}", "{{ __('labels.Jun') }}", "{{ __('labels.Jul') }}", "{{ __('labels.Aug') }}", "{{ __('labels.Sep') }}", "{{ __('labels.Oct') }}", "{{ __('labels.Nov') }}", "{{ __('labels.Dec') }}",
-            "{{ __('labels.January') }}", "{{ __('labels.February') }}", "{{ __('labels.March') }}", "{{ __('labels.April') }}", "{{ __('labels.May') }}", "{{ __('labels.June') }}", "{{ __('labels.July') }}", "{{ __('labels.August') }}", "{{ __('labels.September') }}", "{{ __('labels.October') }}",
+            "{{ __('labels.Jan') }}", "{{ __('labels.Feb') }}", "{{ __('labels.Mar') }}",
+            "{{ __('labels.Apr') }}", "{{ __('labels.May') }}", "{{ __('labels.Jun') }}",
+            "{{ __('labels.Jul') }}", "{{ __('labels.Aug') }}", "{{ __('labels.Sep') }}",
+            "{{ __('labels.Oct') }}", "{{ __('labels.Nov') }}", "{{ __('labels.Dec') }}",
+            "{{ __('labels.January') }}", "{{ __('labels.February') }}", "{{ __('labels.March') }}",
+            "{{ __('labels.April') }}", "{{ __('labels.May') }}", "{{ __('labels.June') }}",
+            "{{ __('labels.July') }}", "{{ __('labels.August') }}", "{{ __('labels.September') }}",
+            "{{ __('labels.October') }}",
             "{{ __('labels.November') }}", "{{ __('labels.December') }}"
         ]
     };
@@ -2009,65 +2044,66 @@
     }
 
     $(function() {
-    $(".b-notes").notes(".b-notes");
+        $(".b-notes").notes(".b-notes");
 
-    $("#calendar").datepicker({
-        todayHighlight: true,
-        weekStart: 1,
-        startDate: new Date(), // Disable past dates
-    }).on({
+        $("#calendar").datepicker({
+            todayHighlight: true,
+            weekStart: 1,
+            startDate: new Date(), // Disable past dates
+        }).on({
 
-        'changeDate': function(e) {
+            'changeDate': function(e) {
 
-            if (typeof(e.date) == "undefined") return false;
+                if (typeof(e.date) == "undefined") return false;
 
-            var milliseconds = Date.parse(e.date);
+                var milliseconds = Date.parse(e.date);
 
-            setCelendarDay(milliseconds);
-        }
-
-    });
-
-    var today = new Date();
-    var milliseconds = Date.parse(today);
-
-    setCelendarDay(milliseconds);
-
-    function setCelendarDay(milliseconds) {
-        var date = new Date(milliseconds).format("dd/mm/yyyy");
-
-        var formatTitle = new Date(milliseconds).format("dddd, <b>d mmmm</b>");
-        var list = $(".b-notes__list");
-        var title = $(".b-app__title");
-
-        $.getJSON("https://dl.dropboxusercontent.com/u/27474693/db.json", function(data) {
-
-            $.each(data.days, function() {
-                var obj = this;
-
-                if (date == obj.day) {
-                    var items = obj.data;
-
-                    list.html('');
-
-                    $.each(items, function() {
-                        var html = "<li><span>" + this.time + "</span>" + this.title + "</li>";
-                        list.append(html);
-                    });
-
-                    return false;
-                } else {
-                    list.html('');
-                }
-
-                title.html(formatTitle);
-            });
+                setCelendarDay(milliseconds);
+            }
 
         });
 
-        setDateInInput(date);
-    }
-});
+        var today = new Date();
+        var milliseconds = Date.parse(today);
+
+        setCelendarDay(milliseconds);
+
+        function setCelendarDay(milliseconds) {
+            var date = new Date(milliseconds).format("dd/mm/yyyy");
+
+            var formatTitle = new Date(milliseconds).format("dddd, <b>d mmmm</b>");
+            var list = $(".b-notes__list");
+            var title = $(".b-app__title");
+
+            $.getJSON("https://dl.dropboxusercontent.com/u/27474693/db.json", function(data) {
+
+                $.each(data.days, function() {
+                    var obj = this;
+
+                    if (date == obj.day) {
+                        var items = obj.data;
+
+                        list.html('');
+
+                        $.each(items, function() {
+                            var html = "<li><span>" + this.time + "</span>" + this
+                                .title + "</li>";
+                            list.append(html);
+                        });
+
+                        return false;
+                    } else {
+                        list.html('');
+                    }
+
+                    title.html(formatTitle);
+                });
+
+            });
+
+            setDateInInput(date);
+        }
+    });
 
 
 
@@ -2108,6 +2144,15 @@
 
         $(document).ready(function() {
 
+            $('.service-checkbox').change(function() {
+                // Check if the checkbox is checked
+                const isChecked = $(this).is(':checked');
+
+                // Toggle the d-block class on the associated checked-img div
+                $(this).closest('.checkbox-wrapper').find('.checked-img').toggleClass('d-block', isChecked);
+            });
+
+
             $("#booking_form").submit(function(e) {
 
                 e.preventDefault();
@@ -2116,6 +2161,13 @@
                 var formData = new FormData(form_data);
                 var url = $(this).attr('action');
                 var type = "POST";
+
+                var submitButton = $(this).find("button[type='submit']");
+
+                // Disable the button and add loader
+                submitButton.prop('disabled', true).html(
+                    '<i class="fa fa-spinner fa-spin"></i>');
+
 
                 $.ajax({
                     type: type,
@@ -2127,17 +2179,22 @@
                     processData: false,
                     contentType: false,
                     success: function(response) {
-                        toastr.success(response.message);
-                        form_data.reset();
-                        window.setTimeout(function() {
-                            var url =
-                                "{{ route('my-booking-appointment-success', ['id' => 'booking_id_placeholder']) }}";
-                            url = url.replace('booking_id_placeholder', response
-                                .booking_id);
-                            // Redirect to the new location
-                            window.location.href = url;
+                        if (response.status === 1) {
+                            toastr.success(response.message);
+                            form_data.reset();
+                            window.setTimeout(function() {
+                                var url =
+                                    "{{ route('my-booking-appointment-success', ['id' => 'booking_id_placeholder']) }}";
+                                url = url.replace('booking_id_placeholder', response
+                                    .booking_id);
+                                // Redirect to the new location
+                                window.location.href = url;
 
-                        }, 1000);
+                            }, 1000);
+                        } else if (response.status === 0) {
+                            toastr.error(response.message);
+                            submitButton.prop('disabled', false).html('Submit');
+                        }
 
                     },
                     error: function(response) {
@@ -2148,6 +2205,7 @@
                             $(ele).addClass('error is-invalid');
                             toastr.error(value);
                         });
+                        submitButton.prop('disabled', false).html('Submit');
                     }
                 })
                 return false;
@@ -2155,10 +2213,14 @@
             });
 
 
-            //
 
             $("#join_waitlist").click(function(e) {
                 e.preventDefault();
+
+                // Disable button and show loader
+                $(this).prop('disabled', true);
+                $("#loader").show();
+
                 var url = $(this).data('url');
                 var type = "POST";
 
@@ -2173,14 +2235,18 @@
                     url: url,
                     data: formData,
                     success: function(response) {
-                        toastr.success(response.message);
-                        window.setTimeout(function() {
-                            var url =
-                                "{{ route('get-join-waitlist', ['id' => 'booking_id_placeholder']) }}";
-                            url = url.replace('booking_id_placeholder', response
-                                .booking_id);
-                            window.location.href = url;
-                        }, 1000);
+                        if (response.status === 1) {
+                            toastr.success(response.message);
+                            window.setTimeout(function() {
+                                var url =
+                                    "{{ route('get-join-waitlist', ['id' => 'booking_id_placeholder']) }}";
+                                url = url.replace('booking_id_placeholder', response
+                                    .booking_id);
+                                window.location.href = url;
+                            }, 1000);
+                        } else if (response.status === 0) {
+                            toastr.error(response.message);
+                        }
                     },
                     error: function(response) {
                         var errors = response.responseJSON;
@@ -2190,10 +2256,67 @@
                             $(ele).addClass('error is-invalid');
                             toastr.error(value);
                         });
+                    },
+                    complete: function() {
+                        // Re-enable button and hide loader
+                        $("#join_waitlist").prop('disabled', false);
+                        $("#loader").hide();
                     }
                 });
+
                 return false;
             });
+
+
+
+
+            //
+
+            // $("#join_waitlist").click(function(e) {
+            //     e.preventDefault();
+            //     var url = $(this).data('url');
+            //     var type = "POST";
+
+            //     // Collect form data
+            //     var formData = $("#booking_form").serializeArray();
+
+            //     $.ajax({
+            //         type: type,
+            //         headers: {
+            //             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            //         },
+            //         url: url,
+            //         data: formData,
+            //         success: function(response) {
+
+            //             if (response.status === 1) {
+
+            //                 toastr.success(response.message);
+            //                 window.setTimeout(function() {
+            //                     var url =
+            //                         "{{ route('get-join-waitlist', ['id' => 'booking_id_placeholder']) }}";
+            //                     url = url.replace('booking_id_placeholder', response
+            //                         .booking_id);
+            //                     window.location.href = url;
+            //                 }, 1000);
+
+            //             } else if (response.status === 0) {
+            //                 toastr.error(response.message);
+            //             }
+
+            //         },
+            //         error: function(response) {
+            //             var errors = response.responseJSON;
+            //             $(".error").removeClass('is-invalid');
+            //             $.each(errors.errors, function(key, value) {
+            //                 var ele = "#" + key;
+            //                 $(ele).addClass('error is-invalid');
+            //                 toastr.error(value);
+            //             });
+            //         }
+            //     });
+            //     return false;
+            // });
         })
     </script>
 @endsection

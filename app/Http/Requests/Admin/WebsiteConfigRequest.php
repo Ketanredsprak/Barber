@@ -21,10 +21,12 @@ class WebsiteConfigRequest extends FormRequest
             'phone' => ['required'],
             'whatsapp' => ['required'],
             'email' => ['required'],
-            'facebook_link' => ['required'],
+            'tiktok_link' => ['required'],
             'twitter_link' => ['required'],
             'linkedin_link' => ['required'],
             'youtube_link' => ['required'],
+            'play_store_link' => ['required'],
+            'app_store_link' => ['required'],
         ];
     }
     public function messages(): array
@@ -37,10 +39,12 @@ class WebsiteConfigRequest extends FormRequest
             'phone.required' => __('error.This field is required'),
             'whatsapp.required' => __('error.This field is required'),
             'email.required' => __('error.This field is required'),
-            'facebook_link.required' => __('error.This field is required'),
+            'tiktok_link.required' => __('error.This field is required'),
             'twitter_link.required' => __('error.This field is required'),
             'linkedin_link.required' => __('error.This field is required'),
             'youtube_link.required' => __('error.This field is required'),
+            'play_store_link.required' => __('error.This field is required'),
+            'app_store_link.required' => __('error.This field is required'),
 
         ];
     }

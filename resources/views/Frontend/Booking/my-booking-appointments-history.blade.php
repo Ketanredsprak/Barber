@@ -52,73 +52,79 @@
                                     <h3>{{ __('labels.My Booking') }}</h3>
                                 </div>
                             </div>
-                        </div>
-                        <div class="whitebox">
-                            <div class="wrapper">
-                                <ul class="nav nav-tabs addpost_tab" id="myTab" role="tablist">
-                                    <li class="nav-item">
-                                        <a class="nav-link" id="my-booking-appointments-tab"
-                                            href="{{ route('my-booking-appointment-today') }}">{{ __('labels.Appointments') }}</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link active" id="history-tab"
-                                            href="{{ route('my-booking-appointment-history') }}">{{ __('labels.History') }}</a>
-                                    </li>
-                                </ul>
-                                <div class="tab-content" id="myTabContent">
-                                    <div class="tab-pane fade  show active" id="history" role="tabpanel"
-                                        aria-labelledby="history-tab">
-                                        @foreach ($Old_Appointments as $old_app)
-                                            <?php
-                                            if (empty($old_app->barber_detail->profile_image)) {
-                                                $profile_image = 'default.png';
-                                            } else {
-                                                $profile_image = $old_app->barber_detail->profile_image;
-                                            }
-                                            ?>
+                        </div>                        
+                        <div class="wrapper">
+                            <ul class="nav nav-tabs addpost_tab" id="myTab" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link" id="my-booking-appointments-tab"
+                                        href="{{ route('my-booking-appointment-today') }}">{{ __('labels.Appointments') }}</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="history-tab"
+                                        href="{{ route('my-booking-appointment-history') }}">{{ __('labels.History') }}</a>
+                                </li>
+                            </ul>
+                            <div class="tab-content" id="myTabContent">
+                                <div class="tab-pane fade  show active" id="history" role="tabpanel"
+                                    aria-labelledby="history-tab">
+                                    @if(count($Old_Appointments) > 0)
+                                    @foreach ($Old_Appointments as $old_app)
+                                        <?php
+                                        if (empty($old_app->barber_detail->profile_image)) {
+                                            $profile_image = 'default.png';
+                                        } else {
+                                            $profile_image = $old_app->barber_detail->profile_image;
+                                        }
+                                        ?>
 
-                                                <div class="row align-items-center pb-35">
-                                                    <div class="col-sm-10">
-                                                        <div class="row">
-                                                            <div class="col-sm-4">
-                                                                <div class="post_img">
+                                            <div class="my-booking-wrapper">
+                                                
+                                                <div class="img-wrapper">
+                                                    <img src="{{ static_asset('profile_image/' . $profile_image) }}" class="img-fluid" alt="my post">
+                                                </div>
+                                                    
+                                                <div class="booking-info">
+                                                    <div class="post_info">
+                                                        <p class="date">{{  date('d-M-Y', strtotime($old_app->booking_date)) }} - {{  date('h:i A', strtotime($old_app->start_time)) }}</p>
 
-                                                                    <img src="{{ static_asset('profile_image/' . $profile_image) }}"
-                                                                        class="img-fluid" alt="my post">
-
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-sm-8">
-                                                                <div class="post_info">
-                                                                    <p class="date">{{  date('d-M-Y', strtotime($old_app->booking_date)) }} - {{  date('h:i A', strtotime($old_app->start_time)) }}</p>
-
-                                                                    <a href="javascript:void(0)" class="view-data"
-                                                                    data-url="{{ route('my-booking-appointment-detail', $old_app->id) }}"><h5>{{ $old_app->barber_detail->first_name }}
-                                                                        {{ $old_app->barber_detail->last_name }}</h5> </a>
+                                                        <a href="javascript:void(0)" class="view-data"
+                                                        data-url="{{ route('my-booking-appointment-detail', $old_app->id) }}"><h5>{{ $old_app->barber_detail->first_name }}
+                                                            {{ $old_app->barber_detail->last_name }}</h5> </a>
 
 
-                                                                    <a href="javascript:void(0)" class="view-data"
-                                                                        data-url="{{ route('my-booking-appointment-detail', $old_app->id) }}"><h4 class="shop_name2">
-                                                                        {{ $old_app->barber_detail->salon_name }}</h4> </a>
+                                                        <a href="javascript:void(0)" class="view-data"
+                                                            data-url="{{ route('my-booking-appointment-detail', $old_app->id) }}"><h4 class="shop_name2">
+                                                            {{ $old_app->barber_detail->salon_name }}</h4> </a>
 
-                                                                    <ul class="list-unstyled available_info mt-3 p-0">
-                                                                        <li><i><img
-                                                                                    src="{{ static_asset('frontend/assets/images/location.png') }}"></i><span>{{ $old_app->barber_detail->location }}</span>
-                                                                        </li>
-                                                                    </ul>
-                                                                </div>
-                                                            </div>
-                                                        </div>
+                                                        <ul class="list-unstyled available_info mt-3 p-0">
+                                                            <li><i><img
+                                                                        src="{{ static_asset('frontend/assets/images/location.png') }}"></i><span>{{ $old_app->barber_detail->location }}</span>
+                                                            </li>
+                                                        </ul>
                                                     </div>
-                                                    <div class="col-sm-2">
-                                                        <a href="{{ route('get-booking-detail', $old_app->id) }}"> <span  class="button_label_completed">{{ __('labels.Complete') }}</span> </a>
+                                                    <div class="btns-wrapper">
+                                                        <a href="{{ route('get-booking-detail', $old_app->id) }}"> <span  class="btn btn-success">{{ __('labels.Complete') }}</span> </a>
                                                     </div>
                                                 </div>
+                                            </div>
 
-                                            <hr>
-                                        @endforeach
-                                       {!! $Old_Appointments->links() !!}
-                                    </div>
+                                    @endforeach
+
+                                    @else
+                                    <div class="white-box">
+                                        <div class="col-sm-12">
+
+                                                <div class="no-record">
+                                                <img src="{{ static_asset('frontend/assets/images/no-record.png') }}" class="img-fluid" >
+                                                </div>
+
+                                            </div>
+                                            </div>
+
+                                    @endif
+
+                                    
+                                    {!! $Old_Appointments->links() !!}
                                 </div>
                             </div>
                         </div>

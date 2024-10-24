@@ -369,9 +369,12 @@
                     <h3>Appointment Details</h3>
                     <p>Appointment Status : [ {{ @$booking->status }}]</p>
                     <p>Salon Name : [ {{ @$booking->barber_detail->salon_name }}]</p>
-                    <p>Location : [ {{ @$booking->barber_detail->location }}]</p>
+                    <!-- <p>Location : []</p> -->
                     <p>Appointment Date : [{{ @$booking->booking_date ?? "" }} ]</p>
-                    <p>Appointment Time : [{{ @$booking->start_time ?? "" }} - {{ @$booking->start_time ?? "" }}]</p>
+                    <p>Appointment Time : [{{ @$booking->start_time ?? "" }} - {{ @$booking->end_time ?? "" }}]</p>
+                    <p>Please download the attached document and read our policy for booking, cancellations, and rescheduling. Thank you,</p>
+                     <a href="https://www.google.com/maps?q={{ $booking->barber_detail->latitude }},{{ $booking->barber_detail->longitude }}"
+                                                    target="_blank">
                 </td>
                 </tr>
                 <tr>
@@ -381,6 +384,7 @@
                   <td align="center" valign="left"
                     style="font-size:16px; line-height:24px; font-family:'Roboto',Arial, Helvetica, sans-serif; color:#212121; font-weight:normal; text-align: center; padding: 0px 0px;">
                     <a href="{{ $url }}" style="background-color: #1C2749;border-radius: 4px;color: #ffffff;padding: 10px 25px;">Go To Website</a>
+                    <a href="https://www.google.com/maps?q={{ @$booking->barber_detail->latitude }},{{ @$booking->barber_detail->longitude }}" style="background-color: #1C2749;border-radius: 4px;color: #ffffff;padding: 10px 25px;">Go To Location</a>
                   </td>
 
 

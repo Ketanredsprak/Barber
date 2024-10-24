@@ -34,11 +34,14 @@ class BarberDetailResource extends JsonResource
             'salon_name' =>  $this->salon_name ?? "",
             'rating' => !empty($this->average_rating) ? number_format($this->average_rating, 1) : "0",
             'is_favorite' => $this->is_favorite ?? 0,
+            'distance' =>  !empty($this->distance) ? number_format($this->distance, 1) : "0",
             'salon_status' => $this->salon_status ?? "closed",
             'barber_service' => !is_null($this->barber_service) ? BarberServiceResource::collection($this->barber_service) : [],
             'barber_schedule' => !is_null($this->barber_schedule) ? new BarberScheduleResource($this->barber_schedule) : "",
+            'barber_web_url' => $this->url,
             'created_at' => date('Y-M-d h:i A', strtotime($this->created_at)),
             'updated_at' => date('Y-M-d h:i A', strtotime($this->updated_at)),
+            'barber_images' => BarberImagesResource::collection($this->barber_images),
 
         ];
     }

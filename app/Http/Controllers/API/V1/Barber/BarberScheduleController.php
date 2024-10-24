@@ -13,6 +13,18 @@ class BarberScheduleController extends Controller
     public function addAndUpdateBarberSchedule(Request $request)
     {
 
+         // account delete,suspend and wiating for approved
+         $response = checkUserStatus(Auth::user()->id);
+         if ($response['status'] == 1) {
+             return response()->json(
+                 [
+                     'status' => 2,
+                     'message' => $response['message'],
+                 ], 200);
+         }
+         // account delete,suspend and wiating for approved
+
+
         $id = Auth::user()->id;
         $language_code = $request->header('language');
 

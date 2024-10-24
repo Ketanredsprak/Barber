@@ -20,6 +20,7 @@ class Booking extends Model
        "end_time",
        "status",
        "booking_type",
+       "barber_proposal_status",
        "is_reschedule",
     ];
 
@@ -34,8 +35,6 @@ class Booking extends Model
     public function booking_service_detailss(){
         return $this->hasMany(BookingServiceDetail::class, 'booking_id', 'id');
     }
-
-
 
     public function barber_proposal(){
         return $this->hasOne(BarberProposal::class, 'booking_id', 'id');

@@ -27,20 +27,26 @@ if (empty($data->barber_detail->profile_image)) {
                     <div class="col-sm-12 col-lg-9">
                         <ul class="list-unstyled available_info mt-3 p-0">
                             <li> <i><img src="{{ static_asset('frontend/assets/images/loc-map.png') }}"></i><span>
-                                    {{ $data->barber_detail->location }} (2 km) </span></li>
+                                    {{ $data->barber_detail->location }} </span></li>
                             <li> <i><img src="{{ static_asset('frontend/assets/images/Star-2.png') }}"></i><span> 4.5
                                 </span></li>
                         </ul>
 
+
+                        @if ($data->booking_type == 'booking')
                         <ul class="list-unstyled available_info mt-3 p-0">
                             <li> <i><img src="{{ static_asset('frontend/assets/images/calender.png') }}"></i><span>
                                 <h4 class="view-title"> &nbsp;&nbsp;{{ __('labels.Date & Time') }}</h4>
                               </span></li>
                           </ul>
 
-
-                        <p class="mt-0"> {{ date('d-M-Y', strtotime($data->booking_date)) }}
+                          <p class="mt-0"> {{ date('d-M-Y', strtotime($data->booking_date)) }}
                             {{ date('h:i A', strtotime($data->booking_service_detailss[0]->start_time)) }}</p>
+                            
+                        @endif
+
+
+                        
 
                         <h4 class="view-title"> {{ __('labels.Service List') }}</h4>
 

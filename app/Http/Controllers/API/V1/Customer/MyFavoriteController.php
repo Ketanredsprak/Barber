@@ -15,6 +15,18 @@ class MyFavoriteController extends Controller
 
     public function getAllMyFavorites(Request $request)
     {
+
+         // account delete,suspend and wiating for approved
+         $response = checkUserStatus(Auth::user()->id);
+         if ($response['status'] == 1) {
+             return response()->json(
+                 [
+                     'status' => 2,
+                     'message' => $response['message'],
+                 ], 200);
+         }
+         // account delete,suspend and wiating for approved
+
         try {
 
 
@@ -50,6 +62,17 @@ class MyFavoriteController extends Controller
 
     public function addAndRemoveFavorite(Request $request)
     {
+
+         // account delete,suspend and wiating for approved
+         $response = checkUserStatus(Auth::user()->id);
+         if ($response['status'] == 1) {
+             return response()->json(
+                 [
+                     'status' => 2,
+                     'message' => $response['message'],
+                 ], 200);
+         }
+         // account delete,suspend and wiating for approved
 
         $language_code = $request->header('language');
         $validated['barber_id'] = "required";

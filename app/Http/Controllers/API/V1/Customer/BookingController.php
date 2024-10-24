@@ -14,8 +14,11 @@ use App\Models\Booking;
 use App\Models\BookingServiceDetail;
 use App\Models\Chats;
 use App\Models\Services;
+use App\Models\Subscription;
 use App\Models\User;
+use App\Models\UserSubscription;
 use App\Models\WaitList;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -61,11 +64,32 @@ class BookingController extends Controller
                 $endTime = $end;
             }
 
+            //check user booking balance
+            $user_sub = UserSubscription::where("user_id", Auth::user()->id)->where('status', 'active')->first();
+            if ($user_sub == "") {
+                return response()->json(['status' => 0, 'message' => __('message.reach maximum booking limite..')]);
+            }
+            if ($user_sub->availble_booking == 0) {
+                return response()->json(['status' => 0, 'message' => __('message.reach maximum booking limite..')]);
+            } else {
+                // Decrement the available bookings
+                $user_sub->availble_booking -= 1;
+                // Save the updated record to the database
+                $user_sub->update();
+
+                if ($user_sub->availble_booking == 0) {
+                    $basic_subscription = Subscription::find(1);
+                    $user_sub->availble_booking = $basic_subscription->number_of_booking ?? 0;
+                    $user_sub->update();
+                }
+            }
+
             $booking = new Booking();
             $booking->user_id = Auth::user()->id;
             $booking->barber_id = $request->barber_id;
             $booking->booking_date = $request->booking_date;
             $booking->total_price = 0;
+            $booking->status = "accept";
             $booking->start_time = $startTime;
             $booking->end_time = $endTime;
             $booking->save();
@@ -104,9 +128,23 @@ class BookingController extends Controller
 
             sendEmail($booking->user_id, 'booking', $booking->id);
 
+            $check = Chats::where('user_id1', $booking->user_id)->where('user_id2', $booking->barber_id)->exists();
+            if ($check == null) {
+                $create_chat = new Chats();
+                $create_chat->user_id1 = $booking->user_id;
+                $create_chat->user_id2 = $booking->barber_id;
+                $create_chat->chat_unique_key = chat_unique_key();
+                $create_chat->save();
+
+            }
+
+            creditPoint('booking', $booking->user_id);
+            creditPoint('active_referral', $booking->user_id);
+            loyalClient($booking->user_id, $booking->barber_id);
+            sendPushNotification(Auth::user()->id, 'remaining-booking', 'remaining-booking', 'remaining-booking');
 
             if (!empty($booking)) {
-                return response()->json(['status' => 1, 'message' => __('message.Booking succusfully wait for barber accept...')]);
+                return response()->json(['status' => 1, 'message' => __('message.Booking succusfully'), 'booking_id' => $booking->id]);
             }
 
         } catch (Exception $ex) {
@@ -119,6 +157,17 @@ class BookingController extends Controller
 
     public function barberBookingList(Request $request)
     {
+
+        // account delete,suspend and wiating for approved
+        $response = checkUserStatus(Auth::user()->id);
+        if ($response['status'] == 1) {
+            return response()->json(
+                [
+                    'status' => 2,
+                    'message' => $response['message'],
+                ], 200);
+        }
+        // account delete,suspend and wiating for approved
 
         $validated = [];
         $validated['barber_id'] = "required";
@@ -174,6 +223,17 @@ class BookingController extends Controller
     public function getAllCustomerAppointments(Request $request)
     {
 
+        // account delete,suspend and wiating for approved
+        $response = checkUserStatus(Auth::user()->id);
+        if ($response['status'] == 1) {
+            return response()->json(
+                [
+                    'status' => 2,
+                    'message' => $response['message'],
+                ], 200);
+        }
+        // account delete,suspend and wiating for approved
+
         $validated = $request->validate(
             ['status' => 'required'],
             ['status.required' => __('error.The status field is required.')]
@@ -183,11 +243,11 @@ class BookingController extends Controller
             $currentDate = Carbon::now()->toDateString(); // Current date
             $currentTime = Carbon::now()->toTimeString(); // Current time
 
-            $query = Booking::with('customer_detail', 'booking_service_detailss', 'barber_proposal')->where('user_id', Auth::user()->id)->orderBy('id', 'DESC');
+            $query = Booking::with('customer_detail', 'booking_service_detailss', 'barber_proposal', 'customer_prefrences')->where('user_id', Auth::user()->id)->orderBy('id', 'DESC');
 
             if ($request->status == "appointment") {
                 $query->where(function ($q) use ($currentDate, $currentTime) {
-                    $q->where('booking_type','booking')->where('booking_date', '>=', $currentDate)
+                    $q->where('booking_type', 'booking')->where('booking_date', '>=', $currentDate)
                         ->orWhere(function ($q) use ($currentDate, $currentTime) {
                             $q->where('booking_date', '>=', $currentDate)
                                 ->where('start_time', '>=', $currentTime);
@@ -216,7 +276,6 @@ class BookingController extends Controller
                 $record->average_rating = $rating ? number_format($rating, 1) : "0"; // Add average rating to each item
             }
 
-
             if ($data->isNotEmpty()) {
                 $results = CustomerBookingResource::collection($data);
                 return response()->json([
@@ -240,14 +299,35 @@ class BookingController extends Controller
         }
     }
 
-    public function getCustomerAppointmentDetail($id)
+    public function getCustomerAppointmentDetail(Request $request)
     {
+
+        // account delete,suspend and wiating for approved
+        $response = checkUserStatus(Auth::user()->id);
+        if ($response['status'] == 1) {
+            return response()->json(
+                [
+                    'status' => 2,
+                    'message' => $response['message'],
+                ], 200);
+        }
+        // account delete,suspend and wiating for approved
+
+        $validated = $request->validate([
+            'latitude' => 'required',
+            'longitude' => 'required',
+            'booking_id' => 'required',
+        ], [
+            'latitude.required' => __('error.The latitude field is required.'),
+            'longitude.required' => __('error.The longitude field is required.'),
+            'booking_id.required' => __('error.The booking id field is required.'),
+        ]);
+
         try {
-            $data = Booking::with('customer_detail', 'booking_service_detailss.main_service', 'booking_service_detailss.sub_service')->where('user_id', Auth::user()->id)->find($id);
+            $data = Booking::with('barber_detail', 'customer_detail', 'booking_service_detailss.main_service', 'booking_service_detailss.sub_service', 'customer_prefrences')->where('user_id', Auth::user()->id)->find($request->booking_id);
 
             $barbe_rating = User::with('barber_rating')->find($data->barber_id);
             $data['average_rating'] = $barbe_rating->averageRating();
-
 
             if ($data->status == "accept") {
                 $chat_detail = Chats::where('user_id1', $data->user_id)->where('user_id2', $data->barber_id)->first();
@@ -274,13 +354,21 @@ class BookingController extends Controller
             $bookingStartDateTime = Carbon::createFromFormat('Y-m-d H:i:s', $bookingDate . ' ' . $startTime);
             $bookingEndDateTime = Carbon::createFromFormat('Y-m-d H:i:s', $bookingDate . ' ' . $endTime);
 
+            // Determine if the user can reschedule
+            $canReschedule = $currentDateTime->diffInMinutes($bookingStartDateTime) > 30 ? 1 : 0;
+            $data->can_reschedule = $canReschedule;
+
+
+            // Determine if the user can reschedule
+            $canCancel = $currentDateTime->diffInMinutes($bookingStartDateTime) > 60 ? 1 : 0;
+            $data->can_cancel = $canCancel;
 
             if ($data->status == "accept") {
                 // Determine process status based on the comparison
                 $minutesUntilStart = "";
                 if ($bookingStartDateTime->isToday()) {
                     // Booking is for today, check the time
-                    if ($currentDateTime->lessThan($bookingStartDateTime)) {
+                     if ($currentDateTime->lessThan($bookingStartDateTime)) {
                         $processStatus = 'waiting'; // Current time is before the booking start time
                         $minutesUntilStart = $currentDateTime->diffInMinutes($bookingStartDateTime);
                     } elseif ($currentDateTime->between($bookingStartDateTime, $bookingEndDateTime)) {
@@ -291,34 +379,67 @@ class BookingController extends Controller
                     }
                 } elseif ($bookingStartDateTime->isFuture()) {
                     // Booking is for a future date
-                    $processStatus = 'booked';
+
+                    if ($data->status == "finished") {
+                        $processStatus = 'finished';
+
+                    } else {
+                        $processStatus = 'booked';
+                    }
+
                 } else {
                     // Booking is for an old date
                     $processStatus = 'finished';
                 }
 
+                // Display or use the results
+                if (isset($minutesUntilStart)) {
+                    $data->minute_start_and_end_minute_left = $minutesUntilStart;
+                } elseif (isset($minutesUntilEnd)) {
+                    $data->minute_start_and_end_minute_left = $minutesUntilStart;
+                } else {
 
-            // Display or use the results
-            if (isset($minutesUntilStart)) {
-                $data->minute_start_and_end_minute_left = $minutesUntilStart;
-            } elseif (isset($minutesUntilEnd)) {
-                $data->minute_start_and_end_minute_left = $minutesUntilStart;
+                    $data->minute_start_and_end_minute_left = $minutesUntilStart;
+
+                }
+
+                $data->process_status = $processStatus;
+
             } else {
 
-                $data->minute_start_and_end_minute_left = $minutesUntilStart;
-
-            }
-
-            $data->process_status = $processStatus;
-
-            } else {
-                $data->process_status = "booked";
+                if ($data->status == "finished") {
+                    $data->process_status = 'finished';
+                } else {
+                    $data->process_status = 'booked';
+                }
                 $data->minute_start_and_end_minute_left = "";
             }
 
+            // Calculate the distance between the barber and the given coordinates
+            $latitude = $data->barber_detail->latitude;
+            $longitude = $data->barber_detail->longitude;
+
+            if ($latitude != "" || $longitude != "") {
+                $distance = calculateDistance($request->latitude, $request->longitude, $data->barber_detail->latitude, $data->barber_detail->longitude);
+                $data['distance'] = $distance; // Add distance to the response data
+            } else {
+                $data['distance'] = null;
+            }
+
+            //checking rating
+            $recordExists = BarberRating::where('booking_id', $request->booking_id)
+                ->where('user_id', $data->user_id)
+                ->where('barber_id', $data->barber_id)
+                ->exists();
+
+            $data['rating_submit'] = $recordExists ? 1 : 0;
+            //checking rating
+
             $results = new CustomerBookingDetailResource($data);
+            $pdf_url = url('api/booking-invoice/' . $data->id);
             return response()->json([
                 'data' => $results,
+                'pdf_url' => $pdf_url,
                 'status' => 1,
                 'message' => __('message.Data get successfully.'),
             ], 200);
@@ -333,6 +454,18 @@ class BookingController extends Controller
 
     public function bookingWithJoinWaitlist(Request $request)
     {
+
+        // account delete,suspend and wiating for approved
+        $response = checkUserStatus(Auth::user()->id);
+        if ($response['status'] == 1) {
+            return response()->json(
+                [
+                    'status' => 2,
+                    'message' => $response['message'],
+                ], 200);
+        }
+        // account delete,suspend and wiating for approved
+
         $validated = $request->validate([
             'barber_id' => 'required',
             'service_ids' => 'required|array',
@@ -355,6 +488,26 @@ class BookingController extends Controller
         ]);
 
         try {
+
+            $user_sub = UserSubscription::where("user_id", Auth::user()->id)->where('status', 'active')->first();
+            if ($user_sub == "") {
+                return response()->json(['status' => 0, 'message' => __('message.reach maximum booking limite..')]);
+            }
+            if ($user_sub->availble_booking == 0) {
+                return response()->json(['status' => 0, 'message' => __('message.reach maximum booking limite..')]);
+            } else {
+                // Decrement the available bookings
+                $user_sub->availble_booking -= 1;
+                // Save the updated record to the database
+                $user_sub->update();
+
+                if ($user_sub->availble_booking == 0) {
+                    $basic_subscription = Subscription::find(1);
+                    $user_sub->availble_booking = $basic_subscription->number_of_booking ?? 100;
+                    $user_sub->update();
+                }
+
+            }
 
             $booking = new Booking();
             $booking->user_id = Auth::user()->id;
@@ -396,6 +549,7 @@ class BookingController extends Controller
             $booking->update();
 
             $data = Booking::with('customer_detail', 'booking_service_detailss.main_service', 'booking_service_detailss.sub_service')->find($booking->id);
+            sendPushNotification(Auth::user()->id, 'remaining-booking', 'remaining-booking', 'remaining-booking');
             $results = new BookingJoinServiceResource($data);
 
             if (!empty($results)) {
@@ -418,6 +572,17 @@ class BookingController extends Controller
 
     public function joinWaitlist(Request $request)
     {
+
+        // account delete,suspend and wiating for approved
+        $response = checkUserStatus(Auth::user()->id);
+        if ($response['status'] == 1) {
+            return response()->json(
+                [
+                    'status' => 2,
+                    'message' => $response['message'],
+                ], 200);
+        }
+        // account delete,suspend and wiating for approved
 
         try {
 
@@ -502,12 +667,27 @@ class BookingController extends Controller
 
     public function cancelBooking($id)
     {
+
+        // account delete,suspend and wiating for approved
+        $response = checkUserStatus(Auth::user()->id);
+        if ($response['status'] == 1) {
+            return response()->json(
+                [
+                    'status' => 2,
+                    'message' => $response['message'],
+                ], 200);
+        }
+        // account delete,suspend and wiating for approved
+
         try {
 
             $data = Booking::find($id);
 
             $data->status = "cancel";
             $data->update();
+
+            sendPushNotification($data->user_id, 'cancel-booking-when-to-customer', 'cancel-booking-when-to-customer', 'cancel-booking-when-to-customer');
+            sendPushNotification($data->barber_id, 'cancel-booking-when-to-barber', 'cancel-booking-when-to-barber', 'cancel-booking-when-to-barber');
 
             if ($data) {
                 return response()->json([
@@ -553,6 +733,17 @@ class BookingController extends Controller
 
     public function rescheduleBookingSubmit(Request $request)
     {
+
+        // account delete,suspend and wiating for approved
+        $response = checkUserStatus(Auth::user()->id);
+        if ($response['status'] == 1) {
+            return response()->json(
+                [
+                    'status' => 2,
+                    'message' => $response['message'],
+                ], 200);
+        }
+        // account delete,suspend and wiating for approved
 
         $language_code = $request->header('language');
 
@@ -633,6 +824,8 @@ class BookingController extends Controller
 
             if ($booking_reschesule_detail) {
                 resechedule_booking($request->booking_id, $booking->id);
+                sendPushNotification($booking->user_id, 'booking-reschedule-from-customer-info-to-customer', 'booking-reschedule', 'booking-reschedule');
+                sendPushNotification($booking->barber_id, 'booking-reschedule-from-customer-info-to-barber', 'booking-reschedule-from-customer', 'booking-reschedule-from-customer');
                 return response()->json([
                     'status' => 1,
                     'message' => __('message.Booking reschedule successfully'),
@@ -649,6 +842,17 @@ class BookingController extends Controller
 
     public function acceptOrRejectBarberProposal(Request $request)
     {
+
+        // account delete,suspend and wiating for approved
+        $response = checkUserStatus(Auth::user()->id);
+        if ($response['status'] == 1) {
+            return response()->json(
+                [
+                    'status' => 2,
+                    'message' => $response['message'],
+                ], 200);
+        }
+        // account delete,suspend and wiating for approved
 
         $validated = [];
         $validated['status'] = "required";
@@ -713,6 +917,7 @@ class BookingController extends Controller
 
             }
             sendEmail($data->user_id, 'customer-chnage-status-for-barber-proposal', $request->booking_id);
+            sendPushNotification($data->barber_id, 'customer-chnage-status-for-barber-proposal-to-barber', 'customer-chnage-status-for-barber-proposal', 'customer-chnage-status-for-barber-proposal');
 
             if ($request->status == "accept") {
                 creditPoint('booking', $booking->user_id);
@@ -734,6 +939,17 @@ class BookingController extends Controller
     public function ratingBarber(Request $request)
     {
 
+        // account delete,suspend and wiating for approved
+        $response = checkUserStatus(Auth::user()->id);
+        if ($response['status'] == 1) {
+            return response()->json(
+                [
+                    'status' => 2,
+                    'message' => $response['message'],
+                ], 200);
+        }
+        // account delete,suspend and wiating for approved
+
         $validated = [];
         $validated['rating'] = "required";
         $validated['booking_id'] = "required";
@@ -748,20 +964,27 @@ class BookingController extends Controller
         try {
 
             $booking = Booking::find($request->booking_id);
-            $data = new BarberRating();
-            $data->user_id = $booking->user_id;
-            $data->barber_id = $booking->barber_id;
-            $data->booking_id = $booking->booking_id;
-            $data->rating = $request->rating;
-            $data->save();
+            if ($booking) {
 
-            sendEmail(Auth::user()->id, 'customer-rating-to-barber', $booking->id);
+                $data = new BarberRating();
+                $data->user_id = $booking->user_id;
+                $data->barber_id = $booking->barber_id;
+                $data->booking_id = $booking->id;
+                $data->rating = $request->rating;
+                $data->save();
 
-            if ($data) {
-                return response()->json([
-                    'status' => 1,
-                    'message' => __('message.Rating submit successfully'),
-                ], 200);
+                sendEmail(Auth::user()->id, 'customer-rating-to-barber', $booking->id);
+
+                if ($data) {
+                    return response()->json([
+                        'status' => 1,
+                        'message' => __('message.Rating submit successfully'),
+                    ], 200);
+                } else {
+                    return response()->json([
+                        'status' => 0,
+                        'message' => __('message.Somthing went wrong'), 400]);
+                }
             } else {
                 return response()->json([
                     'status' => 0,
@@ -772,6 +995,52 @@ class BookingController extends Controller
                 ['success' => false, 'message' => $ex->getMessage()], 400
             );
         }
+    }
+
+    public function bookingInvoice($id)
+    {
+
+        // account delete,suspend and wiating for approved
+        $response = checkUserStatus(Auth::user()->id);
+        if ($response['status'] == 1) {
+            return response()->json(
+                [
+                    'status' => 2,
+                    'message' => $response['message'],
+                ], 200);
+        }
+        // account delete,suspend and wiating for approved
+
+        // Fetch the booking and related service details
+        $bdata = Booking::where('id', $id)
+            ->with('booking_service_detailss')
+            ->first();
+
+        // Check if booking data exists
+        if (empty($bdata)) {
+            return response()->json([
+                'status' => 1,
+                'message' => __('message.Booking not found'),
+            ], 200);
+        }
+
+        // Fetch service details for the booking
+        $serviceDetails = BookingServiceDetail::where('booking_id', $id)
+            ->get();
+
+        // Generate the PDF
+        $pdf = Pdf::loadView('PDF.invoice', compact('bdata', 'serviceDetails'));
+
+        // Output the PDF content
+        $pdfContent = $pdf->output();
+
+        // Define the filename with the booking ID
+        $fileName = 'invoice_' . $id . '.pdf';
+
+        // Return the PDF as a binary response with the dynamic filename
+        return response($pdfContent, 200)
+            ->header('Content-Type', 'application/pdf')
+            ->header('Content-Disposition', 'attachment; filename="' . $fileName . '"');
     }
 
 }

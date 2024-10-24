@@ -7,14 +7,18 @@ use App\Models\BarberProposal;
 use App\Models\BarberRating;
 use App\Models\BarberSchedule;
 use App\Models\BarberServices;
+use App\Models\BarberSlotDisable;
 use App\Models\Booking;
 use App\Models\BookingServiceDetail;
 use App\Models\Chats;
 use App\Models\Pagies;
 use App\Models\Services;
+use App\Models\Subscription;
 use App\Models\User;
+use App\Models\UserSubscription;
 use App\Models\WaitList;
 use App\Rules\SameCount;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use DateTime;
 use Illuminate\Http\Request;
@@ -86,11 +90,52 @@ class BookingController extends Controller
                 $endTime = $end;
             }
 
+            //check booking date and time
+            $booking = Booking::where('user_id', Auth::user()->id)->where('booking_date', $request->booking_date)->whereIn('status', ['accept', 'finished'])
+                ->where(function ($query) use ($startTime, $endTime) {
+                    $query->whereBetween('start_time', [$startTime, $endTime])
+                        ->orWhereBetween('end_time', [$startTime, $endTime])
+                        ->orWhere(function ($query) use ($startTime, $endTime) {
+                            $query->where('start_time', '<=', $startTime)
+                                ->where('end_time', '>=', $endTime);
+                        });
+                })
+                ->get();
+
+            if (!$booking->isEmpty()) {
+                return response()->json(['status' => 0, 'message' => __('message.Already booking found for this date and time')]);
+            }
+            //check booking date and time
+
+            //check user booking balance
+            $user_sub = UserSubscription::where("user_id", Auth::user()->id)->where('status', 'active')->first();
+            if (!empty($user_sub)) {
+
+                if ($user_sub->availble_booking == 0) {
+                    return response()->json(['status' => 0, 'message' => __('message.reach maximum booking limit..')]);
+                } else {
+                    // Decrement the available bookings
+                    $user_sub->availble_booking -= 1;
+                    // Save the updated record to the database
+                    $user_sub->update();
+
+                    if ($user_sub->availble_booking == 0) {
+                        $basic_subscription = Subscription::find(1);
+                        $user_sub->availble_booking = $basic_subscription->number_of_booking ?? 0;
+                        $user_sub->update();
+                    }
+                }
+
+            } else {
+                return response()->json(['status' => 0, 'message' => __('message.reach maximum booking limit..')]);
+            }
+
             $booking = new Booking();
             $booking->user_id = Auth::user()->id;
             $booking->barber_id = $request->barber_id;
             $booking->booking_date = $request->booking_date;
             $booking->total_price = 0;
+            $booking->status = "accept";
             $booking->start_time = $startTime;
             $booking->end_time = $endTime;
             $booking->save();
@@ -130,6 +175,9 @@ class BookingController extends Controller
             $booking_id = Crypt::encryptString($booking->id);
 
             sendEmail($booking->user_id, 'booking', $booking->id);
+            sendPushNotification($booking->user_id, 'booking', 'booking', 'booking');
+            sendPushNotification($booking->barber_id, 'booking', 'booking', 'booking');
+            sendPushNotification(Auth::user()->id, 'remaining-booking', 'remaining-booking', 'remaining-booking');
 
             if (!empty($booking)) {
                 return response()->json(['status' => 1, 'message' => __('message.Booking succusfully'), 'booking_id' => $booking_id]);
@@ -146,11 +194,14 @@ class BookingController extends Controller
     public function getBarberSlotsReshedule(Request $request)
     {
 
-        //
-        $booking_ids = Booking::where('barber_id', $request->barber_id)->pluck('id')->toArray();
+        $booking_ids = Booking::where('barber_id', $request->barber_id)
+            ->whereIn('status', ['accept', 'finished'])
+            ->pluck('id')->toArray();
 
         $bookingDate = DateTime::createFromFormat('d/m/Y', $request->booking_date);
         $booking_date_y_m_d = $bookingDate->format('Y-m-d');
+        $current_date = date('Y-m-d');
+        $current_time = date('H:i');
 
         $data = BookingServiceDetail::with('booking_detail')
             ->whereIn('booking_id', $booking_ids)
@@ -162,7 +213,6 @@ class BookingController extends Controller
             ->get();
 
         $results = [];
-
         foreach ($data as $item) {
             $results[] = [
                 'start_time' => date('H:i', strtotime($item->start_time)),
@@ -171,59 +221,87 @@ class BookingController extends Controller
         }
 
         $booking_date = $request->booking_date;
-        // Create a DateTime object from the date string
         $dateObject = DateTime::createFromFormat('d/m/Y', $booking_date);
-        // Format it as full textual representation of the day (e.g., Monday)
-        $dayOfWeek = $dateObject->format('l');
-        $dayOfWeek = strtolower($dayOfWeek);
+        $dayOfWeek = strtolower($dateObject->format('l'));
 
         $holiday = $dayOfWeek . "_is_holiday";
         $start_time = $dayOfWeek . "_start_time";
         $end_time = $dayOfWeek . "_end_time";
-        $barber_schesule = BarberSchedule::where('barber_id', $request->barber_id)->select('id', 'barber_id', $holiday, $start_time, $end_time)->first();
+        $barber_schedule = BarberSchedule::where('barber_id', $request->barber_id)
+            ->select('id', 'barber_id', $holiday, $start_time, $end_time)
+            ->first();
 
-        $holiday = $barber_schesule->$holiday;
-        $start_time = $barber_schesule->$start_time;
-        $end_time = $barber_schesule->$end_time;
+        $holiday = $barber_schedule->$holiday;
+        $start_time = $barber_schedule->$start_time;
+        $end_time = $barber_schedule->$end_time;
 
         if ($holiday == 0) {
-            //generate slot based on barber avaliblity
-            $interval = 30 * 60; // duration in seconds
+            $interval = 30 * 60;
             $startTimestamp = strtotime($start_time);
             $endTimestamp = strtotime($end_time);
+            $timeSlots = [];
 
-            // Initialize an array to store time slots
-            $timeSlots = array();
-
-            // Create time slots with 30-minute gaps
             while ($startTimestamp < $endTimestamp) {
                 $endTimestampSlot = $startTimestamp + $interval;
-
-                $timeSlots[] = array(
+                $timeSlots[] = [
                     'start' => date('H:i', $startTimestamp),
                     'end' => date('H:i', $endTimestampSlot),
-                );
-
+                    'is_available' => 0,
+                ];
                 $startTimestamp = $endTimestampSlot;
             }
-
-            //generate slot based on barber avaliblity
         } else {
             $timeSlots = [];
         }
-        $list = "";
 
-        // Compare arrays and add is_available key
         foreach ($timeSlots as &$item) {
-            $item['is_available'] = 0; // Default to 0
-
             foreach ($results as $availability) {
                 if ($item['start'] === $availability['start_time'] && $item['end'] === $availability['end_time']) {
                     $item['is_available'] = 1;
-                    break; // No need to check further if a match is found
+                    break;
+                }
+            }
+
+            // If the booking date is today, check if the slot time has passed
+            if ($booking_date_y_m_d == $current_date && $item['start'] < $current_time) {
+                $item['is_available'] = 1; // Mark past slots as unavailable
+            }
+        }
+
+        $disableSlotRecordAll = BarberSlotDisable::where('barber_id', $request->barber_id)
+            ->where('date', $booking_date_y_m_d)
+            ->where('all_slots', 1)
+            ->first();
+
+        if ($disableSlotRecordAll) {
+            foreach ($timeSlots as &$slot) {
+                $slot['is_available'] = 1;
+            }
+        }
+
+        $disableSlotRecords = BarberSlotDisable::where('barber_id', $request->barber_id)
+            ->where('date', $booking_date_y_m_d)
+            ->where('all_slots', 0)
+            ->get();
+
+        if (count($disableSlotRecords) >= 0) {
+            foreach ($disableSlotRecords as $disableRecord) {
+                $disableSlotTime = $disableRecord->slot;
+
+                foreach ($timeSlots as &$slot) {
+                    if ($slot['is_available'] == 1) {
+                        continue;
+                    }
+
+                    if ($slot['start'] == $disableSlotTime) {
+                        $slot['is_available'] = 1;
+                    }
                 }
             }
         }
+
+        //getting barber disbale slot
+
         return response()->json(view('Frontend.Barber.slot-list-reshedule', compact('timeSlots'))->render());
 
     }
@@ -231,11 +309,12 @@ class BookingController extends Controller
     public function getBarberSlots(Request $request)
     {
 
-        //
-        $booking_ids = Booking::where('barber_id', $request->barber_id)->pluck('id')->toArray();
+        $booking_ids = Booking::where('barber_id', $request->barber_id)->whereIn('status', ['accept', 'finished'])->pluck('id')->toArray();
 
         $bookingDate = DateTime::createFromFormat('d/m/Y', $request->booking_date);
         $booking_date_y_m_d = $bookingDate->format('Y-m-d');
+        $current_date = date('Y-m-d');
+        $current_time = date('H:i');
 
         $data = BookingServiceDetail::with('booking_detail')
             ->whereIn('booking_id', $booking_ids)
@@ -247,7 +326,6 @@ class BookingController extends Controller
             ->get();
 
         $results = [];
-
         foreach ($data as $item) {
             $results[] = [
                 'start_time' => date('H:i', strtotime($item->start_time)),
@@ -256,56 +334,81 @@ class BookingController extends Controller
         }
 
         $booking_date = $request->booking_date;
-        // Create a DateTime object from the date string
         $dateObject = DateTime::createFromFormat('d/m/Y', $booking_date);
-        // Format it as full textual representation of the day (e.g., Monday)
-        $dayOfWeek = $dateObject->format('l');
-        $dayOfWeek = strtolower($dayOfWeek);
+        $dayOfWeek = strtolower($dateObject->format('l'));
 
         $holiday = $dayOfWeek . "_is_holiday";
         $start_time = $dayOfWeek . "_start_time";
         $end_time = $dayOfWeek . "_end_time";
-        $barber_schesule = BarberSchedule::where('barber_id', $request->barber_id)->select('id', 'barber_id', $holiday, $start_time, $end_time)->first();
+        $barber_schedule = BarberSchedule::where('barber_id', $request->barber_id)
+            ->select('id', 'barber_id', $holiday, $start_time, $end_time)
+            ->first();
 
-        $holiday = $barber_schesule->$holiday;
-        $start_time = $barber_schesule->$start_time;
-        $end_time = $barber_schesule->$end_time;
+        $holiday = $barber_schedule->$holiday;
+        $start_time = $barber_schedule->$start_time;
+        $end_time = $barber_schedule->$end_time;
 
         if ($holiday == 0) {
-            //generate slot based on barber avaliblity
-            $interval = 30 * 60; // duration in seconds
+            $interval = 30 * 60;
             $startTimestamp = strtotime($start_time);
             $endTimestamp = strtotime($end_time);
+            $timeSlots = [];
 
-            // Initialize an array to store time slots
-            $timeSlots = array();
-
-            // Create time slots with 30-minute gaps
             while ($startTimestamp < $endTimestamp) {
                 $endTimestampSlot = $startTimestamp + $interval;
-
-                $timeSlots[] = array(
+                $timeSlots[] = [
                     'start' => date('H:i', $startTimestamp),
                     'end' => date('H:i', $endTimestampSlot),
-                );
-
+                    'is_available' => 0,
+                ];
                 $startTimestamp = $endTimestampSlot;
             }
-
-            //generate slot based on barber avaliblity
         } else {
             $timeSlots = [];
         }
-        $list = "";
 
-        // Compare arrays and add is_available key
         foreach ($timeSlots as &$item) {
-            $item['is_available'] = 0; // Default to 0
-
             foreach ($results as $availability) {
                 if ($item['start'] === $availability['start_time'] && $item['end'] === $availability['end_time']) {
                     $item['is_available'] = 1;
-                    break; // No need to check further if a match is found
+                    break;
+                }
+            }
+
+            // If the booking date is today, check if the slot time has passed
+            if ($booking_date_y_m_d == $current_date && $item['start'] < $current_time) {
+                $item['is_available'] = 1; // Mark past slots as unavailable
+            }
+        }
+
+        $disableSlotRecordAll = BarberSlotDisable::where('barber_id', $request->barber_id)
+            ->where('date', $booking_date_y_m_d)
+            ->where('all_slots', 1)
+            ->first();
+
+        if ($disableSlotRecordAll) {
+            foreach ($timeSlots as &$slot) {
+                $slot['is_available'] = 1;
+            }
+        }
+
+        $disableSlotRecords = BarberSlotDisable::where('barber_id', $request->barber_id)
+            ->where('date', $booking_date_y_m_d)
+            ->where('all_slots', 0)
+            ->get();
+
+        if (count($disableSlotRecords) >= 0) {
+            foreach ($disableSlotRecords as $disableRecord) {
+                $disableSlotTime = $disableRecord->slot;
+
+                foreach ($timeSlots as &$slot) {
+                    if ($slot['is_available'] == 1) {
+                        continue;
+                    }
+
+                    if ($slot['start'] == $disableSlotTime) {
+                        $slot['is_available'] = 1;
+                    }
                 }
             }
         }
@@ -319,7 +422,7 @@ class BookingController extends Controller
     {
         $userId = Auth::user()->id;
         $todayDate = Carbon::today()->toDateString();
-        $Today_Appointments = Booking::with('barber_detail')->where('user_id', $userId)->where('booking_date', '>=', $todayDate)->where('status', '!=', 'finished')->orderBy('id', 'DESC')->paginate(5);
+        $Today_Appointments = Booking::with('barber_proposal', 'barber_detail', 'booking_service_detailss')->where('user_id', $userId)->where('booking_date', '>=', $todayDate)->where('status', '!=', 'finished')->orderBy('id', 'DESC')->paginate(5);
         $data = Pagies::with("meta_content")->find(10);
         return view('Frontend.Booking.my-booking-appointments-today', compact('data', 'Today_Appointments'));
     }
@@ -355,9 +458,11 @@ class BookingController extends Controller
 
             $id = Crypt::decryptString($id);
             $data = Pagies::with("meta_content", 'cms_content')->find(17);
+            $user_sub = UserSubscription::where("user_id", Auth::user()->id)->where('status', 'active')->first();
             $data['booking'] = Booking::with('barber_detail', 'customer_detail', 'booking_service_detailss')->find($id);
+
             if (!empty($data)) {
-                return view('Frontend.Booking.my-booking-appointment-seccess', compact('data'));
+                return view('Frontend.Booking.my-booking-appointment-seccess', compact('data', 'user_sub'));
             }
 
         } catch (Exception $ex) {
@@ -382,6 +487,24 @@ class BookingController extends Controller
         ]);
 
         try {
+
+            //check user booking balance
+            $user_sub = UserSubscription::where("user_id", Auth::user()->id)->where('status', 'active')->first();
+            if ($user_sub->availble_booking == 0) {
+                return response()->json(['status' => 0, 'message' => __('message.reach maximum booking limit..')]);
+            } else {
+                // Decrement the available bookings
+                $user_sub->availble_booking -= 1;
+                // Save the updated record to the database
+                $user_sub->update();
+
+                if ($user_sub->availble_booking == 0) {
+                    $basic_subscription = Subscription::find(1);
+                    $user_sub->availble_booking = $basic_subscription->number_of_booking ?? 100;
+                    $user_sub->update();
+                }
+
+            }
 
             $booking = new Booking();
             $booking->user_id = Auth::user()->id;
@@ -425,7 +548,7 @@ class BookingController extends Controller
             $booking_id = Crypt::encryptString($booking->id);
 
             if (!empty($booking)) {
-                return response()->json(['status' => 1, 'message' => __('message.Complete second step for join waitlist.'), 'booking_id' => $booking_id]);
+                return response()->json(['status' => 1, 'message' => __('message.Continue with next step'), 'booking_id' => $booking_id]);
             }
 
         } catch (Exception $ex) {
@@ -460,7 +583,7 @@ class BookingController extends Controller
                 // }
             } else {
                 $any_date = $request->input('any_date');
-                $selected_date = $request->input('selected_date');
+                $selected_date = $request->input('booking_date');
                 $select_date_range = $request->input('select_date_range');
                 $from_date = $request->input('from_date');
                 $to_date = $request->input('to_date');
@@ -472,7 +595,6 @@ class BookingController extends Controller
 
                 $max_length = max(
                     count($any_date ?? []),
-                    count($selected_date ?? []),
                     count($select_date_range ?? []),
                     count($from_date ?? []),
                     count($to_date ?? []),
@@ -487,9 +609,9 @@ class BookingController extends Controller
                     $wait_list = new WaitList();
                     $wait_list->booking_id = $request->booking_id;
 
-                    if (isset($selected_date[$i]) && $selected_date[$i]) {
+                    if (isset($selected_date)) {
                         $wait_list->select_date = 1;
-                        $wait_list->selected_date = $selected_date[$i];
+                        $wait_list->selected_date = $selected_date;
                     } else {
                         $wait_list->select_date = 0;
                         $wait_list->selected_date = null;
@@ -542,7 +664,7 @@ class BookingController extends Controller
     {
         // $booking_id = Crypt::decryptString($id);
         $data = Pagies::with("meta_content", 'cms_content')->find(19);
-        $booking = Booking::with('customer_detail', 'barber_detail', 'booking_service_detailss.main_service', 'booking_service_detailss.sub_service', 'barber_reting', 'barber_proposal')->find($id);
+        $booking = Booking::with('customer_prefrences', 'customer_detail', 'barber_detail', 'booking_service_detailss.main_service', 'booking_service_detailss.sub_service', 'barber_reting', 'barber_proposal')->find($id);
 
         $booking_encrypt_id = Crypt::encryptString($booking->id);
         $booking->booking_encrypt_id = $booking_encrypt_id;
@@ -560,6 +682,16 @@ class BookingController extends Controller
             // Create Carbon instances for booking start and end times
             $bookingStartDateTime = Carbon::createFromFormat('Y-m-d H:i:s', $bookingDate . ' ' . $startTime);
             $bookingEndDateTime = Carbon::createFromFormat('Y-m-d H:i:s', $bookingDate . ' ' . $endTime);
+
+             // Determine if the user can reschedule
+             $canReschedule = $currentDateTime->diffInMinutes($bookingStartDateTime) > 30 ? 1 : 0;
+             $booking->can_reschedule = $canReschedule;
+
+
+             // Determine if the user can reschedule
+             $canCancel = $currentDateTime->diffInMinutes($bookingStartDateTime) > 60 ? 1 : 0;
+             $booking->can_cancel = $canCancel;
+
 
             // Determine process status based on the comparison
             $minutesUntilStart = "";
@@ -621,8 +753,11 @@ class BookingController extends Controller
 
         }
 
+        $barber_data = User::with('barber_rating')->find($booking->barber_id);
+        $barber_data->average_rating = $barber_data->averageRating();
+
         if (!empty($booking)) {
-            return view('Frontend.Booking.my-booking-detail', compact('data', 'booking'));
+            return view('Frontend.Booking.my-booking-detail', compact('data', 'booking', 'barber_data'));
         }
 
     }
@@ -632,11 +767,16 @@ class BookingController extends Controller
 
         try {
 
+
             $booking_id = Crypt::decryptString($id);
+
             $data = Booking::find($booking_id);
 
             $data->status = "cancel";
             $data->update();
+
+            sendPushNotification($data->user_id, 'cancel-booking-when-to-customer', 'cancel-booking-when-to-customer', 'cancel-booking-when-to-customer');
+            sendPushNotification($data->barber_id, 'cancel-booking-when-to-barber', 'cancel-booking-when-to-barber', 'cancel-booking-when-to-barber');
 
             if (!empty($data)) {
                 return redirect('my-booking-appointment-today')->with('status', __('message.Booking cancel successfully'));
@@ -767,6 +907,8 @@ class BookingController extends Controller
 
             if (!empty($booking)) {
                 resechedule_booking($request->booking_id, $booking->id);
+                sendPushNotification($booking->user_id, 'booking-reschedule-from-customer-info-to-customer', 'booking-reschedule', 'booking-reschedule');
+                sendPushNotification($booking->barber_id, 'booking-reschedule-from-customer-info-to-barber', 'booking-reschedule-from-customer', 'booking-reschedule-from-customer');
                 return response()->json(['status' => 1, 'message' => __('message.Booking reshedule succusfully'), 'booking_id' => $booking_new_id]);
             }
 
@@ -825,6 +967,7 @@ class BookingController extends Controller
             $data->update();
 
             sendEmail($data->user_id, 'customer-chnage-status-for-barber-proposal', $data->booking_id);
+            sendPushNotification($data->barber_id, 'customer-chnage-status-for-barber-proposal-to-barber', 'customer-chnage-status-for-barber-proposal', 'customer-chnage-status-for-barber-proposal');
 
             return response()->json([
                 'status' => 1,
@@ -897,6 +1040,7 @@ class BookingController extends Controller
             loyalClient($booking->user_id, $booking->barber_id);
 
             sendEmail($data->user_id, 'customer-chnage-status-for-barber-proposal', $data->booking_id);
+            sendPushNotification($data->barber_id, 'customer-chnage-status-for-barber-proposal-to-barber', 'Customer chnage status for barber proposal', 'Customer chnage status for barber proposal');
 
             return response()->json([
                 'status' => 1,
@@ -908,6 +1052,31 @@ class BookingController extends Controller
                 ['success' => false, 'message' => $ex->getMessage()], 400
             );
         }
+    }
+
+    public function bookingInvoice($id)
+    {
+        try {
+            // Fetch the booking data and service details
+            $bdata = Booking::where('id', $id)
+                ->with('booking_service_detailss', 'customer_detail', 'barber_detail')
+                ->first();
+
+            $serviceDetails = BookingServiceDetail::where('booking_id', $id)
+                ->get();
+
+            // Load the view and generate the PDF
+            $pdf = Pdf::loadView('PDF.invoice', compact('bdata', 'serviceDetails'));
+
+            // Automatically download the PDF
+            return $pdf->download('invoice.pdf');
+
+        } catch (Exception $ex) {
+            return response()->json(
+                ['success' => false, 'message' => $ex->getMessage()], 400
+            );
+        }
+
     }
 
 }

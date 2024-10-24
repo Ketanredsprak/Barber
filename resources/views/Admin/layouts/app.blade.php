@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html  @if (config('app.locale') == 'ar') lang="ar" dir="rtl" @else lang="en" @endif>
 <!--begin::Head-->
 
 <head>

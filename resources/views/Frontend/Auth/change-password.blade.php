@@ -27,7 +27,7 @@
     <section class="dashboard_sec">
         <div class="container">
             <div class="row">
-                <div class="col-sm-3 col-lg-3">
+                <div class="col-lg-3 col-md-4">
                     <div class="profile_sidebar">
                         <div class="sidebar_profile">
                             <img src="{{ static_asset('profile_image/' . $profile_image) }}" class="img-fluid"
@@ -43,7 +43,7 @@
                     </div>
                 </div>
 
-                <div class="col-sm-9 col-lg-9">
+                <div class="col-lg-9 col-md-8">
                     <div class="dashboard_right">
                         <div class="row mb-3 align-items-center">
                             <div class="col-sm-12 col-md-12 col-lg-12">
@@ -52,33 +52,32 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="whitebox">
-                            <form method="POST" action="{{ route('change-password-submit') }}" class="theme-form" id="chnage_password_form" enctype="multipart/form-data">
-                                <div class="row">
-                                    <div class="col-sm-12">
-                                        <div class="form-group">
-                                            <input type="password" class="form-control" placeholder="{{ __('labels.Current Password') }}" name="current_password" id="current_password">
-                                        </div>
-                                    </div>
-
-                                    <div class="col-sm-12">
-                                        <div class="form-group">
-                                            <input type="password" class="form-control" placeholder="{{ __('labels.New Password') }}" name="password" id="password">
-                                        </div>
-                                    </div>
-
-                                    <div class="col-sm-12">
-                                        <div class="form-group">
-                                            <input type="password" class="form-control" placeholder="{{ __('labels.Confirm Password') }}" name="confirm_password" id="confirm_password">
-                                        </div>
-                                    </div>
-
-                                    <div class="col-sm-12">
-                                        <button class="btn btn-success" type="submit">{{ __('labels.Submit') }}</button>
+                        
+                        <form method="POST" action="{{ route('change-password-submit') }}" class="theme-form" id="chnage_password_form" enctype="multipart/form-data">
+                            <div class="row">
+                                <div class="col-lg-4 col-md-6">
+                                    <div class="form-group">
+                                        <input type="password" class="form-control" placeholder="{{ __('labels.Current Password') }}" name="current_password" id="current_password">
+                                    </div> 
+                                </div>
+ 
+                                <div class="col-lg-4 col-md-6">
+                                    <div class="form-group">
+                                        <input type="password" class="form-control" placeholder="{{ __('labels.New Password') }}" name="password" id="password">
                                     </div>
                                 </div>
-                            </form>
-                        </div>
+
+                                <div class="col-lg-4 col-md-6">
+                                    <div class="form-group">
+                                        <input type="password" class="form-control" placeholder="{{ __('labels.Confirm Password') }}" name="confirm_password" id="confirm_password">
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-12">
+                                    <button class="btn btn-light" type="submit">{{ __('labels.Submit') }}</button>
+                                </div>
+                            </div>
+                        </form>
                     </div>
                 </div>
 

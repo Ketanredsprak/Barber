@@ -2,22 +2,17 @@
 
 namespace App\Http\Controllers\Front\Customer;
 
-use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Pagies;
 use App\Models\Notification;
-use App\Models\Subscription;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
-use App\Models\UserSubscription;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Crypt;
-use App\Models\SubscriptionPermission;
-use App\Models\UserSubscriptionPermission;
+use Illuminate\Support\Facades\Redirect;
 use App\Http\Requests\Frontend\CustomerRegisterRequest;
 
 class CustomerAccountController extends Controller
@@ -28,20 +23,13 @@ class CustomerAccountController extends Controller
     {
 
         if (!empty((Auth::user()))) {
-            if(Auth::user()->user_type  == 1)
-            {
+            if (Auth::user()->user_type == 1) {
                 return redirect('admin/dashboard');
-            }
-            elseif(Auth::user()->user_type  == 2)
-            {
+            } elseif (Auth::user()->user_type == 2) {
                 return redirect('admin/dashboard');
-            }
-            elseif(Auth::user()->user_type  == 3)
-            {
+            } elseif (Auth::user()->user_type == 3) {
                 return redirect('404');
-            }
-            else
-            {
+            } else {
                 return redirect('/');
             }
         }
@@ -52,7 +40,6 @@ class CustomerAccountController extends Controller
 
     public function register()
     {
-
 
         $response = checkUserType();
         if ($response instanceof RedirectResponse) {
@@ -72,6 +59,7 @@ class CustomerAccountController extends Controller
     {
 
         try {
+            $otp = mt_rand(1000, 9999);
             $referral_code = generate_rederal_code();
             $user = new User();
             $user->first_name = $request->first_name;
@@ -85,17 +73,49 @@ class CustomerAccountController extends Controller
             $user->register_type = 1;
             $user->register_method = 1;
             $user->password = Hash::make($request->password);
-            $user->referral_code = $referral_code;
+            $user->referral_code = $otp;
+            $user->otp = 1234;
             $user->save();
 
-            sendEmail($user->id, 'customer', '');
+            if ($request->email != "") {
+                sendEmail($user->id, 'customer', '');
+            }
+
+
+            if ($user->email != "") {
+                $name = $user->first_name . " " . $user->last_name;
+                $email = $user->email;
+
+
+                // $otp = 1234;
+                $user->otp = $otp;
+                $user->update();
+                $userId = Crypt::encryptString($user->id);
+
+                $data_email = Mail::send(
+                    ['html' => 'email.forget_password_template'],
+                    array(
+                        'otp' => $otp,
+                        'email' => $email,
+                        'name' => $name ?? "",
+                    ),
+                    function ($message) use ($email) {
+                        $message->from(env('MAIL_USERNAME'), 'Ehjez');
+                        $message->to($email);
+                        $message->subject("Verify your OTP");
+                    }
+                );
+            }
+
 
             $subscription_id = 1;
 
             $user_permission = setUserPermissionBaseOnSubscription($user->id, $subscription_id);
 
+            $encrypt_user_id = Crypt::encryptString($user->id);
+
             if (!empty($user_permission)) {
-                return response()->json(['status' => 1, 'message' => __('message.Register successfully')]);
+                return response()->json(['status' => 1, 'message' => __('message.Register successfully'), 'user_id' => $encrypt_user_id]);
             }
         } catch (Exception $ex) {
             return response()->json(
@@ -107,6 +127,13 @@ class CustomerAccountController extends Controller
 
     public function forgotPassword()
     {
+
+        if (!empty((Auth::user()))) {
+            if (Auth::user()->user_type == 4) {
+                return redirect('/');
+            }
+        }
+
         $data = Pagies::with("meta_content", "cms_content")->find(7);
         return view('Frontend.Auth.forgot-password', compact('data'));
 
@@ -114,6 +141,12 @@ class CustomerAccountController extends Controller
 
     public function forgotPasswordSubmit(Request $request)
     {
+
+        if (!empty((Auth::user()))) {
+            if (Auth::user()->user_type == 4) {
+                return redirect('/');
+            }
+        }
 
         $validated = [];
         $validated['email'] = "required|email";
@@ -127,12 +160,12 @@ class CustomerAccountController extends Controller
 
         try {
             $email = $request->email;
-            $user = User::where('email',$email)->first();
+            $user = User::where('email', $email)->where('is_delete',"0")->first();
             if ($user != null || $user != "") {
                 $name = $user->first_name . " " . $user->last_name;
 
                 $otp = mt_rand(1000, 9999);
-                // $otp = 123456;
+                // $otp = 1234;
                 $user->otp = $otp;
                 $user->update();
                 $userId = Crypt::encryptString($user->id);
@@ -186,6 +219,13 @@ class CustomerAccountController extends Controller
 
     public function verifyOtpSubmit(Request $request)
     {
+
+        if (!empty((Auth::user()))) {
+            if (Auth::user()->user_type == 4) {
+                return redirect('/');
+            }
+        }
+
         $validated = [];
         $validated['otp'] = "required|array|min:4";
         $validated['otp.*'] = "required|digits:1";
@@ -229,6 +269,13 @@ class CustomerAccountController extends Controller
 
     public function resetPassword($id)
     {
+
+        if (!empty((Auth::user()))) {
+            if (Auth::user()->user_type == 4) {
+                return redirect('/');
+            }
+        }
+
         $data = Pagies::with("meta_content", "cms_content")->find(9);
         $id = Crypt::decryptString($id);
         $user = User::find($id);
@@ -239,6 +286,13 @@ class CustomerAccountController extends Controller
 
     public function resetPasswordSubmit(Request $request)
     {
+
+        if (!empty((Auth::user()))) {
+            if (Auth::user()->user_type == 4) {
+                return redirect('/');
+            }
+        }
+
         $validated = [];
         $validated['password'] = "required";
         $validated['confirm_password'] = "same:password";
@@ -267,68 +321,99 @@ class CustomerAccountController extends Controller
     }
 
     public function storeLogin(Request $request)
-{
-    $validated = [
-        'email_or_phone' => "required",
-        'password' => "required",
-    ];
-
-    $customMessages = [
-        'email_or_phone.required' => __('error.The email or phone field is required'),
-        'password.required' => __('error.The password field is required.'),
-    ];
-
-    $request->validate($validated, $customMessages);
-
-    try {
-        // Determine if the input is an email or a phone number
-        $loginType = filter_var($request->email_or_phone, FILTER_VALIDATE_EMAIL) ? 'email' : 'phone';
-
-        // Check if the user exists with the given login type and credentials
-        $user = User::where($loginType, $request->email_or_phone)->first();
-
-        if (!$user || $user->user_type != 4) {
-            return response()->json(
-                [
-                    'message' => __('error.Only customers can sign in.'),
-                    'status' => 0,
-                ], 200);
-        }
-
-        // Now attempt to authenticate the user
-        $credentials = [
-            $loginType => $request->email_or_phone,
-            'password' => $request->password,
+    {
+        $validated = [
+            'email_or_phone' => "required",
+            'password' => "required",
         ];
 
-        if (auth()->attempt($credentials)) {
-            if ($user->is_approved == "2") {
+        $customMessages = [
+            'email_or_phone.required' => __('error.The email or phone field is required'),
+            'password.required' => __('error.The password field is required.'),
+        ];
+
+        $request->validate($validated, $customMessages);
+
+        try {
+            // Determine if the input is an email or a phone number
+            $loginType = filter_var($request->email_or_phone, FILTER_VALIDATE_EMAIL) ? 'email' : 'phone';
+
+            // Check if the user exists with the given login type and credentials
+            $user = User::where($loginType, $request->email_or_phone)->first();
+
+            if (!$user || $user->user_type != 4) {
                 return response()->json(
                     [
-                        'status' => 1,
-                        'message' => __('message.Login successfully'),
-                    ], 200);
-            } else {
-                return response()->json(
-                    [
-                        'message' => __('error.Contact the admin. Your account is temporarily blocked.'),
+                        'message' => __('message.Invalid credentials'),
                         'status' => 0,
                     ], 200);
             }
-        } else {
-            return response()->json(
-                [
-                    'message' => __('message.Invalid credentials'),
-                    'status' => 0,
-                ], 200);
-        }
-    } catch (Exception $ex) {
-        return response()->json(
-            ['success' => 0, 'message' => $ex->getMessage()], 401
-        );
-    }
-}
 
+            // Now attempt to authenticate the user
+            $credentials = [
+                $loginType => $request->email_or_phone,
+                'password' => $request->password,
+            ];
+
+            if (auth()->attempt($credentials)) {
+
+                if ($user->is_verify_otp == "1") {
+
+                    if($user->is_delete != "0")
+                    {
+                        auth()->logout();
+                        return response()->json(
+                            [
+                                'status' => 0,
+                                'message' => __('message.Invalid credentials'),
+                            ], 200);
+                    }
+
+
+                    if ($user->is_approved == "2") {
+                        return response()->json(
+                            [
+                                'status' => 1,
+                                'message' => __('message.Login successfully'),
+                            ], 200);
+                    }
+                     else {
+                        auth()->logout();
+                        return response()->json(
+                            [
+                                'message' => __('error.Contact to admin temporarily your account is blocked'),
+                                'status' => 0,
+                            ], 200);
+                    }
+                } else {
+
+                    // $userId = Crypt::encryptString($user->id);
+                    // return Redirect::route('verify',$userId)->with('status', 'profile-updated');
+                    $userId = Crypt::encryptString($user->id);
+                    auth()->logout();
+                    return response()->json(
+                        [
+                            'message' => __('error.Verify your account.'),
+                            'status' => 2,
+                            'user_id' => $userId,
+                        ], 200);
+
+
+                }
+
+            } else {
+                return response()->json(
+                    [
+                        'message' => __('message.Invalid credentials'),
+                        'status' => 0,
+                    ], 200);
+            }
+        } catch (Exception $ex) {
+            return response()->json(
+                ['success' => 0, 'message' => $ex->getMessage()], 401
+            );
+        }
+    }
 
     public function myAccount()
     {
@@ -342,20 +427,20 @@ class CustomerAccountController extends Controller
         $id = Auth::user()->id;
         $validated = [];
         $validated['first_name'] = "required";
-        $validated['last_name'] = "required";
+        // $validated['last_name'] = "required";
         $validated['email'] = "required|email|unique:users,email," . $id;
         $validated['country_code'] = "required|numeric";
-        $validated['phone'] = "required|min:9|max:11|unique:users,phone," . $id;
+        $validated['phone'] = "required|min:9|max:9|unique:users,phone," . $id;
         $validated['gender'] = "required";
 
         $customMessages = [
-            'first_name.required' =>  __('error.The first name field is required.'),
-            'last_name.required' => __('error.The last name field is required.'),
+            'first_name.required' => __('error.The first name field is required.'),
+            // 'last_name.required' => __('error.The last name field is required.'),
             'country_code.required' => __('error.The country code field is required.'),
             'country_code.numeric' => __('error.The country code must be a number.'),
             'phone.required' => __('error.The phone number field is required.'),
             'phone.min' => __('error.The phone number must be at least 9 characters.'),
-            'phone.max' => __('error.The phone number may not be greater than 11 characters.'),
+            'phone.max' => __('error.The phone number may not be greater than 9 characters.'),
             'phone.unique' => __('error.The phone number has already been taken.'),
             'gender.required' => __('error.The gender field is required.'),
             'email.required' => __('error.The email field is required.'),
@@ -406,7 +491,7 @@ class CustomerAccountController extends Controller
 
     }
 
-        public function  changePassword()
+    public function changePassword()
     {
         $data = Pagies::with("meta_content", "cms_content")->find(12);
         return view('Frontend.Auth.change-password', compact('data'));
@@ -479,13 +564,11 @@ class CustomerAccountController extends Controller
 
     public function myPackage()
     {
-
         $data = Pagies::with("meta_content", "cms_content")->find(10);
         $data['subscription_data'] = getSubscription("customer");
         $data['current_subscription'] = getCurrentSubscription(Auth::user()->id);
         return view('Frontend.Auth.my-package', compact('data'));
     }
-
 
     public function otpResendForgotPassword(Request $request)
     {
@@ -502,7 +585,7 @@ class CustomerAccountController extends Controller
 
         try {
             $email = $request->email;
-            $user = User::where('email', $email)->first();
+            $user = User::where('email', $email)->where('is_delete',"0")->first();
             if ($user != null || $user != "") {
                 $name = $user->first_name . " " . $user->last_name;
 
@@ -551,23 +634,92 @@ class CustomerAccountController extends Controller
 
     public function notificationList(Request $request)
     {
-         $data = Pagies::with("meta_content", "cms_content")->find(20);
-         $data_list = Notification::where("user_id",Auth::user()->id)->paginate(10);
-         return view('Frontend.Auth.notification-list',compact('data_list','data'));
+        $data = Pagies::with("meta_content", "cms_content")->find(20);
+        $data_list = Notification::where("user_id", Auth::user()->id)->orderBy('id', 'DESC')->paginate(10);
+         foreach ($data_list as $record) {
+            $notification = Notification::where('id', $record->id)->first();
+            $notification->is_read = "1";
+            $notification->save();
+        }
+
+        return view('Frontend.Auth.notification-list', compact('data_list', 'data'));
     }
 
     public function myPoint(Request $request)
     {
-         $data = Pagies::with("meta_content", "cms_content")->find(22);
-         $data['total_points'] = get_user_point(Auth::user()->id);
-          return view('Frontend.Auth.my-points',compact('data'));
+        $data = Pagies::with("meta_content", "cms_content")->find(22);
+        $data['total_points'] = get_user_point(Auth::user()->id);
+        return view('Frontend.Auth.my-points', compact('data'));
+    }
+
+    public function verify($id)
+    {
+
+        $user_id = Crypt::decryptString($id);
+        $data = Pagies::with("meta_content", "cms_content")->find(8);
+        $user = User::find($user_id);
+        return view('Frontend.Auth.verify', compact('data', 'user'));
+
+    }
+
+    public function verifySubmit(Request $request)
+    {
+
+        if (!empty((Auth::user()))) {
+            if (Auth::user()->user_type == 4) {
+                return redirect('/');
+            }
+        }
+
+        $validated = [];
+        $validated['otp'] = "required|array|min:4";
+        $validated['otp.*'] = "required|digits:1";
+
+        $customMessages = [
+            'otp.required' => __('error.The otp field id required, Please enter otp  in proper format.'),
+            'otp.array' => __('error.The otp field id required, Please enter otp  in proper format.'),
+            'otp.min' => __('error.The otp field id required, Please enter otp  in proper format.'),
+            'otp.0' => __('error.The otp field id required, Please enter otp  in proper format.'),
+            'otp.1' => __('error.The otp field id required, Please enter otp  in proper format.'),
+            'otp.2' => __('error.The otp field id required, Please enter otp  in proper format.'),
+            'otp.3' => __('error.The otp field id required, Please enter otp  in proper format.'),
+        ];
+
+        $request->validate($validated, $customMessages);
+
+        try {
+
+            $request['otp'] = $request->otp[0] . '' . $request->otp[1] . '' . $request->otp[2] . '' . $request->otp[3];
+            $email = User::where('email', $request->email)->first();
+            $user = User::where('email', $request->email)->where('otp', $request['otp'])->first();
+            if (empty($user)) {
+                return response()->json(['status' => 0, 'message' => __('message.Otp verify failed')], 200);
+            } else {
+                $userId = Crypt::encryptString($user->id);
+                $verify_account = User::find($user->id);
+                $verify_account->is_verify_otp = 1;
+                $verify_account->otp = Null;
+                $verify_account->save();
+                return response()->json(
+                    ['status' => 1, 'userId' => $userId, 'message' => __('message.Otp verify successfully'),
+                    ], 200);
+            }
+
+        } catch (Exception $ex) {
+            return response()->json(
+                ['success' => 0, 'message' => $ex->getMessage()], 401
+            );
+        }
+
     }
 
 
-
-
-
-
+    public function updatePackage($id)
+    {
+        $subscription_id = Crypt::decryptString($id);
+        $user_permission = setUserPermissionBaseOnSubscription(Auth::user()->id, $subscription_id);
+        return Redirect::route('my-package')->with('success', 'Subscription Update');
+    }
 
 
 

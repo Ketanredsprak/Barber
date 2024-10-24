@@ -3178,12 +3178,12 @@ fieldset:disabled a.btn {
 	border-color: #f8f9fa
 }
 
-.btn-light:not(:disabled):not(.disabled).active,
-.btn-light:not(:disabled):not(.disabled):active,
-.show>.btn-light.dropdown-toggle {
-	color: #212529;
-	background-color: #dae0e5;
-	border-color: #d3d9df
+.btn-light:not(:disabled):not(.disabled).active, .btn-light:not(:disabled):not(.disabled):active, .show>.btn-light.dropdown-toggle {
+    color: #212529;
+    background-color: #dae0e5;
+    /* border-color: #d3d9df; */
+    display: flex;
+    justify-content: space-around;
 }
 
 .btn-light:not(:disabled):not(.disabled).active:focus,

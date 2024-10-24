@@ -1,25 +1,27 @@
 <?php
 
-use Carbon\Carbon;
-use App\Models\User;
-use App\Models\Module;
-use App\Models\Wallet;
-use GuzzleHttp\Client;
+use App\Models\BarberRating;
 use App\Models\Booking;
-use App\Models\Services;
 use App\Models\Countries;
 use App\Models\CountryCode;
 use App\Models\LoyalClient;
+use App\Models\Module;
+use App\Models\Notification;
 use App\Models\PointSystem;
-use App\Models\BarberRating;
+use App\Models\Services;
 use App\Models\Subscription;
-use App\Models\WebsiteConfig;
+use App\Models\SubscriptionPermission;
+use App\Models\User;
 use App\Models\UserSubscription;
+use App\Models\UserSubscriptionPermission;
+use App\Models\Wallet;
+use App\Models\WebsiteConfig;
+use Carbon\Carbon;
+use Google\Auth\CredentialsLoader;
+use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
-use App\Models\SubscriptionPermission;
 use Spatie\Permission\Models\Permission;
-use App\Models\UserSubscriptionPermission;
 
 if (!function_exists('static_asset')) {
     /**
@@ -150,7 +152,7 @@ if (!function_exists('getauthdata')) {
 if (!function_exists('country_code')) {
     function country_code()
     {
-        $phonecodes = CountryCode::pluck('phonecode')->toArray();
+        $phonecodes = CountryCode::get();
         return $phonecodes;
     }
 }
@@ -159,6 +161,12 @@ if (!function_exists('getSubscription')) {
     function getSubscription($subscription_type)
     {
         $data = Subscription::where('subscription_type', $subscription_type)->where('status', 1)->where('is_delete', 0)->get();
+
+        // Encrypt the 'id' field for each subscription
+        foreach ($data as $subscription) {
+            $subscription['encrypt_id'] = Crypt::encryptString($subscription->id);
+        }
+
         return $data;
     }
 }
@@ -199,6 +207,15 @@ if (!function_exists('setUserPermissionBaseOnSubscription')) {
     function setUserPermissionBaseOnSubscription($user_id, $subscription_id)
     {
 
+        //checking old subscription
+        $data_old_subs = UserSubscription::where('user_id', $user_id)->where('status', 'active')->get();
+        foreach ($data_old_subs as $subscription_ex) {
+            $subscription_cancelled = UserSubscription::find($subscription_ex->id);
+            $subscription_cancelled->status = "inactive";
+            $subscription_cancelled->update();
+        }
+        //checking old subscription
+
         //assing basic subscription
         $currentDateTime = Carbon::now();
         $currentDate = $currentDateTime->format('Y-m-d H:i:s');
@@ -208,7 +225,7 @@ if (!function_exists('setUserPermissionBaseOnSubscription')) {
         $user_subscription = new UserSubscription();
         $user_subscription->user_id = $user_id;
         $user_subscription->transaction_id = "1";
-        $user_subscription->subscription_id = "1";
+        $user_subscription->subscription_id = $subscription->id;
         $user_subscription->subscription_duration = $subscription->duration_in_months * 30;
         $user_subscription->status = "active";
         $user_subscription->availble_booking = $subscription->number_of_booking ?? 0;
@@ -244,7 +261,7 @@ if (!function_exists('setUserPermissionBaseOnSubscription')) {
             $input_value = "gold_input_value";
         }
 
-        $all_permission = SubscriptionPermission::whereJsonContains('subscription_array', "1")->get();
+        $all_permission = SubscriptionPermission::whereJsonContains('subscription_array', $subscription->id)->get();
         if ($all_permission) {
             foreach ($all_permission as $permission) {
                 $UserSubscriptionPermission = new UserSubscriptionPermission();
@@ -269,6 +286,9 @@ if (!function_exists('getCurrentSubscription')) {
     function getCurrentSubscription($user_id)
     {
         $data = UserSubscription::where("user_id", $user_id)->where('status', "active")->first();
+        if (!empty($data)) {
+            $data->encrypt_id = Crypt::encryptString(@$data->id);
+        }
         return $data;
     }
 }
@@ -309,107 +329,115 @@ if (!function_exists('sendEmail')) {
         $admin_email = $admin_data->email;
 
         //customer
-        if ($user_type == "customer") {
+        if (!empty($email)) {
+            if ($user_type == "customer") {
 
-            //customer mail
-            Mail::send(
-                ['html' => 'email.customer-register-template'],
-                array(
-                    'name' => $name,
-                ),
-                function ($message) use ($email) {
-                    $message->from(env('MAIL_USERNAME'), 'Ehjez');
-                    $message->to($email);
-                    $message->subject("Thank For Joinning..");
-                }
-            );
+                //customer mail
+                Mail::send(
+                    ['html' => 'email.customer-register-template'],
+                    array(
+                        'name' => $name,
+                    ),
+                    function ($message) use ($email) {
+                        $message->from(env('MAIL_USERNAME'), 'Ehjez');
+                        $message->to($email);
+                        $message->subject("Thank For Joinning..");
+                    }
+                );
 
-            //customer register mail to admin
+                //customer register mail to admin
 
-            Mail::send(
-                ['html' => 'email.customer-register-mail-to-admin-template'],
-                array(
-                    'name' => $name,
-                    'email' => $email,
-                    'phone' => $phone,
-                ),
-                function ($message) use ($admin_email) {
-                    $message->from(env('MAIL_USERNAME'), 'Ehjez');
-                    $message->to($admin_email);
-                    $message->subject("New Customer Registered..");
-                }
-            );
+                Mail::send(
+                    ['html' => 'email.customer-register-mail-to-admin-template'],
+                    array(
+                        'name' => $name,
+                        'email' => $email,
+                        'phone' => $phone,
+                    ),
+                    function ($message) use ($admin_email) {
+                        $message->from(env('MAIL_USERNAME'), 'Ehjez');
+                        $message->to($admin_email);
+                        $message->subject("New Customer Registered..");
+                    }
+                );
 
+            }
         }
 
         // barber
-        if ($user_type == "barber") {
+        if (!empty($email)) {
+            if ($user_type == "barber") {
 
-            //barber mail
-            $data_email = Mail::send(
-                ['html' => 'email.barber-register-template'],
-                array(
-                    'name' => $name,
-                ),
-                function ($message) use ($email) {
-                    $message->from(env('MAIL_USERNAME'), 'Ehjez');
-                    $message->to($email);
-                    $message->subject("Thank For Joinning..");
-                }
-            );
+                //barber mail
+                $data_email = Mail::send(
+                    ['html' => 'email.barber-register-template'],
+                    array(
+                        'name' => $name,
+                    ),
+                    function ($message) use ($email) {
+                        $message->from(env('MAIL_USERNAME'), 'Ehjez');
+                        $message->to($email);
+                        $message->subject("Thank For Joinning..");
+                    }
+                );
 
-            $data_email_1 = Mail::send(
-                ['html' => 'email.barber-register-mail-to-admin-template'],
-                array(
-                    'name' => $name,
-                    'email' => $email,
-                    'phone' => $phone,
-                ),
-                function ($message) use ($admin_email) {
-                    $message->from(env('MAIL_USERNAME'), 'Ehjez');
-                    $message->to($admin_email);
-                    $message->subject("New barber Registered..");
-                }
-            );
+                $data_email_1 = Mail::send(
+                    ['html' => 'email.barber-register-mail-to-admin-template'],
+                    array(
+                        'name' => $name,
+                        'email' => $email,
+                        'phone' => $phone,
+                    ),
+                    function ($message) use ($admin_email) {
+                        $message->from(env('MAIL_USERNAME'), 'Ehjez');
+                        $message->to($admin_email);
+                        $message->subject("New barber Registered..");
+                    }
+                );
 
-            return true;
+                return true;
 
+            }
         }
 
-        // customer suspend  by admin mail send to customer
-        if ($user_type == "account-suspend") {
+        if (!empty($email)) {
+            // customer suspend  by admin mail send to customer
+            if ($user_type == "account-suspend") {
 
-            //barber mail
-            $data_email = Mail::send(
-                ['html' => 'email.account-suspend-email-template'],
-                array(
-                    'name' => $name,
-                    'admin_email' => $admin_email,
-                ),
-                function ($message) use ($email) {
-                    $message->from(env('MAIL_USERNAME'), 'Ehjez');
-                    $message->to($email);
-                    $message->subject("Your Account is suspend..");
-                }
-            );
+                //barber mail
+                $data_email = Mail::send(
+                    ['html' => 'email.account-suspend-email-template'],
+                    array(
+                        'name' => $name,
+                        'admin_email' => $admin_email,
+                    ),
+                    function ($message) use ($email) {
+                        $message->from(env('MAIL_USERNAME'), 'Ehjez');
+                        $message->to($email);
+                        $message->subject("Your Account is suspend..");
+                    }
+                );
+            }
         }
 
-        // customer approved by admin mail send to customer
-        if ($user_type == "account-approved") {
+        if (!empty($email)) {
+            // customer approved by admin mail send to customer
+            if ($user_type == "account-approved") {
 
-            //barber mail
-            $data_email = Mail::send(
-                ['html' => 'email.account-approved-email-template'],
-                array(
-                    'name' => $name,
-                    'admin_email' => $admin_email,
-                ),
-                function ($message) use ($email) {
-                    $message->from(env('MAIL_USERNAME'), 'Ehjez');
-                    $message->to($email);
-                    $message->subject("Your Account is approved..");
-                }
-            );
+                //barber mail
+                $data_email = Mail::send(
+                    ['html' => 'email.account-approved-email-template'],
+                    array(
+                        'name' => $name,
+                        'admin_email' => $admin_email,
+                    ),
+                    function ($message) use ($email) {
+                        $message->from(env('MAIL_USERNAME'), 'Ehjez');
+                        $message->to($email);
+                        $message->subject("Your Account is approved..");
+                    }
+                );
+            }
         }
 
         // booking main to  customer
@@ -419,32 +447,47 @@ if (!function_exists('sendEmail')) {
             $barber_email = $booking_data->barber_detail->email;
             $customer_email = $booking_data->customer_detail->email;
             //mail customer
-            $data_email = Mail::send(
-                ['html' => 'email.customer-booking-info-to-customer-template'],
-                array(
-                    'name' => $name,
-                    'booking' => $booking_data,
-                ),
-                function ($message) use ($customer_email) {
-                    $message->from(env('MAIL_USERNAME'), 'Ehjez');
-                    $message->to($customer_email);
-                    $message->subject("New Appointment..");
-                }
-            );
+
+            // Path to the file you want to attach
+            $filePath = public_path('booking-policy.txt'); // Example file path
+
+            if (!empty($customer_email)) {
+                $data_email = Mail::send(
+                    ['html' => 'email.customer-booking-info-to-customer-template'],
+                    array(
+                        'name' => $name,
+                        'booking' => $booking_data,
+                    ),
+                    function ($message) use ($customer_email,$filePath) {
+                        $message->from(env('MAIL_USERNAME'), 'Ehjez');
+                        $message->to($customer_email);
+                        $message->subject("New Appointment..");
+
+                        // Attach the file
+                        $message->attach($filePath, [
+                            'as' => 'booking-policy.txt', // Optional custom file name for the attachment
+                            'mime' => 'application/txt', // MIME type of the file
+                        ]);
+
+                    }
+                );
+            }
 
             //barber mail
-            $data_email = Mail::send(
-                ['html' => 'email.barber-booking-info-to-barber-template'],
-                array(
-                    'name' => $name,
-                    'booking' => $booking_data,
-                ),
-                function ($message) use ($barber_email) {
-                    $message->from(env('MAIL_USERNAME'), 'Ehjez');
-                    $message->to($barber_email);
-                    $message->subject("New Appointment..");
-                }
-            );
+            if (!empty($barber_email)) {
+                $data_email = Mail::send(
+                    ['html' => 'email.barber-booking-info-to-barber-template'],
+                    array(
+                        'name' => $name,
+                        'booking' => $booking_data,
+                    ),
+                    function ($message) use ($barber_email) {
+                        $message->from(env('MAIL_USERNAME'), 'Ehjez');
+                        $message->to($barber_email);
+                        $message->subject("New Appointment..");
+                    }
+                );
+            }
 
         }
 
@@ -454,17 +497,19 @@ if (!function_exists('sendEmail')) {
             $customer_email = $booking_data->customer_detail->email;
 
             //mail customer
-            $data_email = Mail::send(
-                ['html' => 'email.customer-booking-status-change-to-customer-template'],
-                array(
-                    'booking' => $booking_data,
-                ),
-                function ($message) use ($customer_email) {
-                    $message->from(env('MAIL_USERNAME'), 'Ehjez');
-                    $message->to($customer_email);
-                    $message->subject("Barber responde on Appointment..");
-                }
-            );
+            if (!empty($customer_email)) {
+                $data_email = Mail::send(
+                    ['html' => 'email.customer-booking-status-change-to-customer-template'],
+                    array(
+                        'booking' => $booking_data,
+                    ),
+                    function ($message) use ($customer_email) {
+                        $message->from(env('MAIL_USERNAME'), 'Ehjez');
+                        $message->to($customer_email);
+                        $message->subject("Barber responde on Appointment..");
+                    }
+                );
+            }
 
         }
 
@@ -474,38 +519,40 @@ if (!function_exists('sendEmail')) {
 
             $customer_email = $booking_data->customer_detail->email;
 
-            if ($booking_data->barber_proposal->slots) {
-                // Loop through the array
+            if (!empty($customer_email)) {
+                if ($booking_data->barber_proposal->slots) {
+                    // Loop through the array
 
-                foreach ($booking_data->barber_proposal->slots as $index => $slot) {
-                    // Split the time range by " - "
-                    list($start, $end) = explode('-', $slot);
+                    foreach ($booking_data->barber_proposal->slots as $index => $slot) {
+                        // Split the time range by " - "
+                        list($start, $end) = explode('-', $slot);
 
-                    // Set the first start time
-                    if ($index === 0) {
-                        $startTime = $start;
+                        // Set the first start time
+                        if ($index === 0) {
+                            $startTime = $start;
+                        }
+
+                        // Always update the last end time
+                        $endTime = $end;
                     }
 
-                    // Always update the last end time
-                    $endTime = $end;
+                    $booking_data->barber_proposal->start_time = $startTime;
+                    $booking_data->barber_proposal->end_time = $endTime;
                 }
 
-                $booking_data->barber_proposal->start_time = $startTime;
-                $booking_data->barber_proposal->end_time = $endTime;
+                //mail customer
+                $data_email = Mail::send(
+                    ['html' => 'email.barber-proposal-for-booking-to-customer-template'],
+                    array(
+                        'booking' => $booking_data,
+                    ),
+                    function ($message) use ($customer_email) {
+                        $message->from(env('MAIL_USERNAME'), 'Ehjez');
+                        $message->to($customer_email);
+                        $message->subject("Barber Propersal For JoinWait List Request..");
+                    }
+                );
             }
-
-            //mail customer
-            $data_email = Mail::send(
-                ['html' => 'email.barber-proposal-for-booking-to-customer-template'],
-                array(
-                    'booking' => $booking_data,
-                ),
-                function ($message) use ($customer_email) {
-                    $message->from(env('MAIL_USERNAME'), 'Ehjez');
-                    $message->to($customer_email);
-                    $message->subject("Barber Propersal For JoinWait List Request..");
-                }
-            );
 
         }
 
@@ -515,17 +562,19 @@ if (!function_exists('sendEmail')) {
             $barber_email = $booking_data->barber_detail->email;
 
             //mail customer
-            $data_email = Mail::send(
-                ['html' => 'email.customer-chnage-status-for-barber-proposal-to-barber-template'],
-                array(
-                    'booking' => $booking_data,
-                ),
-                function ($message) use ($barber_email) {
-                    $message->from(env('MAIL_USERNAME'), 'Ehjez');
-                    $message->to($barber_email);
-                    $message->subject("Customer respond on your Appointment Proposal..");
-                }
-            );
+            if (!empty($barber_email)) {
+                $data_email = Mail::send(
+                    ['html' => 'email.customer-chnage-status-for-barber-proposal-to-barber-template'],
+                    array(
+                        'booking' => $booking_data,
+                    ),
+                    function ($message) use ($barber_email) {
+                        $message->from(env('MAIL_USERNAME'), 'Ehjez');
+                        $message->to($barber_email);
+                        $message->subject("Customer respond on your Appointment Proposal..");
+                    }
+                );
+            }
 
         }
 
@@ -534,21 +583,22 @@ if (!function_exists('sendEmail')) {
             $booking_data = Booking::with('barber_detail', 'customer_detail', 'booking_service_detailss.main_service', 'booking_service_detailss.sub_service')->find($booking_id);
             $barber_email = $booking_data->barber_detail->email;
             $rating = BarberRating::where('booking_id', $booking_data->id)->where('user_id', $booking_data->user_id)->first();
-
-            //mail customer
-            if ($rating != "") {
-                $data_email = Mail::send(
-                    ['html' => 'email.customer-rating-to-barber-to-barber-template'],
-                    array(
-                        'booking' => $booking_data,
-                        'rating' => $rating,
-                    ),
-                    function ($message) use ($barber_email) {
-                        $message->from(env('MAIL_USERNAME'), 'Ehjez');
-                        $message->to($barber_email);
-                        $message->subject("Rating Received..");
-                    }
-                );
+            if (!empty($barber_email)) {
+                //mail customer
+                if ($rating != "") {
+                    $data_email = Mail::send(
+                        ['html' => 'email.customer-rating-to-barber-to-barber-template'],
+                        array(
+                            'booking' => $booking_data,
+                            'rating' => $rating,
+                        ),
+                        function ($message) use ($barber_email) {
+                            $message->from(env('MAIL_USERNAME'), 'Ehjez');
+                            $message->to($barber_email);
+                            $message->subject("Rating Received..");
+                        }
+                    );
+                }
             }
 
         }
@@ -749,9 +799,297 @@ if (!function_exists('sendEmail')) {
         }
     }
 
+// =====================================================
+
+    function getAccessToken()
+    {
+        // $serviceAccountPath = config_path('firebase_credentials.json');
+        // $scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+        // $credentials = CredentialsLoader::makeCredentials($scopes, json_decode(file_get_contents($serviceAccountPath), true));
+        // $httpHandler = HttpHandlerFactory::build(new Client());
+        // $credentials->fetchAuthToken($httpHandler);
+        // return $credentials->getLastReceivedToken()['access_token'];
+
+        $serviceAccountPath = config_path('firebase_credentials.json');
+        $scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+        $credentials = CredentialsLoader::makeCredentials($scopes, json_decode(file_get_contents($serviceAccountPath), true));
+
+        // Create a custom HTTP handler with SSL verification disabled
+        $httpHandler = function ($request) {
+            $client = new Client([
+                'verify' => false, // Disable SSL verification
+            ]);
+            return $client->send($request);
+        };
+
+        $credentials->fetchAuthToken($httpHandler);
+        return $credentials->getLastReceivedToken()['access_token'];
+    }
+
+    function sendPushNotification($user_id, $notificationType, $title, $description)
+    {
+        $availble_booking = "";
+        if ($notificationType == "remaining-booking") {
+            $user_sub = UserSubscription::where("user_id", $user_id)->where('status', 'active')->first();
+            $availble_booking = $user_sub->availble_booking;
+        }
+
+        // Retrieve access token
+        $SERVER_API_KEY = getAccessToken();
+        if (!$SERVER_API_KEY) {
+            throw new Exception('Failed to obtain access token.');
+        }
+        // dd($SERVER_API_KEY);
+        $PROJECT_KEY = env('FCM_PROJECT_KEY');
+        try {
+            $userInfo = User::find($user_id);
+            $deviceType = $userInfo->device_type;
+            $deviceToken = $userInfo->fcm_token;
+            $notifications = new Notification();
+            $notifications->user_id = $user_id;
+            $notifications->device_type = $userInfo->device_type;
+            $notifications->notification_type = $notificationType;
+            $notifications->notification_data = $availble_booking ?? "";
+            $notifications->notification_message = $description;
+            $notifications->is_read = 0;
+            $notifications->save();
+            // Prepare the data for the notification
+            $notificationData = [
+                "message" => [
+                    "token" => $deviceToken,
+                    "notification" => [
+                        "title" => $title,
+                        "body" => $description,
+                    ],
+                    "data" => [
+                        "title" => $title,
+                        "body" =>  $description,
+                        "notification_type" => $notificationType,
+                        "description" =>  $description,
+                        // "sender_id" =>  $data->sender_id,
+                        // "receiver_id" => $data->receiver_id,
+                        // "custom_message_type" =>  $data->message_type,
+                        // "message_file" =>   URL::to('/public') . '/file/' .$data->file,
+                        // "message_custom" =>  $data->message,
+                        // "chat_unique_key" => $data->chat_unique_key,
+                        // "is_read" => $data->is_read,
+
+                    ],
+                ],
+
+            ];
+
+            $dataString = json_encode($notificationData);
+            $header = array('Content-Type: application/json', "Authorization: Bearer $SERVER_API_KEY");
+            // Initialize cURL session
+            $ch = curl_init("https://fcm.googleapis.com/v1/projects/" . $PROJECT_KEY . "/messages:send");
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($ch, CURLOPT_POST, 0);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $dataString);
+
+            // Execute cURL request and get the response
+            $response = curl_exec($ch);
+
+            // Check for cURL errors
+            if (curl_errno($ch)) {
+                throw new \Exception(curl_error($ch));
+            }
+
+            // Close cURL session
+            curl_close($ch);
+            // Return success message
+            return true;
+            // } else {
+            //     return false;
+            // }
+        } catch (\Exception $e) {
+            // Return error message
+            return $e->getMessage();
+        }
+    }
+
+// =====================================================
+
+    if (!function_exists('calculateDistance')) {
+        function calculateDistance($latitudeFrom, $longitudeFrom, $latitudeTo, $longitudeTo)
+        {
+
+            $earthRadiusKm = 6371;
+
+            $latFrom = deg2rad($latitudeFrom);
+            $lonFrom = deg2rad($longitudeFrom);
+            $latTo = deg2rad($latitudeTo);
+            $lonTo = deg2rad($longitudeTo);
+
+            $latDelta = $latTo - $latFrom;
+            $lonDelta = $lonTo - $lonFrom;
+
+            $angle = 2 * asin(sqrt(pow(sin($latDelta / 2), 2) +
+                cos($latFrom) * cos($latTo) * pow(sin($lonDelta / 2), 2)));
+
+            return $angle * $earthRadiusKm;
+        }
+    }
+
+}
+
+if (!function_exists('getNotificationCount')) {
+    function getNotificationCount()
+    {
+        $numbeof_notification = Notification::where("user_id", Auth::user()->id)->where('is_read', 0)->count();
+        $data_list = Notification::where("user_id", Auth::user()->id)->where('is_read', 0)->get();
+        $ids = $data_list->pluck('id')->toArray(); // Extract IDs from the list
+        // foreach ($ids as $id) {
+        //     $notification = Notification::where('id', $id)->first();
+        //     $notification->is_read = "1";
+        //     $notification->save();
+        // }
+        return $numbeof_notification ?? 0;
+    }
+}
+
+if (!function_exists('checkingUserAccount')) {
+    function checkingUserAccount($user_id)
+    {
+        // Retrieve the user from the 'users' table with the specified conditions
+        $user = \App\Models\User::where('id', $user_id)
+            ->where('is_approved', "2")
+            ->where('is_delete', 0)
+            ->first();
+
+        // If the user does not exist or does not match the conditions
+        if (!$user) {
+            // Log out the user
+            Auth::logout();
+            // Redirect to the login page
+            return redirect()->route('admin/login')->send();
+        }
+
+        // If the user exists and matches the conditions, return true
+        return true;
+    }
+}
+
+if (!function_exists('checkUserStatus')) {
+    function checkUserStatus($user_id)
+    {
+
+        $user = User::find($user_id);
+
+        $status = 0;
+        $message = "";
+
+        if (!$user) {
+            $message = __('message.Account not found');
+            $status = 1;
+        }
+
+        if ($user->is_approved == 0) {
+            $message = __('message.Waiting for admin approved account');
+            $status = 1;
+        }
+
+        if ($user->is_approved == 1) {
+            $message = __('message.Waiting for admin approved account');
+            $status = 1;
+        }
+
+        if ($user->is_approved == 3) {
+            $message = __('message.Temporary your account suspended please contact to admin');
+            $status = 1;
+        }
+
+        if ($user->is_delete == 1) {
+            $message = __('message.Account not found');
+            $status = 1;
+        }
+
+        // Add any additional status checks as needed
+        return ['status' => $status, 'message' => $message];
+
+    }
 
 
 
+    function sendPushNotificationChatNotification($user_id, $notificationType, $title, $description, $data)
+    {
 
+        // Retrieve access token
+        $SERVER_API_KEY = getAccessToken();
+        if (!$SERVER_API_KEY) {
+            throw new Exception('Failed to obtain access token.');
+        }
+        // dd($SERVER_API_KEY);
+        $PROJECT_KEY = env('FCM_PROJECT_KEY');
+        try {
+            $userInfo = User::find($user_id);
+            $deviceType = $userInfo->device_type;
+            $deviceToken = $userInfo->fcm_token;
+            $notifications = new Notification();
+            $notifications->user_id = $user_id;
+            $notifications->device_type = $userInfo->device_type;
+            $notifications->notification_type = $notificationType;
+            $notifications->notification_data = $data->message ?? "";
+            $notifications->notification_message = $description;
+            $notifications->is_read = 0;
+            $notifications->save();
+            // Prepare the data for the notification
+            $notificationData = [
+                "message" => [
+                    "token" => $deviceToken,
+                    "notification" => [
+                        "title" => $title,
+                        "body" => $description,
+                    ],
+                    "data" => [
+                        "title" => $title ?? "",
+                        "body" =>  $description ?? "",
+                        "notification_type" => $notificationType ?? "",
+                        "description" =>  $description ?? "",
+                        "sender_id" =>  strval($data->sender_id) ?? "",
+                        "receiver_id" => strval($data->receiver_id) ?? "",
+                        "custom_message_type" =>  strval($data->message_type) ?? "",
+                        "message_file" =>   URL::to('/public') . '/file/' .strval($data->file),
+                        "message_custom" =>  strval($data->message) ?? "",
+                        "chat_unique_key" => strval($data->chat_unique_key) ?? "",
+                        "is_read" => strval($data->is_read) ?? "",
+                    ],
+                ],
 
+            ];
+
+            $dataString = json_encode($notificationData);
+            $header = array('Content-Type: application/json', "Authorization: Bearer $SERVER_API_KEY");
+            // Initialize cURL session
+            $ch = curl_init("https://fcm.googleapis.com/v1/projects/" . $PROJECT_KEY . "/messages:send");
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($ch, CURLOPT_POST, 0);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $dataString);
+
+            // Execute cURL request and get the response
+            $response = curl_exec($ch);
+
+            // Check for cURL errors
+            if (curl_errno($ch)) {
+                throw new \Exception(curl_error($ch));
+            }
+
+            // Close cURL session
+            curl_close($ch);
+            // Return success message
+            return true;
+            // } else {
+            //     return false;
+            // }
+        } catch (\Exception $e) {
+            // Return error message
+            return $e->getMessage();
+        }
+    }
 }

@@ -15,5 +15,8 @@ class PointSystem extends Model
         'per_booking_points',
         'per_active_referral_points',
         'how_many_point_equal_sr',
+
+
+
     ];
 }

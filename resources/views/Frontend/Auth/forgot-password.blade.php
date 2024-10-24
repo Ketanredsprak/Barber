@@ -46,7 +46,7 @@
                                             </div>
 
                                             <div class="col-sm-12 text-center">
-                                                <button class="btn btn-success btn-block mb-3" type="submit">{{ __('labels.Send OTP') }}</button>
+                                                <button class="btn btn-light sign-in-btn" type="submit">{{ __('labels.Send OTP') }}</button>
                                                 <a href="{{ route('login') }}" class="text-warning">{{ __('labels.Back to Login') }}</a>
                                             </div>
                                         </div>
@@ -85,13 +85,17 @@
                     processData: false,
                     contentType: false,
                     success: function(response) {
-                          toastr.success(response.message);
+
                           form_data.reset();
                           if(response.status == 1)
                           {
+                            toastr.success(response.message);
                                 window.setTimeout(function(){
                                     window.location.href = "{{ route('verify-otp', '') }}" + '/' + response.userId;
                                }, 1000);
+                          }
+                          else{
+                            toastr.error(response.message);
                           }
 
                     },

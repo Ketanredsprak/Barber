@@ -13,9 +13,11 @@
                 </div>
                 <div class="col-6">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a class="btn btn-sm btn-primary" type="button"
-                                href="{{ route('subscription.create') }}"><i class="fa fa-plus" aria-hidden="true"></i>
-                                {{ __('labels.Add New') }} </a></li>
+                        @if (auth()->user()->can('subscription-create'))
+                            <li class="breadcrumb-item"><a class="btn btn-sm btn-primary" type="button"
+                                    href="{{ route('subscription.create') }}"><i class="fa fa-plus" aria-hidden="true"></i>
+                                    {{ __('labels.Add New') }} </a></li>
+                        @endif
                     </ol>
                 </div>
             </div>
@@ -90,10 +92,12 @@
                     processing: '<i></i><span class="text-primary spinner-border"></span> '
                 },
                 ajax: "{{ route('subscription.index') }}",
-                columns: [
-                    {
+                order: [1],
+                columns: [{
                         data: 'DT_RowIndex',
                         name: 'DT_RowIndex',
+                        orderable: false,
+                        searchable: false
                     },
                     {
                         data: 'subscription_name',

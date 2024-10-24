@@ -31,7 +31,7 @@ class CustomerBookingResource extends JsonResource
             'barber_last_name' => $this->barber_detail->last_name ?? "",
             'barber_gender' => $this->barber_detail->gender ?? "",
             'salon_name' => $this->barber_detail->salon_name ?? "",
-            'barber_profile_image' => URL::to('/public') . '/profile_image/' . ($this->profile_image ?? 'user.png'),
+            'barber_profile_image' => URL::to('/public') . '/profile_image/' . ($this->barber_detail->profile_image ?? 'user.png'),
             'barber_location' => $this->barber_detail->country_name . ' - ' . $this->barber_detail->state_name . ' - ' .  $this->barber_detail->city_name,
             'service_detail' => $this->booking_service_detailss->pluck($service_name)->implode(', '),
             'status' => $this->status,
@@ -48,6 +48,7 @@ class CustomerBookingResource extends JsonResource
 
         if ($request->status === 'waitlist') {
             $baseData['barber_proposal'] = $this->barber_proposal ?? ""; // Assuming you have a resource for barber proposals
+            $baseData['customer_prefrences'] = $this->customer_prefrences ?? ""; // Assuming you have a resource for barber proposals
         }
 
         return $baseData;

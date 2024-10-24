@@ -48,8 +48,10 @@ class BarberAccount extends JsonResource
             'notification_status' => $this->notification_status ?? "",
             'service_added_or_not_added' => $this->service_added_or_not_added,
             'schedule_added_or_not_added' => $this->schedule_added_or_not_added,
+            'point_system' => $this->point_system ?? "",
             'created_at' =>  date('Y-M-d h:i A', strtotime($this->created_at)),
             'updated_at' => date('Y-M-d h:i A', strtotime($this->updated_at)),
+            'barber_images' => BarberImagesResource::collection($this->barber_images),
         ];
     }
 }

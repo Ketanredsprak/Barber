@@ -45,6 +45,8 @@
                                     <div class="profile-mail">
                                         <div class="email-general">
                                             <ul>
+                                                <li>{{ __('labels.Salon Name') }} :<span
+                                                    class="font-primary city_0">{{ $data->salon_name }}</span></li>
                                                 <li>{{ __('labels.Email') }} : <span class="font-primary first_name_0">
                                                         {{ $data->email }}</span></li>
                                                 <li>{{ __('labels.Phone') }} : <span class="font-primary">
@@ -58,12 +60,7 @@
                                                             @endif
                                                         </span>
                                                 </li>
-                                                <li>{{ __('labels.Location') }} : <span class="font-primary">
-                                                        {{ $data->location }}</span></li>
-                                                <li>{{ __('labels.Latitude') }} : <span class="font-primary">
-                                                        {{ $data->latitude }}</span></li>
-                                                <li>{{ __('labels.Longitude') }} : <span class="font-primary">
-                                                        {{ $data->longitude }}</span></li>
+
                                                 <li>{{ __('labels.Register Type') }} :
                                                     <span class="font-primary">
                                                         @if ($data->register_type == '1')
@@ -97,6 +94,13 @@
                                                             <span class="badge bg-danger">{{ __('labels.Suspend') }}</span>
                                                         @endif
                                                 </li>
+                                                <li>{{ __('labels.Location') }} : <span class="font-primary">
+                                                        {{ $data->location }}</span></li>
+                                                <li>{{ __('labels.Latitude') }} : <span class="font-primary">
+                                                        {{ $data->latitude }}</span></li>
+                                                <li>{{ __('labels.Longitude') }} : <span class="font-primary">
+                                                        {{ $data->longitude }}</span></li>
+
                                                 <li>{{ __('labels.Referral Code') }} :<span
                                                         class="font-primary city_0">{{ $data->referral_code }}</span></li>
                                                 <li>{{ __('labels.Joining Date') }} :<span
@@ -137,12 +141,12 @@
                                 <ul class="nav nav-tabs border-tab nav-primary mb-0" id="top-tab" role="tablist">
                                     <li class="nav-item"><a class="nav-link active" id="top-home-tab" data-bs-toggle="tab"
                                             href="#top-home" role="tab" aria-controls="top-home"
-                                            aria-selected="false">Booking</a>
+                                            aria-selected="false">{{ __('labels.Booking') }}</a>
                                         <div class="material-border"></div>
                                     </li>
                                     <li class="nav-item"><a class="nav-link" id="profile-top-tab" data-bs-toggle="tab"
                                             href="#top-profile" role="tab" aria-controls="top-profile"
-                                            aria-selected="false">Subscription</a>
+                                            aria-selected="false">{{ __('labels.Subscription') }}</a>
                                         <div class="material-border"></div>
                                     </li>
                                 </ul>
@@ -171,9 +175,12 @@
                                                             <tbody>
                                                                 @foreach ($barber_bookings as $barber_booking)
                                                                     <tr>
-                                                                        <td>{{ date('Y-M-d', strtotime($barber_booking->booking_date)) }}</td>
-                                                                        <td>{{ date('h:i A', strtotime($barber_booking->start_time)) }}</td>
-                                                                        <td>{{ date('h:i A', strtotime($barber_booking->end_time)) }}</td>
+                                                                        <td>{{ date('Y-M-d', strtotime($barber_booking->booking_date)) }}
+                                                                        </td>
+                                                                        <td>{{ date('h:i A', strtotime($barber_booking->start_time)) }}
+                                                                        </td>
+                                                                        <td>{{ date('h:i A', strtotime($barber_booking->end_time)) }}
+                                                                        </td>
                                                                         <td>{{ $barber_booking->total_price }}</td>
                                                                         <td>
                                                                             @php
@@ -181,19 +188,26 @@
                                                                             @endphp
 
                                                                             @if ($status === 'pending')
-                                                                                <span class="badge bg-secondary">{{ __('Pending') }}</span>
+                                                                                <span
+                                                                                    class="badge bg-warning">{{ __('Pending') }}</span>
                                                                             @elseif ($status === 'reject')
-                                                                                <span class="badge bg-danger">{{ __('Reject') }}</span>
+                                                                                <span
+                                                                                    class="badge bg-danger">{{ __('Rejected') }}</span>
                                                                             @elseif ($status === 'cancel')
-                                                                                <span class="badge bg-danger">{{ __('Cancel') }}</span>
+                                                                                <span
+                                                                                    class="badge bg-danger">{{ __('Cancelled') }}</span>
                                                                             @elseif ($status === 'accept')
-                                                                                <span class="badge bg-success">{{ __('Accept') }}</span>
+                                                                                <span
+                                                                                    class="badge bg-success">{{ __('Accepted') }}</span>
                                                                             @elseif ($status === 'finished')
-                                                                                <span class="badge bg-primary">{{ __('Finished') }}</span>
+                                                                                <span
+                                                                                    class="badge bg-primary">{{ __('Finished') }}</span>
                                                                             @elseif ($status === 'rescheduled')
-                                                                                <span class="badge bg-warning">{{ __('Rescheduled') }}</span>
+                                                                                <span
+                                                                                    class="badge bg-warning">{{ __('Rescheduled') }}</span>
                                                                             @else
-                                                                                <span class="badge bg-dark">{{ __('Unknown') }}</span>
+                                                                                <span
+                                                                                    class="badge bg-dark">{{ __('Unknown') }}</span>
                                                                             @endif
                                                                         </td>
                                                                     </tr>
@@ -207,7 +221,7 @@
                                     </div>
                                     <div class="tab-pane fade" id="top-profile" role="tabpanel"
                                         aria-labelledby="profile-top-tab">
-                                        <div class="" style="margin-top: 2%;" >
+                                        <div class="" style="margin-top: 2%;">
                                             <div class="pb-0 card-no-border">
                                             </div>
                                             <div class="">
@@ -280,4 +294,3 @@
     </div>
     <!-- Container-fluid Ends-->
 @endsection
-

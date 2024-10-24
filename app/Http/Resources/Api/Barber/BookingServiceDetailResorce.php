@@ -22,8 +22,8 @@ class BookingServiceDetailResorce extends JsonResource
         return [
             'booking_id' => $this->booking_id,
             'service_id' => $this->service_id,
-            'service_name' => $this->main_service->$service_name,
-            'sub_service_name' => $this->$service_name,
+            'service_name' => $this->main_service->$service_name ?? "",
+            'sub_service_name' => $this->$service_name ?? "",
             'service_price' => $this->price,
             'service_image' =>  URL::to('/public') . '/service_image/' . ($this->sub_service->service_image),
             'start_time' => date('h:i A', strtotime($this->start_time)) ?? "",

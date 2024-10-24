@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\API\V1;
 
-use App\Models\User;
-use App\Models\Notification;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\Api\NotificationResource;
+use App\Models\Notification;
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class NotificationController extends Controller
 {
@@ -15,10 +15,24 @@ class NotificationController extends Controller
 
     public function getAllNotification(Request $request)
     {
-        $language_code = $request->header('language');
 
+
+
+        // account delete,suspend and wiating for approved
+        $response = checkUserStatus(Auth::user()->id);
+        if ($response['status'] == 1) {
+            return response()->json(
+                [
+                    'status' => 2,
+                    'message' => $response['message'],
+                ], 200);
+        }
+        // account delete,suspend and wiating for approved
+
+
+        $language_code = $request->header('language');
         $id = Auth::user()->id;
-        $data = Notification::where("user_id", $id)->select('id', 'notification_type', 'notification_message', 'is_read', 'created_at')->orderBy('id', 'Desc');
+        $data = Notification::where("user_id", $id)->select('id', 'notification_type','notification_data','notification_message', 'is_read', 'created_at')->orderBy('id', 'Desc');
         $total = $data->count();
         $data = $data->paginate(10);
         $result = NotificationResource::collection($data);
@@ -41,10 +55,20 @@ class NotificationController extends Controller
 
     }
 
-
-
     public function notificationOnOrOff(Request $request)
     {
+
+         // account delete,suspend and wiating for approved
+         $response = checkUserStatus(Auth::user()->id);
+         if ($response['status'] == 1) {
+             return response()->json(
+                 [
+                     'status' => 2,
+                     'message' => $response['message'],
+                 ], 200);
+         }
+         // account delete,suspend and wiating for approved
+
         $language_code = $request->header('language');
 
         $data = User::find(Auth::user()->id);
@@ -57,9 +81,7 @@ class NotificationController extends Controller
                     'status' => 1,
                     'message' => __('message.Notification off successfully.'),
                 ], 200);
-        }
-        else
-        {
+        } else {
             return response()->json(
                 [
                     'notification_status' => $data->notification_status,
@@ -69,9 +91,5 @@ class NotificationController extends Controller
         }
 
     }
-
-
-
-
 
 }

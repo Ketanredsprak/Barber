@@ -28,6 +28,8 @@ class BookingCronController extends Controller
             $endTime = $booking->end_time; // e.g., '12:30:00'
             $currentDateTime = Carbon::now();
 
+
+            if($bookingDate != "" && $startTime != "" && $endTime != "") {
             // Create Carbon instances for booking start and end times
             $bookingStartDateTime = Carbon::createFromFormat('Y-m-d H:i:s', "$bookingDate $startTime");
             $bookingEndDateTime = Carbon::createFromFormat('Y-m-d H:i:s', "$bookingDate $endTime");
@@ -41,13 +43,18 @@ class BookingCronController extends Controller
                     $select_booking->update();
 
                     finished_booking($select_booking->id);
+                    sendPushNotification($booking->user_id,'booking-finished-to-customer','booking-finished-to-customer','booking-finished-to-customer');
+                    sendPushNotification($booking->barber_id,'booking-finished-to-barber','booking-finished-to-barber','booking-finished-to-barber');
+
+
+                }
 
             }
 
          }
 
 
-          echo "Cron Runnning Done";
+         echo "Cron Runnning Done";
 
     }
 
@@ -80,9 +87,7 @@ class BookingCronController extends Controller
                     $select_booking->update();
 
                     cancel_booking($select_booking->id);
-
-
-
+                    sendPushNotification($booking->user_id,'cancel-booking-when-barber-not-respond-to-customer','your-appointment-cancel-due-to-a-barber-busy-schedule','your-appointment-cancel-due-to-a-barber-busy-schedule');
 
             }
 
@@ -96,7 +101,7 @@ class BookingCronController extends Controller
 
     public function notificationDemo(Request $request)
     {
-                 sendPushNotification(33, "notification_type_demo", "title", "message");
+                 sendPushNotification(114, "notification_type_demo", "title", "message checking");
     }
 
 

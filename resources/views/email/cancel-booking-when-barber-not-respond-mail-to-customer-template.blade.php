@@ -364,7 +364,7 @@
                 <tr>
                   <td align="left" valign="top"
                     style="font-size:18px; line-height:28px; font-family:'Roboto',Arial, Helvetica, sans-serif; color:#4a4a4a; font-weight:700; text-align: left; padding: 0px 0px 10px 0;">
-                    <h2>Your Appointment is Cancel By System..</h2>
+                    <h2>Your Appointment is Cancelled By System.</h2>
                     <p>Hi [{{ @$booking_data->customer_detail->first_name ?? "" }} {{ @$booking_data->customer_detail->last_name ?? "" }}],</p>
                     <p>We regret to inform you that your booking with [{{ @$booking_data->barber_detail->first_name ?? "" }} {{ @$booking_data->barber_detail->last_name ?? "" }}] has been canceled due to a busy schedule.</p>
                 </td>

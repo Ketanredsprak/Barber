@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Front;
 
 use App\Models\Pagies;
 use App\Models\MyFavorite;
+use App\Models\BarberRating;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
@@ -39,6 +40,8 @@ class MyFavoriteController extends Controller
         $favorites = MyFavorite::with('barber')->where('user_id', $user_id)->paginate(4);
 
         foreach ($favorites as $favorite) {
+            $rating = BarberRating::where('barber_id', $favorite->barber->id)->avg('rating');
+            $favorite['barber']['rating'] = $rating ? number_format($rating, 1) : "0"; // Add average rating to each item
             $favorite['barber']['encrypt_id'] = Crypt::encryptString($favorite->barber->id);
         }
 

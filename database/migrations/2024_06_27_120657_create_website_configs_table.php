@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string("phone");
             $table->string("whatsapp");
             $table->string("email");
-            $table->string("facebook_link");
+            $table->string("tiktok_link");
             $table->string("twitter_link");
             $table->string("linkedin_link");
             $table->string("youtube_link");

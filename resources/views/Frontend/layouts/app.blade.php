@@ -1,5 +1,9 @@
 <!doctype html>
-<html class="nojs">
+@php
+    $locale = config('app.locale');
+    $dir = in_array($locale, ['ar', 'ur']) ? 'rtl' : 'ltr';
+@endphp
+<html class="nojs" lang="{{ $locale }}" dir="{{ $dir }}">
 <?php
 $locale = config('app.locale');
 $config = getWebsiteConfig();
@@ -122,7 +126,8 @@ $config = getWebsiteConfig();
             </div>
             <div class="modal-body" id="confirmationMessage">
                 <!-- Message will be dynamically inserted here -->
-                {{ __('message.Are you sure you want to logout from website?') }}
+                {{-- {{ __('message.Are you sure you want to logout from website?') }} --}}
+                {{ __('message.Are you sure to logout?') }}
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ __('labels.No') }}</button>

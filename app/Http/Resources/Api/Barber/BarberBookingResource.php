@@ -22,7 +22,7 @@ class BarberBookingResource extends JsonResource
             'customer_first_name' => $this->customer_detail->first_name ?? "",
             'customer_last_name' => $this->customer_detail->last_name ?? "",
             'customer_gender' => $this->customer_detail->gender ?? "",
-            'customer_profile_image' => URL::to('/public') . '/profile_image/' . ($this->profile_image ?? 'user.png'),
+            'customer_profile_image' => URL::to('/public') . '/profile_image/' . ($this->customer_detail->profile_image ?? 'user.png'),
             'customer_location' => implode(' - ', array_filter([
                             $this->customer_detail->country_name ?? '',
                             $this->customer_detail->state_name ?? '',
@@ -32,6 +32,7 @@ class BarberBookingResource extends JsonResource
             'status' => $this->status,
             'total_price' => $this->total_price,
             'booking_type' => $this->booking_type,
+            'barber_proposal_status' => $this->barber_proposal,
             'booking_date_time' => date('M-d-Y', strtotime($this->booking_date)) .' - '. date('h:i A', strtotime($this->start_time)) ?? "",
         ];
     }

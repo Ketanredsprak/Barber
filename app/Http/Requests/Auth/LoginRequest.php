@@ -51,14 +51,26 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
+        // Attempt to authenticate the user
         if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
 
+            // Return an error message if authentication fails
             throw ValidationException::withMessages([
                 'email' => trans('auth.failed'),
             ]);
         }
 
+        // Check if the authenticated user has the allowed user_type
+        if (!in_array(Auth::user()->user_type, [1, 2])) {
+            // Log out the user if the user_type is not allowed
+            Auth::logout();
+
+            // Return a validation error message
+            throw ValidationException::withMessages([
+                'email' => 'You are not authorized to log in.',
+            ]);
+        }
         RateLimiter::clear($this->throttleKey());
     }
 
